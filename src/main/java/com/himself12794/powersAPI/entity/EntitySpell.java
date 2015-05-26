@@ -100,6 +100,7 @@ public class EntitySpell extends Entity implements IProjectile
     	//double d1 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
     	//d1 *= 64.0D;
     	//return distance < d1 * d1;
+    	System.out.println("Fake change");
     	return false;
 
     }
