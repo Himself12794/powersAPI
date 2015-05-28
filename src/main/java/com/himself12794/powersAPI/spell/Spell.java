@@ -39,27 +39,14 @@ public abstract class Spell {
 	public abstract boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier);
 	
 	/**
-	 * Called when the spell affects a target.
-	 * For instances of SpellInstant, when a target has been successfully acquired, and for instances of
-	 * SpellRanged when it impacts anything. 
+	 * The action to be performed when the spell is being prepared, before it is actually cast.
 	 * <p>
-	 * For instances of SpellInstant, returning true will mark the spell as a success, allowing the cooldown to be triggered.
+	 * This is used primarily to check if the player should be allowed to cast the spell or not.
 	 * 
-	 * @param world
-	 * @param target
-	 * @param caster
-	 * @param modifier
-	 * @param stack
-	 * @return success
+	 * @return whether or not casting should continue.
 	 */
-	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
-		boolean flag = false;
-		if (target.entityHit != null) {
-			//UsefulThings.print("Attacking " + target.entityHit.getName());
-			flag = target.entityHit.attackEntityFrom(DamageSource.magic, getPower() * modifier);
-			((EntityLivingBase)target.entityHit).setLastAttacker(caster);
-		} 
-		return flag;
+	public boolean onPrepareSpell(ItemStack stack, World worldIn, EntityPlayer playerIn) {
+		return true;
 	}
 	
 	/**
@@ -73,19 +60,33 @@ public abstract class Spell {
 	 * @param stack
 	 * @return whether or not the spell counts as successful, and should count as a use
 	 */
-	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {
-		return true;
-	}
+	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {return true;}
 	
 	/**
-	 * The action to be performed when the spell is being prepared, before it is actually cast.
+	 * Called when the spell affects a target.
+	 * For instances of SpellInstant, when a target has been successfully acquired, and for instances of
+	 * SpellRanged, when it impacts anything. 
 	 * <p>
-	 * This is used primarily to check if the player should be allowed to cast the spell or not.
+	 * For instances of SpellInstant, returning true will mark the spell as a success, allowing the cooldown to be triggered.
 	 * 
-	 * @return whether or not casting should continue.
+	 * @param world
+	 * @param target
+	 * @param caster
+	 * @param modifier
+	 * @param stack
+	 * @return success
 	 */
-	public boolean onPrepareSpell(ItemStack stack, World worldIn, EntityPlayer playerIn) {
-		return true;
+	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
+		boolean flag = false;
+		
+		if (target.entityHit != null) {
+			
+			flag = target.entityHit.attackEntityFrom(DamageSource.magic, getPower() * modifier);
+			((EntityLivingBase)target.entityHit).setLastAttacker(caster);
+			
+		} 
+		
+		return flag;
 	}
 	
 	/**
@@ -98,9 +99,7 @@ public abstract class Spell {
 	 * @param timeLeft
 	 * @return whether or not to cancel the cooldown
 	 */
-	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft) {
-		return true;
-	}
+	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft) { return true; }
 	
 	/**
 	 * Called when spell is done being cast, before the cool down is triggered.
@@ -111,9 +110,7 @@ public abstract class Spell {
 	 * @param caster
 	 * @return whether or not to negate the cool down
 	 */
-	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster){ 
-		return true;
-	}
+	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster) { return true; }
 	
 	/**
 	 * Determines whether or not spells that have a duration should show this on the tooltip.
@@ -123,9 +120,7 @@ public abstract class Spell {
 	 * @param par3 whether or not advanced tooltips are enabled
 	 * @return
 	 */
-	public boolean showDuration(ItemStack stack, EntityPlayer caster, boolean par3) {
-		return true;
-	}
+	public boolean showDuration(ItemStack stack, EntityPlayer caster, boolean par3) { return true; }
 	
 	
 	/**Gets the spell description.
@@ -136,6 +131,7 @@ public abstract class Spell {
 	 */
 	public String getInfo(ItemStack stack, EntityPlayer player) {
 		String info = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".description")).trim();
+		
 		if (info.equals(getUnlocalizedName() + ".description")) info = "";
 		
 		return info;
@@ -148,9 +144,7 @@ public abstract class Spell {
 	 * @param player
 	 * @return
 	 */
-	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {
-		return null;
-	}
+	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {return null; }
 	
 	/**
 	 * Location for model if the default Magic Tome one is not desired.
@@ -160,25 +154,34 @@ public abstract class Spell {
 	 * @param useRemaining
 	 * @return
 	 */
-	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
-		return null;
-	}
+	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) { return null; }
 	
 	public final ItemStack setSpell(ItemStack stack) {
 		NBTTagCompound nbt = null;
 		String spell = getUnlocalizedName();
 		if (!stack.hasTagCompound()) {
+			
 			nbt = new NBTTagCompound();
+			
 		} else {
+			
 			nbt = stack.getTagCompound();
+			
 		}
+		
 		if (!spellExists(spell)) {
+			
 			PowersAPI.logger.fatal("Cannot set unregistered spell \"" + spell + "\"");
+			
 		} else {
+			
 			nbt.setString(Reference.MODID + ".spell.currentSpell", spell);
 			stack.setTagCompound(nbt);
+			
 		}
+		
 		return stack;
+		
 	}
 	
 	public final boolean isSpellOnStack(ItemStack stack) {
@@ -205,11 +208,11 @@ public abstract class Spell {
 	
 	public int getDuration() { return duration; }
 	
-	protected void setMaxConcentrationTime(int time) {maxConcentrationTime = time;}
+	protected void setMaxConcentrationTime(int time) { maxConcentrationTime = time; }
 	
-	public int getMaxConcentrationTime() {return maxConcentrationTime;}
+	public int getMaxConcentrationTime() { return maxConcentrationTime; }
 	
-	public boolean isConcentrationSpell() {return maxConcentrationTime > 0;}
+	public boolean isConcentrationSpell() { return maxConcentrationTime > 0; }
 
 	public float getBrightness() { return 5.0F; }
 	

@@ -1,7 +1,6 @@
 package com.himself12794.powersAPI.spellfx;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.world.World;
 
 public class SpontaneousRegeneration extends SpellEffect {
 	
@@ -9,12 +8,16 @@ public class SpontaneousRegeneration extends SpellEffect {
 		super(id);
 	}
 	
-	public void onUpdate(EntityLivingBase entity, int timeRemaining ) {
+	@Override
+	public void onUpdate(EntityLivingBase entity, int timeleft, EntityLivingBase caster ) {
 		
 		if (entity.getHealth() < entity.getMaxHealth()) {
 			entity.heal(entity.getMaxHealth() / 10);
 		}
 	}
+
+	@Override
+	public void onRemoval(EntityLivingBase entity) {}
 	
 	
 	

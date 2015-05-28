@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import com.himself12794.powersAPI.Spells;
 import com.himself12794.powersAPI.spell.Spell;
 
 public class SpellCoolDownHook {

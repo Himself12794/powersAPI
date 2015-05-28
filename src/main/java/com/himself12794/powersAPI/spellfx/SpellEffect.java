@@ -1,12 +1,11 @@
 package com.himself12794.powersAPI.spellfx;
 
-import com.himself12794.powersAPI.util.Reference;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
-public class SpellEffect {
+import com.himself12794.powersAPI.util.Reference;
+
+public abstract class SpellEffect {
 	
 	public static final SpellEffect[] spellEffectIds = new SpellEffect[32];
 	public static final SpellEffect spontaneousRegeneration = new SpontaneousRegeneration(0);
@@ -25,12 +24,12 @@ public class SpellEffect {
 	 * This function is called every tick the spell is in effect on the target.
 	 * 
 	 * 
-	 * @param entity
-	 * @param world
+	 * @param entity The entity on which the spell is effecting
 	 * @param timeLeft
+	 * @param caster The entity who cast the spell
 	 * @return
 	 */
-	public void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster){}
+	public abstract void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster);
 	
 	/**
 	 * Called when the effect is removed.
@@ -40,7 +39,7 @@ public class SpellEffect {
 	 * @param entity
 	 * @param world
 	 */
-	public void onRemoval(EntityLivingBase entity){}
+	public abstract void onRemoval(EntityLivingBase entity);
 	
 	/**
 	 * Applies the spell effect to the specific entity, for a specific time.
@@ -82,7 +81,6 @@ public class SpellEffect {
 	 */
 	public final int getEffectTimeRemainingOn(EntityLivingBase target){
 		NBTTagCompound activeEffects = target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
-		//System.out.println(activeEffects);
 		return activeEffects.getIntArray(String.valueOf(id))[0];
 	}
 	
@@ -93,7 +91,7 @@ public class SpellEffect {
 	 * @return
 	 */
 	public final boolean isEffecting(EntityLivingBase entity) {
-		//System.out.println(getEffectTimeRemaining(entity, id));
+
 		return getEffectTimeRemainingOn(entity) != 0;
 	}
 	
@@ -102,7 +100,7 @@ public class SpellEffect {
 	}
 	
 	public static SpellEffect getEffectById(int id) {
-		//String id = Integer.toString(theId);
+
 		if (spellEffectIds[id] != null) return spellEffectIds[id];
 		return null;
 	}

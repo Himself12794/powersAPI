@@ -1,5 +1,7 @@
 package com.himself12794.powersAPI.spell;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 
@@ -10,7 +12,8 @@ import com.himself12794.powersAPI.util.UsefulMethods;
 
 public class SpellHoming extends SpellRanged implements IHomingSpell {
 
-	public void onUpdate(EntitySpell spell) {				
+	public void onUpdate(EntitySpell spell) {
+		
 		for (float j = 0.0F; j < 1.0F; j += 0.05F) {
 		
 			for (int i = 0; i < 10; ++i) {
@@ -20,13 +23,14 @@ public class SpellHoming extends SpellRanged implements IHomingSpell {
 					spell.prevPosY + (spell.motionY * j) - spell.worldObj.rand.nextFloat() * 0.5F,
 					spell.prevPosZ + (spell.motionZ * j) - spell.worldObj.rand.nextFloat() * 0.5F,
 					0, 0, 0);
+				
 			}
 		}
 	}
 
 	@Override
 	public MovingObjectPosition getTarget(EntitySpell spell, MovingObjectPosition target) {
-		// TODO Auto-generated method stub
+
 		if (spell.target == null && spell.worldObj.isRemote) {
 			
 			MovingObjectPosition pos = UsefulMethods.getEntityLookEntity(spell, 50);
@@ -37,6 +41,10 @@ public class SpellHoming extends SpellRanged implements IHomingSpell {
 			
 		}
 		return target;
+	}
+	
+	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {
+		return "Homing";
 	}
 
 }

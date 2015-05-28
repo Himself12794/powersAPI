@@ -10,10 +10,13 @@ import com.himself12794.powersAPI.spellfx.SpellEffect;
 public class Immortalize extends SpellBuff {
 	
 	Immortalize() {
+		
 		setUnlocalizedName("immortalize");
+		
 	}
 	
 	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {
+		
 		SpellEffect.spontaneousRegeneration.addTo(caster, -1, caster);
 		EntityPlayer player = (EntityPlayer)caster;
 		

@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
+import com.himself12794.powersAPI.Config;
 import com.himself12794.powersAPI.ModRecipes;
 import com.himself12794.powersAPI.PowersAPI;
 import com.himself12794.powersAPI.entity.EntitySpell;
@@ -31,7 +32,10 @@ public class CommonProxy {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("[" + Reference.MODID + "] NetChannel");
 		network.registerMessage(SetHomingSpellTargetServer.Handler.class, SetHomingSpellTargetServer.class, 0, Side.SERVER);
 		network.registerMessage(CastSpellInstantServer.Handler.class, CastSpellInstantServer.class, 1, Side.SERVER);
-	
+		
+		// load config
+		Config.loadConfig(event);
+		
 		// register items
 		ModItems.addItems();
 		if (ModItems.NUMBER > 0) PowersAPI.logger.info("Added [" + ModItems.NUMBER + "] new items");

@@ -1,7 +1,5 @@
 package com.himself12794.powersAPI.spell;
 
-import com.himself12794.powersAPI.PowersAPI;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.util.MovingObjectPosition;
@@ -9,7 +7,7 @@ import net.minecraft.world.World;
 
 public class Lightning extends SpellInstant {
 	
-	public Lightning() {
+	Lightning() {
 		setPower(5.0F);
 		setCoolDown(10);
 		setDuration(0);

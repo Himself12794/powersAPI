@@ -2,13 +2,6 @@ package com.himself12794.powersAPI.entity;
 
 import java.util.List;
 
-import com.himself12794.powersAPI.Spells;
-import com.himself12794.powersAPI.spell.IHomingSpell;
-import com.himself12794.powersAPI.spell.Spell;
-import com.himself12794.powersAPI.spell.SpellHoming;
-import com.himself12794.powersAPI.spell.SpellRanged;
-import com.himself12794.powersAPI.util.UsefulMethods;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,6 +20,10 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.himself12794.powersAPI.Spells;
+import com.himself12794.powersAPI.spell.IHomingSpell;
+import com.himself12794.powersAPI.spell.SpellRanged;
 /**
  * This is pretty much the same as an EntityThrowable. Biggest difference is that it does not lose speed.
  */
@@ -100,7 +97,6 @@ public class EntitySpell extends Entity implements IProjectile
     	//double d1 = this.getEntityBoundingBox().getAverageEdgeLength() * 4.0D;
     	//d1 *= 64.0D;
     	//return distance < d1 * d1;
-    	System.out.println("Fake change");
     	return false;
 
     }
@@ -345,13 +341,13 @@ public class EntitySpell extends Entity implements IProjectile
 		if (spell != null) {
 			//UsefulThings.print("Attacking the entity " + spell.getSpellSpeed());
 			if (movingObject.entityHit != null && movingObject.entityHit != getThrower()) {
-				((Spell) spell).onStrike(worldObj, movingObject,	getThrower(), 1);
-				if (((Spell) spell).getPower() > 0 && movingObject.entityHit != null ) ((EntityLivingBase)movingObject.entityHit).setLastAttacker(getThrower());
+				spell.onStrike(worldObj, movingObject,	getThrower(), 1);
+				if (spell.getPower() > 0 && movingObject.entityHit != null ) ((EntityLivingBase)movingObject.entityHit).setLastAttacker(getThrower());
 				if (!spell.isPiercingSpell() && movingObject.entityHit != null) setDead();
 				else if (spell.isPiercingSpell() && movingObject.entityHit == null) setDead();
 				else if (spell.isPiercingSpell() && movingObject.entityHit != null) ;
 				else setDead();
-			} else ((Spell) spell).onStrike(worldObj, movingObject, getThrower(), modifier);
+			} else spell.onStrike(worldObj, movingObject, getThrower(), modifier);
 		}
 		else setDead();
 	}

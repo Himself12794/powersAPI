@@ -1,9 +1,6 @@
 package com.himself12794.powersAPI.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -14,7 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersAPI.PowersAPI;
 import com.himself12794.powersAPI.entity.EntitySpell;
-import com.himself12794.powersAPI.spell.Spell;
 import com.himself12794.powersAPI.util.Reference;
 
 public class SetHomingSpellTargetServer implements IMessage {
@@ -81,8 +77,6 @@ public class SetHomingSpellTargetServer implements IMessage {
         public IMessage onMessage(SetHomingSpellTargetServer message, MessageContext ctx) {
         	
         	if (ctx.side.isServer()) {
-        		
-        		PowersAPI.print("Got message from client to cast a spell");
         		
         		EntitySpell spell = (EntitySpell) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.spellid);
         		

@@ -8,11 +8,15 @@ import net.minecraft.world.World;
 public class SpellBuff extends Spell {
 
 	public final boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
+		
 		return onCast(world, caster, tome, modifier);
+		
 	}
 	
 	public final String getTypeDescriptor(ItemStack stack, EntityPlayer player) {
+		
 		return "Buff";
+		
 	}
 	
 }

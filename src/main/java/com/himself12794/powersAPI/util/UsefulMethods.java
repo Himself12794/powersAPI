@@ -286,51 +286,6 @@ public class UsefulMethods {
 		
 		return true;
 	}
-
-	/*public static void lightningStrike(World world, EntityPlayer player, double x, double y, double z) {
-		
-		EntityLightningBolt bolt = new EntityLightningBolt(world, x, y, z);
-		bolt.getEntityData().setString("shooter", player.getUniqueID().toString());
-		world.addWeatherEffect(bolt);				
-		NBTTagCompound msg = new NBTTagCompound();
-		msg.setBoolean("lightning", true);
-		msg.setDouble("x", x);
-		msg.setDouble("y", y);
-		msg.setDouble("z", z);
-		
-		if (world.isRemote){
-			UsefulThings.proxy.network.sendToServer(new MessageServer(msg));
-		} else {
-			//UsefulThings.proxy.network.sendTo(new MessageClient(msg), (EntityPlayerMP) player);
-		}
-		
-	}*/
-	
-	public static ItemStack setStackOwner(ItemStack stack, Entity entity) {
-		NBTTagCompound nbt = null;
-    	int newOwnerId = entity.getEntityId();
-    	
-    	if (stack.getTagCompound() == null ) {
-    		nbt = new NBTTagCompound();
-    	} else nbt = stack.getTagCompound();
-    	
-    	int currentOwnerId = nbt.getInteger(Reference.MODID + ".spell.owner");
-		if ( newOwnerId != currentOwnerId ) {
-			PowersAPI.print("Stack owner for stack " + stack.toString() + " is now entity with id: " + newOwnerId);
-			nbt.setInteger(Reference.MODID + ".spell.owner", newOwnerId);
-			
-		}
-		
-		stack.setTagCompound(nbt);
-		return stack;
-	}
-	
-	public static int getStackOwner(ItemStack stack) {
-		if (stack.getTagCompound() != null) {
-			return stack.getTagCompound().getInteger(Reference.MODID + ".spell.owner");
-		}
-		return 0;
-	}
 	
 	public static BlockPos getBlockFromSide( BlockPos pos, EnumFacing side) {
 

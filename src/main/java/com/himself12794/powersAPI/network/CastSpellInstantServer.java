@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import com.himself12794.powersAPI.PowersAPI;
 import com.himself12794.powersAPI.spell.Spell;
 import com.himself12794.powersAPI.util.Reference;
 

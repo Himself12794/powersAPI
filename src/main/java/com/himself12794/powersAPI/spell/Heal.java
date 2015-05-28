@@ -9,7 +9,7 @@ import com.himself12794.powersAPI.spellfx.SpellEffect;
 
 public class Heal extends SpellBuff {
 	
-	public Heal() {
+	Heal() {
 		setDuration(0);
 		setPower(0.25F);
 		setCoolDown(1);
