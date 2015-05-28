@@ -1,0 +1,19 @@
+[
+{
+  "modid" : "powersAPI",
+  "name" : "Powers API",
+  "version" : "1.8 - 1.0",
+  "url" : "",
+  "credits" : "",
+  "authors": "Himself12794",
+  "description": "Makes it easier to add spells/powers to Minecraft",
+  "logoFile" : "",
+  "updateUrl" : "",
+  "parent" : "",
+  "screenshots": [
+  ],
+  "dependancies": [
+    "Forge"
+  ]
+}
+]
