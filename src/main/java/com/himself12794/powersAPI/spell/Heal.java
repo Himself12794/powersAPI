@@ -19,7 +19,7 @@ public class Heal extends SpellBuff {
 	
 	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {
 		boolean flag = false;
-		SpellEffect.spontaneousRegeneration.addTo(caster, -1, caster);
+		SpellEffect.rapidRegeneration.addTo(caster, -1, caster);
 		if (caster.getHealth() < caster.getMaxHealth()) {
 			flag = true;
 			caster.heal(getPower() * modifier);
@@ -42,11 +42,6 @@ public class Heal extends SpellBuff {
 	
 	public String getInfo() {
 		return "Heals caster";
-	}
-	
-	public String getCastSound() {
-		return null;
-	}
-	
+	}	
 	
 }
