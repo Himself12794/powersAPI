@@ -26,8 +26,6 @@ public class CommonProxy {
 	public static SimpleNetworkWrapper network;
 	
 	public void preinit(FMLPreInitializationEvent event) {
-
-		//side = Side.SERVER;
 		
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("[" + Reference.MODID + "] NetChannel");
 		network.registerMessage(SetHomingSpellTargetServer.Handler.class, SetHomingSpellTargetServer.class, 0, Side.SERVER);
@@ -40,16 +38,11 @@ public class CommonProxy {
 		ModItems.addItems();
 		if (ModItems.NUMBER > 0) PowersAPI.logger.info("Added [" + ModItems.NUMBER + "] new items");
        
-		// register blocks
-		//ModBlocks.addBlocks();
-		//if (ModBlocks.NUMBER > 0) UsefulThings.logger.info("Added [" + ModBlocks.NUMBER + "] new blocks");
-       
 		// register spells
 		Spell.registerSpells();
 		
 		// register entities
 		EntityRegistry.registerModEntity(EntitySpell.class, "spell", 1, PowersAPI.instance, 80, 3, true);
-		PowersAPI.logger.info("Registered [1] new entity");
 	}
 
 	public void init(FMLInitializationEvent event){

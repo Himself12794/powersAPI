@@ -2,9 +2,9 @@ package com.himself12794.powersAPI.spellfx;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class SpontaneousRegeneration extends SpellEffect {
+public class RapidRegeneration extends SpellEffect {
 	
-	SpontaneousRegeneration(int id) {
+	RapidRegeneration(int id) {
 		super(id);
 	}
 	
