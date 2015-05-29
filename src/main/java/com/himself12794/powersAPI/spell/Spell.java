@@ -224,7 +224,7 @@ public abstract class Spell {
 	public static void registerSpells() {
 
 		registerSpell(new SpellInstant().setUnlocalizedName("damage"));	
-		registerSpell(new SpellInstant().setUnlocalizedName("death").setDuration(100).setPower(1000.0F).setCoolDown(178));	
+		registerSpell(new SpellInstant().setUnlocalizedName("death").setPower(1000.0F).setCoolDown(178));	
 		registerSpell(new Incinerate());
 		registerSpell(new Lightning());
 		registerSpell(new Heal());

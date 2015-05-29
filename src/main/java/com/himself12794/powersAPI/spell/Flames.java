@@ -52,6 +52,8 @@ public class Flames extends SpellRanged {
 			
 		} else if (Config.flamethrowing > 0){
 			
+			//System.out.println("Flamethrowing config value: " + Config.flamethrowing);
+			
 			BlockPos blockPos = UsefulMethods.getBlockFromSide( target.getBlockPos(), target.sideHit);
 			Block block = UsefulMethods.getBlockAtPos(blockPos, world);
 			
@@ -98,7 +100,7 @@ public class Flames extends SpellRanged {
 						
 						if (UsefulMethods.getBlockAtPos(pos, world).getMaterial() != Material.air ) cont = false;
 						
-						if (cont)
+						if (cont);
 							
 							world.spawnParticle(EnumParticleTypes.FLAME,
 								spell.prevPosX + (spell.motionX * j) - world.rand.nextFloat() * 0.5F,

@@ -8,7 +8,7 @@ import com.himself12794.powersAPI.util.Reference;
 public abstract class SpellEffect {
 	
 	public static final SpellEffect[] spellEffectIds = new SpellEffect[32];
-	public static final SpellEffect rapidRegeneration = new RapidRegeneration(0);
+	public static final SpellEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
 	
 	private static int spellEffectCount = 0;
 	
@@ -81,7 +81,8 @@ public abstract class SpellEffect {
 	 */
 	public final int getEffectTimeRemainingOn(EntityLivingBase target){
 		NBTTagCompound activeEffects = target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
-		return activeEffects.getIntArray(String.valueOf(id))[0];
+		if (activeEffects.getIntArray(String.valueOf(id)).length > 1) return activeEffects.getIntArray(String.valueOf(id))[0];
+		return 0;
 	}
 	
 	/**

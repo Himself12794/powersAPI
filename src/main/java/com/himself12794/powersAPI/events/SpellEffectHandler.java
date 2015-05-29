@@ -1,9 +1,10 @@
 package com.himself12794.powersAPI.events;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.himself12794.powersAPI.spellfx.SpellEffect;
@@ -19,7 +20,7 @@ public class SpellEffectHandler {
 		if (activeEffects != null) {
 			
 			Object[] activeEffectKeys = activeEffects.getKeySet().toArray();
-			//UsefulThings.print(activeEffects);
+			//PowersAPI.print(activeEffects);
 			
 			for (Object i : activeEffectKeys ) {
 				int id = Integer.parseInt((String)i);
@@ -46,14 +47,11 @@ public class SpellEffectHandler {
 	}
 	
 	@SubscribeEvent
-	public void preventDeath(LivingDeathEvent event) {
-		
-		//System.out.println(SpellEffects.getActiveEffects(event.entityLiving));
-		//if (SpellEffects.hasEffect(event.entityLiving, SpellEffects.spontaneousRegeneration.getId())) {
-		//	System.out.println("death event by " + event.source.toString());
-		//	System.out.println("You're immortal, so you're good");
+	public void preventDeath(LivingHurtEvent event) {
+		if (event.entityLiving.getHealth() <= event.ammount && SpellEffect.rapidCellularRegeneration.isEffecting(event.entityLiving)) {
+			event.entityLiving.setHealth(0.5F);
 			event.setCanceled(true);
-		//}
+		}
 	}
 	
 }

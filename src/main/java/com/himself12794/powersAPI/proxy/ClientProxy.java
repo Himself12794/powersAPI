@@ -3,10 +3,12 @@ package com.himself12794.powersAPI.proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import com.himself12794.powersAPI.events.SpellEffectHandler;
 import com.himself12794.powersAPI.items.ModItems;
 import com.himself12794.powersAPI.spell.Spell;
 
@@ -24,7 +26,7 @@ public class ClientProxy extends CommonProxy {
     	super.init(event);    	
     	//EagleVision.init();
     	//FMLCommonHandler.instance().bus().register(handler);
-    	//MinecraftForge.EVENT_BUS.register(handler);
+    	MinecraftForge.EVENT_BUS.register(new SpellEffectHandler());
 
         // do client-specific stuff
     	ModItems.registerTextures(event);
