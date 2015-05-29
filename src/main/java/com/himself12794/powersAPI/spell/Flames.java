@@ -78,7 +78,7 @@ public class Flames extends SpellRanged {
 			World world = spell.worldObj;
 			float distTraveled = getSpellVelocity() * spell.getTicksInAir();
 			
-			if (distTraveled >= 5) {
+			if (distTraveled >= 10) {
 				
 				spell.setVelocity(0.0D, 0.0D, 0.0D);
 				spell.setDead();
@@ -119,6 +119,6 @@ public class Flames extends SpellRanged {
 	
 	public boolean isPiercingSpell() { return true; }
 	
-	public float getSpellVelocity() { return 5.0F; }
+	public float getSpellVelocity() { return 10.0F; }
 
 }
