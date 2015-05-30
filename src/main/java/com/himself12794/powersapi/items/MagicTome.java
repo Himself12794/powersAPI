@@ -27,7 +27,7 @@ public class MagicTome extends Item {
 		setHasSubtypes(true);
 		GameRegistry.registerItem(this, name);
 		setUnlocalizedName(Reference.MODID + "_" + name);
-		setCreativeTab(PowersAPI.usefulThings);
+		setCreativeTab(PowersAPI.powersAPI);
 	}
     
     @Override

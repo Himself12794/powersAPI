@@ -11,10 +11,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.Config;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;

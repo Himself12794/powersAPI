@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.util.Reference;
 
-public class ModItems {
+public final class ModItems {
 	
 	public static final int NUMBER = 1;
 	public static Item magicTome;

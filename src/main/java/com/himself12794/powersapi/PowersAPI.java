@@ -34,7 +34,7 @@ public class PowersAPI {
 		logger.info(msg);
 	}
 	
-	public static CreativeTabs usefulThings = new CreativeTabs("usefulThings") {
+	public static CreativeTabs powersAPI = new CreativeTabs("powersAPI") {
 	    @Override
 	    @SideOnly(Side.CLIENT)
 	    public Item getTabIconItem() {

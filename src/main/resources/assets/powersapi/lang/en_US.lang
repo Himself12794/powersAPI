@@ -19,4 +19,4 @@ spell.immortalize.description=Makes the caster immortal
 spell.flames.name=Flames
 spell.flames.description=Like a flamethrower
 
-itemGroup.usefulThings=Powers API
+itemGroup.powersAPI=Powers API

@@ -1,7 +1,11 @@
 package com.himself12794.powersapi.spellfx;
 
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.NBTTagList;
 
 import com.himself12794.powersapi.util.Reference;
 
@@ -38,9 +42,10 @@ public abstract class SpellEffect {
 	 * Intended mostly for cleanup after effect removal. 
 	 * 
 	 * @param entity
+	 * @param caster 
 	 * @param world
 	 */
-	public abstract void onRemoval(EntityLivingBase entity);
+	public abstract void onRemoval(EntityLivingBase entity, EntityLivingBase caster);
 	
 	/**
 	 * Applies the spell effect to the specific entity, for a specific time.
@@ -50,13 +55,67 @@ public abstract class SpellEffect {
 	 * @param target 
 	 * @param duration
 	 */
-	public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
-		NBTTagCompound activeEffects = target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
-		int[] data = {duration, caster.getEntityId()};
-		activeEffects.setIntArray(Integer.toString(id), data);
+	public final void addTot(EntityLivingBase target, int duration, EntityLivingBase caster) {
+		
+		NBTTagList activeEffects = getActiveEffects(target);//target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
+		
+		NBTTagCompound data = new NBTTagCompound();
+		data.setShort("id", (short) id);
+		data.setInteger("duration", duration);
+		data.setInteger("caster", caster.getEntityId());
+		//NBTTagIntArray spellEffectData = new NBTTagIntArray(data);
+		
+		activeEffects.appendTag(data);
 		target.getEntityData().setTag(Reference.MODID + ".spell.spellEffects", activeEffects);
 		
 	}
+	
+    public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
+    	
+        NBTTagList activeEffects = getActiveEffects(target);
+        boolean flag = true;
+        boolean remove = duration == 0;
+        int location = -1;
+
+        for (int i = 0; i < activeEffects.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
+
+            if (nbttagcompound.getShort("id") == id) {
+            	
+            	if (remove) location = i;
+            	
+                if (nbttagcompound.getInteger("duration") < duration)
+                	
+                    nbttagcompound.setInteger("duration", duration);
+                
+                if (nbttagcompound.getInteger("caster") != caster.getEntityId()) 
+                	
+                	nbttagcompound.setInteger("caster", caster.getEntityId());
+
+                flag = false;
+                break;
+            }
+        }
+        
+        if (remove) {
+        	
+        	if (location > -1) activeEffects.removeTag(location);
+        	return;
+        	
+        }
+
+        if (flag)
+        {
+            NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+            nbttagcompound1.setShort("id", (short) id);
+            nbttagcompound1.setInteger("duration", duration);
+            nbttagcompound1.setInteger("caster", caster.getEntityId());
+            activeEffects.appendTag(nbttagcompound1);
+        }
+
+        target.getEntityData().setTag(Reference.MODID + ".spell.spellEffects", activeEffects);
+    }
 	
 	/**
 	 * Clears any traces of the effect from the entity, if they have it.
@@ -65,12 +124,13 @@ public abstract class SpellEffect {
 	 * 
 	 * @param target
 	 */
-	public final void clearFrom(EntityLivingBase target) {
-		NBTTagCompound activeEffects = target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
+	public final void clearFrom(EntityLivingBase target, EntityLivingBase caster) {
 		
-		onRemoval(target);
+		//NBTTagList activeEffects = getActiveEffects(target);
+		//activeEffects.removeTag(id);
+		addTo(target, 0, caster);
+		onRemoval(target, caster);
 		
-		activeEffects.removeTag(Integer.toString(id));
 	}
 	
 	/**
@@ -81,8 +141,21 @@ public abstract class SpellEffect {
 	 * @return
 	 */
 	public final int getEffectTimeRemainingOn(EntityLivingBase target){
-		NBTTagCompound activeEffects = target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
-		if (activeEffects.getIntArray(String.valueOf(id)).length > 1) return activeEffects.getIntArray(String.valueOf(id))[0];
+		
+		NBTTagList activeEffects = getActiveEffects(target);
+		boolean flag = true;
+		
+		for (int i = 0; i < activeEffects.tagCount(); ++i) {
+
+	        NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
+	
+	        if (nbttagcompound.getShort("id") == id) {
+	      
+	            return nbttagcompound.getInteger("duration");
+	            
+	        }
+		}
+		
 		return 0;
 	}
 	
@@ -107,9 +180,11 @@ public abstract class SpellEffect {
 		return null;
 	}
 	
-	public static NBTTagCompound getActiveEffects(EntityLivingBase entity) {
-
-		return entity.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
+	public static NBTTagList getActiveEffects(EntityLivingBase entity) {
+		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.MODID + ".spell.spellEffects");
+		
+		//return entity.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
+		return activeEffects != null && activeEffects.hasKey(Reference.MODID + ".spell.spellEffects", 9) ? (NBTTagList)activeEffects.getTag(Reference.MODID + ".spell.spellEffects") : new NBTTagList();
 	}
 
 }
