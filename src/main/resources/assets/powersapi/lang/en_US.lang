@@ -12,11 +12,13 @@ spell.death.name=Death
 spell.death.description=Kills the target
 spell.dummyHoming.name=Dummy Homing
 spell.dummyHoming.description=Generic Homing Spell
-spell.dummy.name=Homing
+spell.dummy.name=Dummy
 spell.dummy.description=Generic Ranged Spell
 spell.immortalize.name=Immortalize
 spell.immortalize.description=Makes the caster immortal
 spell.flames.name=Flames
 spell.flames.description=Like a flamethrower
+spell.slam.name=Slam
+spell.slam.description=Slams enemies into the ground
 
 itemGroup.powersAPI=Powers API

@@ -34,16 +34,17 @@ public class SpellEffectHandler {
 				
 				//UsefulThings.print(spfx);
 				if (spfx != null) {
-					//UsefulThings.print(spfx);
+					//if (timeRemaining >= 0) PowersAPI.print("Time remaining: " + timeRemaining);
 					
 					if (timeRemaining > 0) {
 						
+						//System.out.println("Deincrementing time");
 						spfx.onUpdate(target, timeRemaining, caster);
 						spfx.addTo(target, --timeRemaining, caster);
 						
 					} 
 					
-					else if (timeRemaining == 0) spfx.clearFrom(target, caster);
+					//else if (timeRemaining == 0) spfx.clearFrom(target, caster);
 					else if (timeRemaining < 0) spfx.onUpdate(target, timeRemaining, caster);
 				}
 			}

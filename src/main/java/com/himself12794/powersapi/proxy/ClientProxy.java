@@ -44,7 +44,8 @@ public class ClientProxy extends CommonProxy {
     	super.showDamage(stack);
     	
 	    EntityPlayer player = Minecraft.getMinecraft().thePlayer;	    	
-	    return Spell.hasSpell(stack) && Spell.getSpell(stack).getCoolDownRemaining(player) > 0;
+	    if (Spell.getSpell(stack) != null) return Spell.hasSpell(stack) && Spell.getSpell(stack).getCoolDownRemaining(player) > 0;
+	    return false;
     }
     
     public Side getSide() {

@@ -17,39 +17,36 @@ import com.himself12794.powersapi.util.Reference;
 public class CastSpellInstantServer implements IMessage {
 	
 	private int id;
-	private String spell;
-	private ItemStack stack;
-	private NBTTagCompound modifier;
+	private Spell spell;
+	//private float modifier;
 
     public CastSpellInstantServer() {  }
 	
-	public CastSpellInstantServer(int entity, float modifier, Spell spell, ItemStack stack) {
-		this.id = entity;
+	public CastSpellInstantServer(EntityLivingBase entity, float modifier, Spell spell) {
+		System.out.println("Creating new packet");
+		this.id = entity.getEntityId();
+		this.spell = spell;
+		//this.modifier = modifier;
+	}
+
+	@Override
+	public void toBytes(ByteBuf buf) {
 		
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat("modifier", modifier);
-		this.modifier = nbt;
-		this.spell = spell.getUnlocalizedName();
-		this.stack = stack;
+		System.out.println("Encoding data");
+		ByteBufUtils.writeVarInt(buf, id, 4);
+		//ByteBufUtils.writeUTF8String(buf, spell.getUnlocalizedName());
+		ByteBufUtils.writeVarInt(buf, Spell.getSpellId(spell), 4);
+
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		
+		System.out.println("Decoding data");
 		id = ByteBufUtils.readVarInt(buf, 4);
-		modifier = ByteBufUtils.readTag(buf);
-		spell = ByteBufUtils.readUTF8String(buf);
-		stack = ByteBufUtils.readItemStack(buf);
-	}
-
-	@Override
-	public void toBytes(ByteBuf buf) {
-
-		ByteBufUtils.writeVarInt(buf, id, 4);
-		ByteBufUtils.writeTag(buf, modifier);
-		ByteBufUtils.writeUTF8String(buf, spell);
-		ByteBufUtils.writeItemStack(buf, stack);
-
+		spell = Spell.lookupSpellById(ByteBufUtils.readVarInt(buf, 4));
+		//spell = Spell.lookupSpell(ByteBufUtils.readUTF8String(buf));
+		
 	}
 	
 	public static class Handler implements IMessageHandler<CastSpellInstantServer, IMessage> {
@@ -65,13 +62,11 @@ public class CastSpellInstantServer implements IMessage {
         		
         		//UsefulThings.print("Got message from client to cast a spell");
         		
-        		Spell spell = Spell.lookupSpell(message.spell);
-        		float modifier = message.modifier.getFloat("modifier");
-        		ItemStack stack = message.stack;
+        		Spell spell = message.spell;
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
         		MovingObjectPosition target = new MovingObjectPosition((EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id));		
         		
-        		caster.getEntityData().setBoolean(prefix + "spell.success", spell.onStrike(target.entityHit.worldObj, target, caster, modifier));
+        		caster.getEntityData().setBoolean(prefix + "spell.success", spell.onStrike(target.entityHit.worldObj, target, caster, 1.0F));
         		
         	}
         	

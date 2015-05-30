@@ -2,6 +2,7 @@ package com.himself12794.powersapi.items;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -119,7 +120,7 @@ public class MagicTome extends Item {
     public void getSubItems(Item itemIn, CreativeTabs tab, List subItems) {
         Map<String, Spell> spells = Spell.getSpells();
 
-		for (Map.Entry<String, Spell> spell : spells.entrySet()) {
+		for (Entry<String, Spell> spell : spells.entrySet()) {
 			subItems.add(spell.getValue().setSpell(new ItemStack(itemIn)));
 		}    		
     }
@@ -168,7 +169,7 @@ public class MagicTome extends Item {
     }
     
     public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
-    	if (Spell.hasSpell(stack)) return Spell.getSpell(stack).getModel(stack, player, useRemaining);
+    	if (Spell.hasSpell(stack) && Spell.getSpell(stack) != null) return Spell.getSpell(stack).getModel(stack, player, useRemaining);
     	return null;
     }
 	

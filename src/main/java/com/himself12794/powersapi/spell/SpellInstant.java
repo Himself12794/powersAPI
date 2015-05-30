@@ -29,7 +29,7 @@ public class SpellInstant extends Spell {
 				
 				if (pos.entityHit instanceof EntityLivingBase) {
 					
-					IMessage msg = new CastSpellInstantServer( pos.entityHit.getEntityId(), modifier, this, tome);
+					IMessage msg = new CastSpellInstantServer( (EntityLivingBase) pos.entityHit, modifier, this );
 					PowersAPI.proxy.network.sendToServer(msg);
 					
 					successful = true;
@@ -37,7 +37,7 @@ public class SpellInstant extends Spell {
 				} 
 			}
 			
-		} else  {
+		} else {
 			
 			successful = caster.getEntityData().getBoolean(Reference.MODID + ".spell.success");
 			caster.getEntityData().setBoolean(Reference.MODID + ".spell.success", false);

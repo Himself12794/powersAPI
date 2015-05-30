@@ -7,6 +7,7 @@ import com.himself12794.powersapi.spell.Heal;
 import com.himself12794.powersapi.spell.Immortalize;
 import com.himself12794.powersapi.spell.Incinerate;
 import com.himself12794.powersapi.spell.Lightning;
+import com.himself12794.powersapi.spell.Slam;
 import com.himself12794.powersapi.spell.Spell;
 
 public class Spells {
@@ -20,6 +21,7 @@ public class Spells {
 	public static final Immortalize immortalize;
 	public static final Flames flames;
 	public static final DummyHoming dummyHoming;
+	public static final Slam slam;
 	
 	static {
 		
@@ -32,6 +34,7 @@ public class Spells {
 		immortalize = (Immortalize) Spell.lookupSpell("immortalize");
 		flames = (Flames) Spell.lookupSpell("flames");
 		dummyHoming = (DummyHoming) Spell.lookupSpell("dummyHoming");
+		slam = (Slam) Spell.lookupSpell("slam");
 		
 	}
 }

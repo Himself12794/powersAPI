@@ -1,6 +1,7 @@
 package com.himself12794.powersapi.spell;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
@@ -218,6 +219,7 @@ public abstract class Spell {
 	
 	/*================================= Begin Spell Registration Section ===============================*/ 
 	
+	private static Map<Integer, String> spellIds = Maps.newHashMap();
 	private static Map<String, Spell> spellRegistry = Maps.newHashMap();
 	private static int spells = 0;
 	
@@ -232,6 +234,7 @@ public abstract class Spell {
 		registerSpell(new Immortalize());
 		registerSpell(new Flames());
 		registerSpell(new DummyHoming());
+		registerSpell(new Slam());
 		
 		PowersAPI.logger.info("Registered [" + Spell.getSpellCount() + "] spells");
 		
@@ -241,11 +244,34 @@ public abstract class Spell {
 		String name = spell.getUnlocalizedName();
 		if (!Spell.spellExists(name)) {
 			spellRegistry.put(name, spell);
+			spellIds.put(spells, name);
 			//UsefulThings.print("Registered spell " + name);
 			++spells;
 		} else {
 			PowersAPI.logger.error("Could not register spell " + spell + " under name \"" + name + "\", name has already been registered for " + lookupSpell(name));
 		}
+	}
+	
+	public static Spell lookupSpellById(int id) {
+		
+		return lookupSpell(spellIds.get(id));
+		
+	}
+	
+	public static int getSpellId(Spell spell) {
+		
+		if (spellIds.containsValue(spell.getUnlocalizedName())) {
+			
+			for (Entry<Integer, String> value : spellIds.entrySet()) {
+				
+				if (value.getValue().equals(spell.getUnlocalizedName()))
+					return value.getKey();
+				
+			}    		
+		}
+		
+		return -1;
+		
 	}
 	
 	public static Spell lookupSpell(ItemStack stack) {

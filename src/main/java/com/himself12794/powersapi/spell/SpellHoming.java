@@ -31,7 +31,7 @@ public class SpellHoming extends SpellRanged implements IHomingSpell {
 	@Override
 	public MovingObjectPosition getTarget(EntitySpell spell, MovingObjectPosition target) {
 
-		if (spell.target == null && spell.worldObj.isRemote) {
+/*		if (spell.target == null && spell.worldObj.isRemote) {
 			
 			MovingObjectPosition pos = UsefulMethods.getEntityLookEntity(spell, 50);
 			SetHomingSpellTargetServer msg = new SetHomingSpellTargetServer(spell, pos);
@@ -40,7 +40,8 @@ public class SpellHoming extends SpellRanged implements IHomingSpell {
 			return pos;
 			
 		}
-		return target;
+		return target;*/
+		return null;
 	}
 	
 	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {

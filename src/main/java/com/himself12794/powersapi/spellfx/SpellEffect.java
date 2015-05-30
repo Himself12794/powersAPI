@@ -1,10 +1,7 @@
 package com.himself12794.powersapi.spellfx;
 
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
 
 import com.himself12794.powersapi.util.Reference;
@@ -13,6 +10,8 @@ public abstract class SpellEffect {
 	
 	public static final SpellEffect[] spellEffectIds = new SpellEffect[32];
 	public static final SpellEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
+	public static final SpellEffect levitate = new Levitate(1);
+	public static final SpellEffect ground = new Ground(2);
 	
 	private static int spellEffectCount = 0;
 	
@@ -47,15 +46,7 @@ public abstract class SpellEffect {
 	 */
 	public abstract void onRemoval(EntityLivingBase entity, EntityLivingBase caster);
 	
-	/**
-	 * Applies the spell effect to the specific entity, for a specific time.
-	 * <p>
-	 * Setting the duration to less than 0 makes it last until removed.
-	 * 
-	 * @param target 
-	 * @param duration
-	 */
-	public final void addTot(EntityLivingBase target, int duration, EntityLivingBase caster) {
+	private final void addTot(EntityLivingBase target, int duration, EntityLivingBase caster) {
 		
 		NBTTagList activeEffects = getActiveEffects(target);//target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
 		
@@ -69,7 +60,16 @@ public abstract class SpellEffect {
 		target.getEntityData().setTag(Reference.MODID + ".spell.spellEffects", activeEffects);
 		
 	}
+
 	
+	/**
+	 * Applies the spell effect to the specific entity, for a specific time.
+	 * <p>
+	 * Setting the duration to less than 0 makes it last until removed.
+	 * 
+	 * @param target 
+	 * @param duration
+	 */
     public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
     	
         NBTTagList activeEffects = getActiveEffects(target);
@@ -85,13 +85,15 @@ public abstract class SpellEffect {
             	
             	if (remove) location = i;
             	
-                if (nbttagcompound.getInteger("duration") < duration)
-                	
-                    nbttagcompound.setInteger("duration", duration);
+            	nbttagcompound.setInteger("duration", duration);
                 
-                if (nbttagcompound.getInteger("caster") != caster.getEntityId()) 
+                if (caster != null) {
                 	
-                	nbttagcompound.setInteger("caster", caster.getEntityId());
+	                if (nbttagcompound.getInteger("caster") != caster.getEntityId()) 
+	                	
+	                	nbttagcompound.setInteger("caster", caster.getEntityId());
+	                
+                }
 
                 flag = false;
                 break;
@@ -100,7 +102,10 @@ public abstract class SpellEffect {
         
         if (remove) {
         	
-        	if (location > -1) activeEffects.removeTag(location);
+        	if (location > -1) {
+        		activeEffects.removeTag(location);
+        		onRemoval(target, caster);
+        	}
         	return;
         	
         }
