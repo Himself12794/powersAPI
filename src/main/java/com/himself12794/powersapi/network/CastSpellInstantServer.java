@@ -3,8 +3,6 @@ package com.himself12794.powersapi.network;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -23,18 +21,16 @@ public class CastSpellInstantServer implements IMessage {
     public CastSpellInstantServer() {  }
 	
 	public CastSpellInstantServer(EntityLivingBase entity, float modifier, Spell spell) {
-		System.out.println("Creating new packet");
+		
 		this.id = entity.getEntityId();
 		this.spell = spell;
-		//this.modifier = modifier;
+		
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		
-		System.out.println("Encoding data");
 		ByteBufUtils.writeVarInt(buf, id, 4);
-		//ByteBufUtils.writeUTF8String(buf, spell.getUnlocalizedName());
 		ByteBufUtils.writeVarInt(buf, Spell.getSpellId(spell), 4);
 
 	}
@@ -42,7 +38,7 @@ public class CastSpellInstantServer implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		
-		System.out.println("Decoding data");
+		//System.out.println("Decoding data");
 		id = ByteBufUtils.readVarInt(buf, 4);
 		spell = Spell.lookupSpellById(ByteBufUtils.readVarInt(buf, 4));
 		//spell = Spell.lookupSpell(ByteBufUtils.readUTF8String(buf));

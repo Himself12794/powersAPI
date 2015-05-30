@@ -5,10 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.entity.EntitySpell;
-import com.himself12794.powersapi.network.SetHomingSpellTargetServer;
-import com.himself12794.powersapi.util.UsefulMethods;
 
 public class SpellHoming extends SpellRanged implements IHomingSpell {
 

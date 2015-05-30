@@ -27,7 +27,7 @@ public class CommonProxy {
 	
 	public void preinit(FMLPreInitializationEvent event) {
 		
-		network = NetworkRegistry.INSTANCE.newSimpleChannel("[" + Reference.MODID + "] NetChannel");
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
 		network.registerMessage(SetHomingSpellTargetServer.Handler.class, SetHomingSpellTargetServer.class, 0, Side.SERVER);
 		network.registerMessage(CastSpellInstantServer.Handler.class, CastSpellInstantServer.class, 1, Side.SERVER);
 		

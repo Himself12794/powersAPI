@@ -10,8 +10,8 @@ public class Slam extends SpellInstant {
 	
 	Slam() {
 		
-		setPower(6.0F);
-		setCoolDown(4 * 20);
+		setPower(10.0F);
+		setCoolDown(7 * 20);
 		setUnlocalizedName("slam");
 		
 	}
@@ -20,7 +20,7 @@ public class Slam extends SpellInstant {
 	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
 		
 
-		SpellEffect.levitate.addTo((EntityLivingBase) target.entityHit, 20, caster);
+		SpellEffect.slam.addTo((EntityLivingBase) target.entityHit, 20, caster);
 		return true;
 		
 	}

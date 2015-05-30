@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -28,7 +29,8 @@ public class SpellEffectHandler {
 				NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
 				
 				int timeRemaining = nbttagcompound.getInteger("duration");
-				EntityLivingBase caster = (EntityLivingBase) target.worldObj.getEntityByID(nbttagcompound.getInteger("caster"));
+				EntityLivingBase caster = null;
+				if (caster instanceof EntityLivingBase) caster = (EntityLivingBase) target.worldObj.getEntityByID(nbttagcompound.getInteger("caster"));
 				SpellEffect spfx = SpellEffect.getEffectById(nbttagcompound.getShort("id"));
 				//System.out.println("Entity: " + target + " has effect: " + spfx);
 				

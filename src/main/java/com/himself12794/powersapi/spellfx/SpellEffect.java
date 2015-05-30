@@ -11,7 +11,7 @@ public abstract class SpellEffect {
 	public static final SpellEffect[] spellEffectIds = new SpellEffect[32];
 	public static final SpellEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
 	public static final SpellEffect levitate = new Levitate(1);
-	public static final SpellEffect ground = new Ground(2);
+	public static final SpellEffect slam = new Slam(2);
 	
 	private static int spellEffectCount = 0;
 	
@@ -44,7 +44,7 @@ public abstract class SpellEffect {
 	 * @param caster 
 	 * @param world
 	 */
-	public abstract void onRemoval(EntityLivingBase entity, EntityLivingBase caster);
+	public void onRemoval(EntityLivingBase entity, EntityLivingBase caster){}
 	
 	private final void addTot(EntityLivingBase target, int duration, EntityLivingBase caster) {
 		
@@ -115,7 +115,7 @@ public abstract class SpellEffect {
             NBTTagCompound nbttagcompound1 = new NBTTagCompound();
             nbttagcompound1.setShort("id", (short) id);
             nbttagcompound1.setInteger("duration", duration);
-            nbttagcompound1.setInteger("caster", caster.getEntityId());
+            nbttagcompound1.setInteger("caster", (caster != null ? caster.getEntityId() : -1));
             activeEffects.appendTag(nbttagcompound1);
         }
 

@@ -65,6 +65,14 @@ public class Flames extends SpellRanged {
 				
 				world.setBlockState(blockPos, Blocks.fire.getDefaultState());
 			
+			else if (Config.flamethrowing == 3) {
+				
+				if (world.isAirBlock(blockPos.up()))
+					world.setBlockState(blockPos.up(), Blocks.fire.getDefaultState());
+				
+				if (block.getMaterial().getCanBurn())
+					world.setBlockState(blockPos, Blocks.fire.getDefaultState());
+			}	
 		}
 		
 		return true;
@@ -98,15 +106,16 @@ public class Flames extends SpellRanged {
 								spell.prevPosY + (spell.motionY * j),
 								spell.prevPosZ + (spell.motionZ * j));
 						
-						if (UsefulMethods.getBlockAtPos(pos, world).getMaterial() != Material.air ) cont = false;
+						if (UsefulMethods.getBlockAtPos(pos, world).getMaterial().isSolid()) break;
 						
-						if (cont);
+						//if (cont);
 							
-							world.spawnParticle(EnumParticleTypes.FLAME,
-								spell.prevPosX + (spell.motionX * j) - world.rand.nextFloat() * 0.5F,
-								spell.prevPosY + (spell.motionY * j) - world.rand.nextFloat() * 0.5F,
-								spell.prevPosZ + (spell.motionZ * j) - world.rand.nextFloat() * 0.5F,
-								0, 0, 0);
+						world.spawnParticle(EnumParticleTypes.FLAME,
+							spell.prevPosX + (spell.motionX * j) - world.rand.nextFloat() * 0.5F,
+							spell.prevPosY + (spell.motionY * j) - world.rand.nextFloat() * 0.5F,
+							spell.prevPosZ + (spell.motionZ * j) - world.rand.nextFloat() * 0.5F,
+							0, 0, 0);
+						
 					}
 				}
 			}

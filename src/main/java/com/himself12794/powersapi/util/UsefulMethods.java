@@ -3,6 +3,7 @@ package com.himself12794.powersapi.util;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -297,6 +298,22 @@ public class UsefulMethods {
 		}
 		
 		return pos;
+		
+	}
+	
+	public static double distanceAboveGround(EntityLivingBase entity) {
+		
+		BlockPos currentLocation = entity.getPosition();
+		BlockPos checkedLocation = entity.getPosition();
+		
+		for (int y = currentLocation.getY(); y >= 0; y--) {
+			checkedLocation = new BlockPos(currentLocation.getX(), y, currentLocation.getZ());
+			Block ground = getBlockAtPos(checkedLocation, entity.worldObj);
+			if (ground.getMaterial() != Material.air) break;
+		}
+
+		
+		return currentLocation.getY() - checkedLocation.getY();
 		
 	}
 }

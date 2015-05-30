@@ -25,7 +25,7 @@ public class Config {
 		// Flamethrowing Griefing Config Option
 		Property flames = new Property("FlamethrowingGriefing", "1", Property.Type.INTEGER);
 		flames.setMinValue(0);
-		flames.setMaxValue(2);
+		flames.setMaxValue(3);
 		flames.comment = "Flamethrowing griefing: 0=none, 1=vines & grass, 2=all burnable blocks";
 		spells.put("FlamethrowingGriefing", flames);
 				
