@@ -11,8 +11,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.Config;
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -78,9 +80,9 @@ public class Flames extends SpellRanged {
 			World world = spell.worldObj;
 			float distTraveled = getSpellVelocity() * spell.getTicksInAir();
 			
-			if (distTraveled >= 10) {
+			if (distTraveled >= 5) {
 				
-				spell.setVelocity(0.0D, 0.0D, 0.0D);
+				//if (PowersAPI.proxy.getSide() == Side.CLIENT) spell.setVelocity(0.0D, 0.0D, 0.0D);
 				spell.setDead();
 				
 			}
@@ -119,6 +121,6 @@ public class Flames extends SpellRanged {
 	
 	public boolean isPiercingSpell() { return true; }
 	
-	public float getSpellVelocity() { return 10.0F; }
+	public float getSpellVelocity() { return 5.0F; }
 
 }

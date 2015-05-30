@@ -44,8 +44,8 @@ public class PowersAPI {
 	
 
 	@SidedProxy(
-			clientSide="com.himself12794.powersAPI.proxy.ClientProxy", 
-			serverSide="com.himself12794.powersAPI.proxy.CommonProxy")
+			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
+			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
 	public static CommonProxy proxy;
 	
 	
