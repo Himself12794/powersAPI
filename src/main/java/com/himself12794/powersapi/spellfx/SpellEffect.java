@@ -10,8 +10,10 @@ public abstract class SpellEffect {
 	
 	public static final SpellEffect[] spellEffectIds = new SpellEffect[32];
 	public static final SpellEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
-	public static final SpellEffect levitate = new Levitate(1);
+	public static final SpellEffect lift = new Lift(1);
 	public static final SpellEffect slam = new Slam(2);
+	public static final SpellEffect levitate = new Levitate(3);
+	public static final SpellEffect paralysis = new Paralysis(4);
 	
 	private static int spellEffectCount = 0;
 	

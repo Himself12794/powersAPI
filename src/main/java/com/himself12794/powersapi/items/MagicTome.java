@@ -60,11 +60,12 @@ public class MagicTome extends Item {
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
 		
 		Spell spell = Spell.lookupSpell(stack);
+		boolean succeed = true;
 		if (spell != null) {
 			
-			if ( count % 4 == 0 ) {
+			if ( count % 1 == 0 ) {
 				
-				spell.cast(player.worldObj, player, stack, 1);
+				succeed = spell.cast(player.worldObj, player, stack, 1);
 				
 			}
 			

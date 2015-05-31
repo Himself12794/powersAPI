@@ -235,6 +235,8 @@ public abstract class Spell {
 		registerSpell(new Flames());
 		registerSpell(new DummyHoming());
 		registerSpell(new Slam());
+		registerSpell(new Push());
+		registerSpell(new Telekinesis());
 		
 		PowersAPI.logger.info("Registered [" + Spell.getSpellCount() + "] spells");
 		

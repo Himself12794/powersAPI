@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,6 +31,9 @@ public class ClientProxy extends CommonProxy {
 
         // do client-specific stuff
     	ModItems.registerTextures(event);
+    	
+    	//MinecraftForge.EVENT_BUS.register(new EagleVision());
+    	//FMLCommonHandler.instance().bus().register(new SpellEffectHandler()); 
     }
     
     public double getReverseRendering(ItemStack stack) {

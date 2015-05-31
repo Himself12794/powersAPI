@@ -7,8 +7,10 @@ import com.himself12794.powersapi.spell.Heal;
 import com.himself12794.powersapi.spell.Immortalize;
 import com.himself12794.powersapi.spell.Incinerate;
 import com.himself12794.powersapi.spell.Lightning;
+import com.himself12794.powersapi.spell.Push;
 import com.himself12794.powersapi.spell.Slam;
 import com.himself12794.powersapi.spell.Spell;
+import com.himself12794.powersapi.spell.Telekinesis;
 
 public class Spells {
 	
@@ -22,6 +24,8 @@ public class Spells {
 	public static final Flames flames;
 	public static final DummyHoming dummyHoming;
 	public static final Slam slam;
+	public static final Push push;
+	public static final Telekinesis telekinesis;
 	
 	static {
 		
@@ -35,6 +39,8 @@ public class Spells {
 		flames = (Flames) Spell.lookupSpell("flames");
 		dummyHoming = (DummyHoming) Spell.lookupSpell("dummyHoming");
 		slam = (Slam) Spell.lookupSpell("slam");
+		push = (Push) Spell.lookupSpell("push");
+		telekinesis = (Telekinesis) Spell.lookupSpell("telekinesis");
 		
 	}
 }

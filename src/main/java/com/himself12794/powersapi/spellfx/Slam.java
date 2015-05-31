@@ -3,7 +3,7 @@ package com.himself12794.powersapi.spellfx;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
 
-public class Slam extends Levitate {
+public class Slam extends Lift {
 
 	Slam(int id) {
 		super(id);
