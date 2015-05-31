@@ -12,16 +12,16 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.util.Reference;
 
-public class SetHomingSpellTargetServer implements IMessage {
+public class SetHomingPowerTargetServer implements IMessage {
 	
 	private int spellid;
 	private boolean isEntityTarget;
 	private int entityId;
 	private Vec3 vectorPos;
 
-    public SetHomingSpellTargetServer() {  }
+    public SetHomingPowerTargetServer() {  }
 	
-	public SetHomingSpellTargetServer(EntitySpell spell, MovingObjectPosition target) {
+	public SetHomingPowerTargetServer(EntitySpell spell, MovingObjectPosition target) {
 		spellid = spell.getEntityId();
 		
 		if ( target.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && target.entityHit != null ) {
@@ -68,12 +68,12 @@ public class SetHomingSpellTargetServer implements IMessage {
 		
 	}
 	
-	public static class Handler implements IMessageHandler<SetHomingSpellTargetServer, IMessage> {
+	public static class Handler implements IMessageHandler<SetHomingPowerTargetServer, IMessage> {
     	
 		String prefix = Reference.MODID + ".";
        
         @Override
-        public IMessage onMessage(SetHomingSpellTargetServer message, MessageContext ctx) {
+        public IMessage onMessage(SetHomingPowerTargetServer message, MessageContext ctx) {
         	
         	if (ctx.side.isServer()) {
         		

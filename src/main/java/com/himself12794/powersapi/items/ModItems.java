@@ -12,11 +12,11 @@ import com.himself12794.powersapi.util.Reference;
 public final class ModItems {
 	
 	public static final int NUMBER = 1;
-	public static Item magicTome;
+	public static Item powerActivator;
 	
 	public static void addItems() {
 		
-		magicTome = new MagicTome();
+		powerActivator = new PowerActivator();
 		
 	}
 	
@@ -25,7 +25,7 @@ public final class ModItems {
 			
 		    RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 		    
-		    renderItem.getItemModelMesher().register(magicTome, 0, new ModelResourceLocation(Reference.MODID + ":" + ((MagicTome) magicTome).getName(), "inventory"));
+		    renderItem.getItemModelMesher().register(powerActivator, 0, new ModelResourceLocation(Reference.MODID + ":" + ((PowerActivator) powerActivator).getName(), "inventory"));
 		    
 		}
 	}

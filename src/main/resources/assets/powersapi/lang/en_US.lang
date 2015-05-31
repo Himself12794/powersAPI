@@ -20,5 +20,9 @@ spell.flames.name=Flames
 spell.flames.description=Like a flamethrower
 spell.slam.name=Slam
 spell.slam.description=Slams enemies into the ground
+spell.telekinesis.name=Telekinesis
+spell.telekinesis.description=Pulls and levitates targets
+spell.push.name=Push
+spell.push.description=Throws enemies away
 
 itemGroup.powersAPI=Powers API

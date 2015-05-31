@@ -1,6 +1,6 @@
 package com.himself12794.powersapi.entity.ai;
 
-import com.himself12794.powersapi.spellfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.SpellEffect;
 
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;

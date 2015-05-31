@@ -1,10 +1,10 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.util.MovingObjectPosition;
 
 import com.himself12794.powersapi.entity.EntitySpell;
 
-public interface IHomingSpell {
+public interface IHomingPower {
 	
 	/**
 	 * Gets the target for the spell.

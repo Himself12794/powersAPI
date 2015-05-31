@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -17,17 +17,17 @@ import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class Flames extends SpellRanged {
+public class Flames extends PowerRanged {
 	
 	Flames() {
 		setMaxConcentrationTime(5 * 20);
 		setPower(3.0F);
 		setCoolDown(100);
-		setDuration(5 * 20);
+		setDuration(8 * 20);
 		setUnlocalizedName("flames");
 	}	
 	
-	public boolean onPrepareSpell(ItemStack stack, World worldIn, EntityPlayer playerIn) {
+	public boolean onPreparePower(ItemStack stack, World worldIn, EntityPlayer playerIn) {
 		boolean flag = !playerIn.isInsideOfMaterial(Material.water);
 		if (flag) playerIn.playSound("fire.ignite", 1.5F, 1);
 		return flag;

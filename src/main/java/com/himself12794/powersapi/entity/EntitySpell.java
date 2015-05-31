@@ -21,9 +21,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.Spells;
-import com.himself12794.powersapi.spell.IHomingSpell;
-import com.himself12794.powersapi.spell.SpellRanged;
+import com.himself12794.powersapi.Powers;
+import com.himself12794.powersapi.power.IHomingPower;
+import com.himself12794.powersapi.power.PowerRanged;
 /**
  * This is pretty much the same as an EntityThrowable. Biggest difference is that it does not lose speed.
  */
@@ -41,7 +41,7 @@ public class EntitySpell extends Entity implements IProjectile
     private String throwerName;
     private int ticksInGround;
     private int ticksInAir;
-	protected SpellRanged spell = Spells.dummy;
+	protected PowerRanged power = Powers.dummy;
 	protected float modifier = 1.0F;
 
     public EntitySpell(World worldIn)
@@ -50,10 +50,10 @@ public class EntitySpell extends Entity implements IProjectile
         this.setSize(0.25F, 0.25F);
     }
 
-    public EntitySpell(World worldIn, EntityLivingBase throwerIn, SpellRanged spell, float modifier)
+    public EntitySpell(World worldIn, EntityLivingBase throwerIn, PowerRanged spell, float modifier)
     {
         super(worldIn);
-        this.spell = spell;
+        this.power = spell;
         this.modifier = modifier;
         this.thrower = throwerIn;
         //this.setSize(0.25F, 0.25F);
@@ -70,18 +70,18 @@ public class EntitySpell extends Entity implements IProjectile
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, this.getVelocity(), 1.0F);
     }
     
-    public EntitySpell(World worldIn, EntityLivingBase throwerIn, SpellRanged spell, float modifier, MovingObjectPosition target) {
+    public EntitySpell(World worldIn, EntityLivingBase throwerIn, PowerRanged spell, float modifier, MovingObjectPosition target) {
     	this(worldIn, throwerIn, spell, modifier);
     	this.target = target;
     }
 
-    public EntitySpell(World worldIn, double x, double y, double p_i1778_6_, SpellRanged spell)
+    public EntitySpell(World worldIn, double x, double y, double p_i1778_6_, PowerRanged spell)
     {
         super(worldIn);
         this.ticksInGround = 0;
         this.setSize(0.25F, 0.25F);
         this.setPosition(x, y, p_i1778_6_);
-		this.spell = spell;
+		this.power = spell;
     }
 
     protected void entityInit() {}
@@ -102,8 +102,8 @@ public class EntitySpell extends Entity implements IProjectile
     }
     
     protected float getVelocity() {
-    	if ( spell != null )
-    		return spell.getSpellVelocity();
+    	if ( power != null )
+    		return power.getSpellVelocity();
     	return 2.0F;
 
     }
@@ -162,11 +162,11 @@ public class EntitySpell extends Entity implements IProjectile
      */
     public void onUpdate() {
     	
-    	if (spell != null) {
+    	if (power != null) {
 
-    		if (spell instanceof IHomingSpell) {
+    		if (power instanceof IHomingPower) {
     			
-    			target = ((IHomingSpell) spell).getTarget(this, target);
+    			target = ((IHomingPower) power).getTarget(this, target);
     			
     			if (target != null) {
 
@@ -181,7 +181,7 @@ public class EntitySpell extends Entity implements IProjectile
     			}
     		}
     		
-    		spell.onUpdate(this);
+    		power.onUpdate(this);
 
     	}
     	
@@ -338,16 +338,16 @@ public class EntitySpell extends Entity implements IProjectile
      * Called when this EntityThrowable hits a block or entity.
      */
     protected void onImpact(MovingObjectPosition movingObject) {
-		if (spell != null) {
+		if (power != null) {
 			//UsefulThings.print("Attacking the entity " + spell.getSpellSpeed());
 			if (movingObject.entityHit != null && movingObject.entityHit != getThrower()) {
-				spell.onStrike(worldObj, movingObject,	getThrower(), 1);
-				if (spell.getPower() > 0 && movingObject.entityHit != null ) ((EntityLivingBase)movingObject.entityHit).setLastAttacker(getThrower());
-				if (!spell.isPiercingSpell() && movingObject.entityHit != null) setDead();
-				else if (spell.isPiercingSpell() && movingObject.entityHit == null) setDead();
-				else if (spell.isPiercingSpell() && movingObject.entityHit != null) ;
+				power.onStrike(worldObj, movingObject,	getThrower(), 1);
+				if (power.getPower() > 0 && movingObject.entityHit != null ) ((EntityLivingBase)movingObject.entityHit).setLastAttacker(getThrower());
+				if (!power.isPiercingSpell() && movingObject.entityHit != null) setDead();
+				else if (power.isPiercingSpell() && movingObject.entityHit == null) setDead();
+				else if (power.isPiercingSpell() && movingObject.entityHit != null) ;
 				else setDead();
-			} else spell.onStrike(worldObj, movingObject, getThrower(), modifier);
+			} else power.onStrike(worldObj, movingObject, getThrower(), modifier);
 		}
 		else setDead();
 	}
@@ -429,7 +429,7 @@ public class EntitySpell extends Entity implements IProjectile
     }
 
     public float getBrightness(float p_70013_1_) {
-    	return spell.getBrightness();
+    	return power.getBrightness();
     }
     
     public float getTicksInAir() {

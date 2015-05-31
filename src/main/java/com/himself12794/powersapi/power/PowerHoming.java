@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -7,7 +7,7 @@ import net.minecraft.util.MovingObjectPosition;
 
 import com.himself12794.powersapi.entity.EntitySpell;
 
-public class SpellHoming extends SpellRanged implements IHomingSpell {
+public class PowerHoming extends PowerRanged implements IHomingPower {
 
 	public void onUpdate(EntitySpell spell) {
 		

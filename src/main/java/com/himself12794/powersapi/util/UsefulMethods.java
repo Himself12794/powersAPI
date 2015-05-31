@@ -16,6 +16,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -316,4 +317,22 @@ public class UsefulMethods {
 		return currentLocation.getY() - checkedLocation.getY();
 		
 	}
+	
+    public static void setMovingDirection(EntityLivingBase target, double x, double y, double z, float velocity ) {
+    	
+        float f2 = MathHelper.sqrt_double(x * x + y * y + z * z);
+        x /= (double)f2;
+        y /= (double)f2;
+        z /= (double)f2;
+        x *= (double)velocity;
+        y *= (double)velocity;
+        z *= (double)velocity;
+        target.motionX = x;
+        target.motionY = y;
+        target.motionZ = z;
+        //float f3 = MathHelper.sqrt_double(x * x + z * z);
+        //target.prevRotationYaw = target.rotationYaw = (float)(Math.atan2(x, z) * 180.0D / Math.PI);
+        //target.prevRotationPitch = target.rotationPitch = (float)(Math.atan2(y, (double)f3) * 180.0D / Math.PI);
+ 
+    }
 }

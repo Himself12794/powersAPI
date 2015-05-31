@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spellfx;
+package com.himself12794.powersapi.powerfx;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;

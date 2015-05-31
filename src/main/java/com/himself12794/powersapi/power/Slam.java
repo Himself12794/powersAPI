@@ -1,12 +1,13 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.spellfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.SpellEffect;
 
-public class Slam extends SpellInstant {
+public class Slam extends PowerInstant {
 	
 	Slam() {
 		

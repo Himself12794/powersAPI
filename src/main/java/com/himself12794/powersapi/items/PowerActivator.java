@@ -17,13 +17,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.spell.Spell;
+import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.Reference;
 
-public class MagicTome extends Item {
-	private final String name = "magicTome";
+public class PowerActivator extends Item {
+	private final String name = "powerActivator";
 	
-	public MagicTome() {
+	public PowerActivator() {
 		setMaxStackSize(1);
 		setHasSubtypes(true);
 		GameRegistry.registerItem(this, name);
@@ -33,15 +33,15 @@ public class MagicTome extends Item {
     
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
-    	Spell spell = Spell.getSpell(stack);
+    	Power spell = Power.getPower(stack);
 		
-    	if (spell != null && spell.canCastSpell(player)) {
+    	if (spell != null && spell.canUsePower(player)) {
     		
     		//UsefulThings.print("Casting spell: " + spell.getDisplayName());
     		
-    		if (spell.onPrepareSpell(stack, world, player)) {
+    		if (spell.onPreparePower(stack, world, player)) {
     			
-    			if ( spell.isConcentrationSpell() ) {
+    			if ( spell.isConcentrationPower() ) {
     				
     				if (spell.cast(world, player, stack, 1)) 
     					player.setItemInUse(stack, spell.getDuration());
@@ -59,7 +59,7 @@ public class MagicTome extends Item {
 	@Override
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
 		
-		Spell spell = Spell.lookupSpell(stack);
+		Power spell = Power.lookupPower(stack);
 		boolean succeed = true;
 		if (spell != null) {
 			
@@ -74,7 +74,7 @@ public class MagicTome extends Item {
     
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft) {
-    	Spell spell = Spell.getSpell(stack);
+    	Power spell = Power.getPower(stack);
     	if (spell != null) {
     		
     		if (spell.onFinishedCastingEarly(stack, world, playerIn, timeLeft)) spell.triggerCooldown(playerIn);
@@ -84,7 +84,7 @@ public class MagicTome extends Item {
     
     @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityPlayer playerIn) {
-    	Spell spell = Spell.getSpell(stack);
+    	Power spell = Power.getPower(stack);
     	
     	if (spell != null) {
     		if( spell.onFinishedCasting(stack, worldIn, playerIn)) spell.triggerCooldown(playerIn);
@@ -97,7 +97,7 @@ public class MagicTome extends Item {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4){
 
-		Spell spell = Spell.lookupSpell(stack);
+		Power spell = Power.lookupPower(stack);
 		float modifier = 1.0F;
     	if (spell != null) {
     		
@@ -119,22 +119,22 @@ public class MagicTome extends Item {
     } 
    
     public void getSubItems(Item itemIn, CreativeTabs tab, List subItems) {
-        Map<String, Spell> spells = Spell.getSpells();
+        Map<String, Power> spells = Power.getPowers();
 
-		for (Entry<String, Spell> spell : spells.entrySet()) {
-			subItems.add(spell.getValue().setSpell(new ItemStack(itemIn)));
+		for (Entry<String, Power> spell : spells.entrySet()) {
+			subItems.add(spell.getValue().setPower(new ItemStack(itemIn)));
 		}    		
     }
     
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return Spell.hasSpell(stack) ? 1 : 64;
+        return Power.hasPower(stack) ? 1 : 64;
     }
     
     @Override
     public String getUnlocalizedName(ItemStack stack) {
     	String name = getUnlocalizedName();
-    	Spell spell = Spell.lookupSpell(stack);
+    	Power spell = Power.lookupPower(stack);
     	if (spell != null) {
     		//name += ".spell." + spell.getUnlocalizedName();
     		//name = spell.getDisplayName();
@@ -166,11 +166,11 @@ public class MagicTome extends Item {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect( ItemStack itemStack ){
-    	return Spell.hasSpell(itemStack);    	
+    	return Power.hasPower(itemStack);    	
     }
     
     public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
-    	if (Spell.hasSpell(stack) && Spell.getSpell(stack) != null) return Spell.getSpell(stack).getModel(stack, player, useRemaining);
+    	if (Power.hasPower(stack) && Power.getPower(stack) != null) return Power.getPower(stack).getModel(stack, player, useRemaining);
     	return null;
     }
 	

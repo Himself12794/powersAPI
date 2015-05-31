@@ -9,9 +9,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import com.himself12794.powersapi.events.SpellEffectHandler;
+import com.himself12794.powersapi.events.PowerEffectHandler;
 import com.himself12794.powersapi.items.ModItems;
-import com.himself12794.powersapi.spell.Spell;
+import com.himself12794.powersapi.power.Power;
 
 public class ClientProxy extends CommonProxy {
 	
@@ -27,7 +27,7 @@ public class ClientProxy extends CommonProxy {
     	super.init(event);    	
     	//EagleVision.init();
     	//FMLCommonHandler.instance().bus().register(handler);
-    	MinecraftForge.EVENT_BUS.register(new SpellEffectHandler());
+    	MinecraftForge.EVENT_BUS.register(new PowerEffectHandler());
 
         // do client-specific stuff
     	ModItems.registerTextures(event);
@@ -38,9 +38,9 @@ public class ClientProxy extends CommonProxy {
     
     public double getReverseRendering(ItemStack stack) {
     	super.getReverseRendering(stack);
-    	if (!Spell.hasSpell(stack)) return 1.0D;
+    	if (!Power.hasPower(stack)) return 1.0D;
     	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-    	Spell spell = Spell.getSpell(stack);
+    	Power spell = Power.getPower(stack);
         return ((double)spell.getCoolDownRemaining(player) ) / (double)spell.getCoolDown();
     }
     
@@ -48,7 +48,7 @@ public class ClientProxy extends CommonProxy {
     	super.showDamage(stack);
     	
 	    EntityPlayer player = Minecraft.getMinecraft().thePlayer;	    	
-	    if (Spell.getSpell(stack) != null) return Spell.hasSpell(stack) && Spell.getSpell(stack).getCoolDownRemaining(player) > 0;
+	    if (Power.getPower(stack) != null) return Power.hasPower(stack) && Power.getPower(stack).getCoolDownRemaining(player) > 0;
 	    return false;
     }
     

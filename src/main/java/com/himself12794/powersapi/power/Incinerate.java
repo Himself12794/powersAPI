@@ -1,11 +1,11 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class Incinerate extends SpellInstant {
+public class Incinerate extends PowerInstant {
 	
 	Incinerate() {
 		

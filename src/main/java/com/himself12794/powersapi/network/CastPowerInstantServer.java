@@ -9,18 +9,18 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import com.himself12794.powersapi.spell.Spell;
+import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.Reference;
 
-public class CastSpellInstantServer implements IMessage {
+public class CastPowerInstantServer implements IMessage {
 	
 	private int id;
-	private Spell spell;
+	private Power spell;
 	//private float modifier;
 
-    public CastSpellInstantServer() {  }
+    public CastPowerInstantServer() {  }
 	
-	public CastSpellInstantServer(EntityLivingBase entity, float modifier, Spell spell) {
+	public CastPowerInstantServer(EntityLivingBase entity, float modifier, Power spell) {
 		
 		this.id = entity.getEntityId();
 		this.spell = spell;
@@ -31,7 +31,7 @@ public class CastSpellInstantServer implements IMessage {
 	public void toBytes(ByteBuf buf) {
 		
 		ByteBufUtils.writeVarInt(buf, id, 4);
-		ByteBufUtils.writeVarInt(buf, Spell.getSpellId(spell), 4);
+		ByteBufUtils.writeVarInt(buf, Power.getPowerId(spell), 4);
 
 	}
 
@@ -40,17 +40,17 @@ public class CastSpellInstantServer implements IMessage {
 		
 		//System.out.println("Decoding data");
 		id = ByteBufUtils.readVarInt(buf, 4);
-		spell = Spell.lookupSpellById(ByteBufUtils.readVarInt(buf, 4));
+		spell = Power.lookupPowerById(ByteBufUtils.readVarInt(buf, 4));
 		//spell = Spell.lookupSpell(ByteBufUtils.readUTF8String(buf));
 		
 	}
 	
-	public static class Handler implements IMessageHandler<CastSpellInstantServer, IMessage> {
+	public static class Handler implements IMessageHandler<CastPowerInstantServer, IMessage> {
     	
 		String prefix = Reference.MODID + ".";
        
         @Override
-        public IMessage onMessage(CastSpellInstantServer message, MessageContext ctx) {
+        public IMessage onMessage(CastPowerInstantServer message, MessageContext ctx) {
     		
     		//UsefulThings.print("Got message from client to cast a spell");
         	
@@ -58,7 +58,7 @@ public class CastSpellInstantServer implements IMessage {
         		
         		//UsefulThings.print("Got message from client to cast a spell");
         		
-        		Spell spell = message.spell;
+        		Power spell = message.spell;
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
         		MovingObjectPosition target = new MovingObjectPosition((EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id));		
         		

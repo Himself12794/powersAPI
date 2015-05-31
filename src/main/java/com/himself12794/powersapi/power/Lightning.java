@@ -1,11 +1,11 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class Lightning extends SpellInstant {
+public class Lightning extends PowerInstant {
 	
 	Lightning() {
 		setPower(5.0F);

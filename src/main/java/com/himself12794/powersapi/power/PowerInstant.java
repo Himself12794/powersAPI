@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,11 +9,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import com.himself12794.powersapi.Config;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.CastSpellInstantServer;
+import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class SpellInstant extends Spell {
+public class PowerInstant extends Power {
 	
 	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
 		
@@ -23,13 +23,13 @@ public class SpellInstant extends Spell {
 		
 		if (world.isRemote) {
 			
-			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(Config.instantSpellRange);
+			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(Config.instantPowerRange);
 			
 			if (pos.entityHit != null ) {
 				
 				if (pos.entityHit instanceof EntityLivingBase) {
 					
-					IMessage msg = new CastSpellInstantServer( (EntityLivingBase) pos.entityHit, modifier, this );
+					IMessage msg = new CastPowerInstantServer( (EntityLivingBase) pos.entityHit, modifier, this );
 					PowersAPI.proxy.network.sendToServer(msg);
 					
 					successful = true;

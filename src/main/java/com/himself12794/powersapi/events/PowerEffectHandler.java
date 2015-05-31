@@ -13,9 +13,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.spellfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.SpellEffect;
 
-public class SpellEffectHandler {
+public class PowerEffectHandler {
 
 	@SubscribeEvent
 	public void spellEffectsHandler(LivingUpdateEvent event) {

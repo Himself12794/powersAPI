@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 import com.himself12794.powersapi.entity.EntitySpell;
 
-public class SpellRanged extends Spell {
+public class PowerRanged extends Power {
 	
 	@Override
 	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {

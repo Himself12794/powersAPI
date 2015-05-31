@@ -7,9 +7,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class Config {
 	
-	public static ConfigCategory spellsConfig;
+	public static ConfigCategory powersConfig;
 	public static int flamethrowing;
-	public static int instantSpellRange;
+	public static int instantPowerRange;
 	
 	public static void loadConfig(FMLPreInitializationEvent event ) {
 		
@@ -18,8 +18,8 @@ public class Config {
 
 		
 		/*Config for Spell Options*/
-		ConfigCategory spells = config.getCategory("Spells");
-		spells.setComment("Configuration for spells");
+		ConfigCategory powers = config.getCategory("Powers");
+		powers.setComment("Configuration for powers");
 		
 		//Property flames = config.get(spells, "FlamethrowingGriefing");
 		// Flamethrowing Griefing Config Option
@@ -27,20 +27,20 @@ public class Config {
 		flames.setMinValue(0);
 		flames.setMaxValue(3);
 		flames.comment = "Flamethrowing griefing: 0=none, 1=vines & grass, 2=all burnable blocks";
-		spells.put("FlamethrowingGriefing", flames);
+		powers.put("FlamethrowingGriefing", flames);
 				
 		// Instant Spell Range Option
-		Property instantSpell = new Property("InstantSpellRange", "50", Property.Type.INTEGER);
-		instantSpell.setMinValue(1);
-		instantSpell.setMaxValue(100);
-		instantSpell.comment = "The range for instant spells. Max is 100 blocks, min is 1";
-		spells.put("InstantSpellRange", instantSpell);
+		Property instantPower = new Property("InstantSpellRange", "50", Property.Type.INTEGER);
+		instantPower.setMinValue(1);
+		instantPower.setMaxValue(100);
+		instantPower.comment = "The range for instant powers. Max is 100 blocks, min is 1";
+		powers.put("InstantSpellRange", instantPower);
 		
 		config.load();
 		
-		flamethrowing = spells.get("FlamethrowingGriefing").getInt();
+		flamethrowing = powers.get("FlamethrowingGriefing").getInt();
 		
-		instantSpellRange = instantSpell.getInt();
+		instantPowerRange = instantPower.getInt();
 		
 		config.save();
 	}

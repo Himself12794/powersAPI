@@ -1,11 +1,11 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class DummyHoming extends SpellHoming {
+public class DummyHoming extends PowerHoming {
 	
 	DummyHoming() {
 		setPower(2.0F);

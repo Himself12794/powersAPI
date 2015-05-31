@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,10 +17,9 @@ import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.Reference;
 
-public abstract class Spell {
+public abstract class Power {
 	
 	private String displayName;
-	//private SpellType type = SpellType.INSTANT;
 	private float power = 2.0F;
 	/**Duration in ticks*/
 	private int duration = 0;
@@ -28,7 +27,7 @@ public abstract class Spell {
 	private int maxConcentrationTime = 0;
 	
 	/**
-	 * This determines how the spell is cast, then casts it.
+	 * This determines how the power is cast, then casts it.
 	 * Returning true will trigger the cool down.
 	 * 
 	 * @param world
@@ -40,35 +39,35 @@ public abstract class Spell {
 	public abstract boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier);
 	
 	/**
-	 * The action to be performed when the spell is being prepared, before it is actually cast.
+	 * The action to be performed when the power is being prepared, before it is actually cast.
 	 * <p>
-	 * This is used primarily to check if the player should be allowed to cast the spell or not.
+	 * This is used primarily to check if the player should be allowed to cast the power or not.
 	 * 
 	 * @return whether or not casting should continue.
 	 */
-	public boolean onPrepareSpell(ItemStack stack, World worldIn, EntityPlayer playerIn) {
+	public boolean onPreparePower(ItemStack stack, World worldIn, EntityPlayer playerIn) {
 		return true;
 	}
 	
 	/**
-	 * Called when the spell is cast.
-	 * Determines how the spell affects the player and world when cast.
+	 * Called when the power is cast.
+	 * Determines how the power affects the player and world when cast.
 	 * Return whether or not a successful use occurred. Cooldown only occurs if both are successful.
 	 * 
 	 * @param world
 	 * @param caster
 	 * @param modifier
 	 * @param stack
-	 * @return whether or not the spell counts as successful, and should count as a use
+	 * @return whether or not the power counts as successful, and should count as a use
 	 */
 	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {return true;}
 	
 	/**
-	 * Called when the spell affects a target.
-	 * For instances of SpellInstant, when a target has been successfully acquired, and for instances of
-	 * SpellRanged, when it impacts anything. 
+	 * Called when the power affects a target.
+	 * For instances of PowerInstant, when a target has been successfully acquired, and for instances of
+	 * PowerRanged, when it impacts anything. 
 	 * <p>
-	 * For instances of SpellInstant, returning true will mark the spell as a success, allowing the cooldown to be triggered.
+	 * For instances of PowerInstant, returning true will mark the power as a success, allowing the cooldown to be triggered.
 	 * 
 	 * @param world
 	 * @param target
@@ -91,7 +90,7 @@ public abstract class Spell {
 	}
 	
 	/**
-	 * Called when spell is aborted before duration is over.
+	 * Called when power is aborted before duration is over.
 	 * Return false prevent the cooldown
 	 * 
 	 * @param stack
@@ -103,7 +102,7 @@ public abstract class Spell {
 	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft) { return true; }
 	
 	/**
-	 * Called when spell is done being cast, before the cool down is triggered.
+	 * Called when power is done being cast, before the cool down is triggered.
 	 * Return false to negate the cool down.
 	 * 
 	 * @param stack
@@ -114,7 +113,7 @@ public abstract class Spell {
 	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster) { return true; }
 	
 	/**
-	 * Determines whether or not spells that have a duration should show this on the tooltip.
+	 * Determines whether or not powers that have a duration should show this on the tooltip.
 	 * 
 	 * @param stack
 	 * @param caster
@@ -124,7 +123,7 @@ public abstract class Spell {
 	public boolean showDuration(ItemStack stack, EntityPlayer caster, boolean par3) { return true; }
 	
 	
-	/**Gets the spell description.
+	/**Gets the power description.
 	 * @param player 
 	 * @param stack 
 	 * 
@@ -157,9 +156,11 @@ public abstract class Spell {
 	 */
 	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) { return null; }
 	
-	public final ItemStack setSpell(ItemStack stack) {
+	public final ItemStack setPower(ItemStack stack) {
+		
 		NBTTagCompound nbt = null;
-		String spell = getUnlocalizedName();
+		String power = getUnlocalizedName();
+		
 		if (!stack.hasTagCompound()) {
 			
 			nbt = new NBTTagCompound();
@@ -170,13 +171,13 @@ public abstract class Spell {
 			
 		}
 		
-		if (!spellExists(spell)) {
+		if (!powerExists(power)) {
 			
-			PowersAPI.logger.fatal("Cannot set unregistered spell \"" + spell + "\"");
+			PowersAPI.logger.fatal("Cannot set unregistered power \"" + power + "\"");
 			
 		} else {
 			
-			nbt.setString(Reference.MODID + ".spell.currentSpell", spell);
+			nbt.setString(Reference.TagIdentifiers.power, power);
 			stack.setTagCompound(nbt);
 			
 		}
@@ -185,27 +186,27 @@ public abstract class Spell {
 		
 	}
 	
-	public final boolean isSpellOnStack(ItemStack stack) {
-		return Spell.hasSpell(stack) && lookupSpell(stack) == this;
+	public final boolean isPowerOnStack(ItemStack stack) {
+		return Power.hasPower(stack) && lookupPower(stack) == this;
 	}
 	
 	public String getDisplayName() {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
 	}
 	
-	protected Spell setPower(float value) { power = value; return this; }
+	protected Power setPower(float value) { power = value; return this; }
 
 	public float getPower() { return power; }
 	
-	protected Spell setCoolDown(int amount) { coolDown = amount; return this; }
+	protected Power setCoolDown(int amount) { coolDown = amount; return this; }
 	
 	public int getCoolDown() { return coolDown; }
 	
-	protected Spell setUnlocalizedName( String name ) { displayName = name; return this; }
+	protected Power setUnlocalizedName( String name ) { displayName = name; return this; }
 	
-	public String getUnlocalizedName() { return "spell." + displayName; }
+	public String getUnlocalizedName() { return "power." + displayName; }
 	
-	protected Spell setDuration(int time) { duration = time; return this; }
+	protected Power setDuration(int time) { duration = time; return this; }
 	
 	public int getDuration() { return duration; }
 	
@@ -213,60 +214,65 @@ public abstract class Spell {
 	
 	public int getMaxConcentrationTime() { return maxConcentrationTime; }
 	
-	public boolean isConcentrationSpell() { return maxConcentrationTime > 0; }
+	public boolean isConcentrationPower() { return maxConcentrationTime > 0; }
 
 	public float getBrightness() { return 5.0F; }
 	
-	/*================================= Begin Spell Registration Section ===============================*/ 
+	/*================================= Begin Power Registration Section ===============================*/ 
 	
-	private static Map<Integer, String> spellIds = Maps.newHashMap();
-	private static Map<String, Spell> spellRegistry = Maps.newHashMap();
-	private static int spells = 0;
+	private static Map<Integer, String> powerIds = Maps.newHashMap();
+	private static Map<String, Power> powerRegistry = Maps.newHashMap();
+	private static int powers = 0;
 	
-	public static void registerSpells() {
+	public static void registerPowers() {
 
-		registerSpell(new SpellInstant().setUnlocalizedName("damage"));	
-		registerSpell(new SpellInstant().setUnlocalizedName("death").setPower(1000.0F).setCoolDown(178));	
-		registerSpell(new Incinerate());
-		registerSpell(new Lightning());
-		registerSpell(new Heal());
-		registerSpell(new Dummy());
-		registerSpell(new Immortalize());
-		registerSpell(new Flames());
-		registerSpell(new DummyHoming());
-		registerSpell(new Slam());
-		registerSpell(new Push());
-		registerSpell(new Telekinesis());
+		registerPower(new PowerInstant().setUnlocalizedName("damage"));	
+		registerPower(new PowerInstant().setUnlocalizedName("death").setPower(1000.0F).setCoolDown(178));	
+		registerPower(new Incinerate());
+		registerPower(new Lightning());
+		registerPower(new Heal());
+		registerPower(new Dummy());
+		registerPower(new Immortalize());
+		registerPower(new Flames());
+		registerPower(new DummyHoming());
+		registerPower(new Slam());
+		registerPower(new Push());
+		registerPower(new Telekinesis());
 		
-		PowersAPI.logger.info("Registered [" + Spell.getSpellCount() + "] spells");
+		PowersAPI.logger.info("Registered [" + Power.getPowerCount() + "] powers");
 		
 	}
 	
-	private static void registerSpell(Spell spell) {
-		String name = spell.getUnlocalizedName();
-		if (!Spell.spellExists(name)) {
-			spellRegistry.put(name, spell);
-			spellIds.put(spells, name);
-			//UsefulThings.print("Registered spell " + name);
-			++spells;
+	private static void registerPower(Power power) {
+		
+		String name = power.getUnlocalizedName();
+		
+		if (!Power.powerExists(name)) {
+			
+			powerRegistry.put(name, power);
+			powerIds.put(powers, name);
+			++powers;
+			
 		} else {
-			PowersAPI.logger.error("Could not register spell " + spell + " under name \"" + name + "\", name has already been registered for " + lookupSpell(name));
+			
+			PowersAPI.logger.error("Could not register power " + power + " under name \"" + name + "\", name has already been registered for " + lookupPower(name));
+		
 		}
 	}
 	
-	public static Spell lookupSpellById(int id) {
+	public static Power lookupPowerById(int id) {
 		
-		return lookupSpell(spellIds.get(id));
+		return lookupPower(powerIds.get(id));
 		
 	}
 	
-	public static int getSpellId(Spell spell) {
+	public static int getPowerId(Power power) {
 		
-		if (spellIds.containsValue(spell.getUnlocalizedName())) {
+		if (powerIds.containsValue(power.getUnlocalizedName())) {
 			
-			for (Entry<Integer, String> value : spellIds.entrySet()) {
+			for (Entry<Integer, String> value : powerIds.entrySet()) {
 				
-				if (value.getValue().equals(spell.getUnlocalizedName()))
+				if (value.getValue().equals(power.getUnlocalizedName()))
 					return value.getKey();
 				
 			}    		
@@ -276,65 +282,73 @@ public abstract class Spell {
 		
 	}
 	
-	public static Spell lookupSpell(ItemStack stack) {
-		if (Spell.hasSpell(stack)) {
-			return spellRegistry.get(stack.getTagCompound().getString( Reference.MODID + ".spell.currentSpell"));
+	public static Power lookupPower(ItemStack stack) {
+		
+		if (Power.hasPower(stack)) {
+			
+			return lookupPower(stack.getTagCompound().getString( Reference.TagIdentifiers.power));
+			
 		}
+		
 		return null;
+		
 	}
 	
-	public static Spell lookupSpell(String spell) {
-		if (Spell.spellExists(spell)) return (Spell)spellRegistry.get(spell);
+	public static Power lookupPower(String power) {
+		
+		if (Power.powerExists(power)) return (Power)powerRegistry.get(power);
+		
 		return null;
+		
 	}
 	
-	public static Map<String, Spell> getSpells() {
-		return spellRegistry;
+	public static Map<String, Power> getPowers() {
+		return powerRegistry;
 	}
 
-	public static int getSpellCount() {
-		return spells;
+	public static int getPowerCount() {
+		return powers;
 	}
 	
-	public static boolean spellExists(String unlocalizedName) {
-		return Spell.getSpells().containsKey(unlocalizedName);
+	public static boolean powerExists(String unlocalizedName) {
+		return Power.getPowers().containsKey(unlocalizedName);
 	}
 	
-	public final boolean canCastSpell( EntityPlayer player ) {
+	public final boolean canUsePower( EntityPlayer player ) {
 		
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellCooldowns");
+		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 		
 		return coolDowns.getInteger(getUnlocalizedName()) <= 0;
+		
 	}
 	
 	public final int getCoolDownRemaining(EntityPlayer player) {
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellCooldowns");
+		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 		
 		return coolDowns.getInteger(getUnlocalizedName());
 	}
 	
 	public final void setCoolDown(EntityPlayer player, int amount) {
 		int id = player.getEntityId();
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellCooldowns");
+		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 		
 		coolDowns.setInteger(getUnlocalizedName(), amount);
-		player.getEntityData().setTag(Reference.MODID + ".spell.spellCooldowns", coolDowns);
+		player.getEntityData().setTag(Reference.TagIdentifiers.powerCooldowns, coolDowns);
 	}
 	
 	public final void triggerCooldown( EntityPlayer player ) {
-		//UsefulThings.print("Triggering cooldown");
 		if (!player.capabilities.isCreativeMode) setCoolDown(player, getCoolDown());
 	}
 	
-	public static boolean hasSpell(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey(Reference.MODID + ".spell.currentSpell");
+	public static boolean hasPower(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey(Reference.TagIdentifiers.power);
 	}
 	
-	public static Spell getSpell(ItemStack stack) {
-		return Spell.lookupSpell(stack);
+	public static Power getPower(ItemStack stack) {
+		return Power.lookupPower(stack);
 	}
 	
 	public static NBTTagCompound getCooldowns(EntityPlayer player) {
-		return player.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellCooldowns");
+		return player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 	}	
 }

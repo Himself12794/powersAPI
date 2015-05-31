@@ -5,12 +5,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import com.himself12794.powersapi.spell.Spell;
+import com.himself12794.powersapi.power.Power;
 
-public class SpellCoolDownHook {
+public class PowerCoolDownHook {
 	
 	@SubscribeEvent
-	public void handleSpellCoolDown(LivingUpdateEvent event) {
+	public void handlePowerCoolDown(LivingUpdateEvent event) {
 		
 		if (event.entityLiving instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer)event.entityLiving;
@@ -18,29 +18,30 @@ public class SpellCoolDownHook {
 			ItemStack[] itemStacks = player.inventory.mainInventory;
 			
 			for (ItemStack stack : itemStacks) {
-				if (stack != null && Spell.hasSpell(stack) ) {
-					Spell spell = Spell.getSpell(stack);
-					if (spell != null) {
-						//UsefulThings.print("Updating cooldown timer on " + player.getName() + " for spell " + spell.getUnlocalizedName());
+				
+				if (stack != null && Power.hasPower(stack) ) {
+					
+					Power power = Power.getPower(stack);
+					
+					if (power != null) {
+						
 						int remaining = 0;
-						if (spell.getCoolDown() > 0) {
+						
+						if (power.getCoolDown() > 0) {
+														
+							remaining  = power.getCoolDownRemaining(player);
 							
-							
-							
-							remaining  = spell.getCoolDownRemaining(player);
 							if (remaining > 0) { 
 								--remaining;
 								//event.setCanceled(true);
 							}
 							
-							spell.setCoolDown(player, remaining);
+							power.setCoolDown(player, remaining);
+							
 						}
 					}
-				}
-					
+				}	
 			}
-			
 		}
 	}
-
 }

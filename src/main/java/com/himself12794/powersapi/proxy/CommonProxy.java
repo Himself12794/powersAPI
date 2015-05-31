@@ -13,12 +13,12 @@ import com.himself12794.powersapi.Config;
 import com.himself12794.powersapi.ModRecipes;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.entity.EntitySpell;
-import com.himself12794.powersapi.events.SpellCoolDownHook;
-import com.himself12794.powersapi.events.SpellEffectHandler;
+import com.himself12794.powersapi.events.PowerCoolDownHook;
+import com.himself12794.powersapi.events.PowerEffectHandler;
 import com.himself12794.powersapi.items.ModItems;
-import com.himself12794.powersapi.network.CastSpellInstantServer;
-import com.himself12794.powersapi.network.SetHomingSpellTargetServer;
-import com.himself12794.powersapi.spell.Spell;
+import com.himself12794.powersapi.network.CastPowerInstantServer;
+import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
+import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
@@ -28,8 +28,8 @@ public class CommonProxy {
 	public void preinit(FMLPreInitializationEvent event) {
 		
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
-		network.registerMessage(SetHomingSpellTargetServer.Handler.class, SetHomingSpellTargetServer.class, 0, Side.SERVER);
-		network.registerMessage(CastSpellInstantServer.Handler.class, CastSpellInstantServer.class, 1, Side.SERVER);
+		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
+		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
 		
 		// load config
 		Config.loadConfig(event);
@@ -39,15 +39,15 @@ public class CommonProxy {
 		if (ModItems.NUMBER > 0) PowersAPI.logger.info("Added [" + ModItems.NUMBER + "] new items");
        
 		// register spells
-		Spell.registerSpells();
+		Power.registerPowers();
 		
 		// register entities
 		EntityRegistry.registerModEntity(EntitySpell.class, "spell", 1, PowersAPI.instance, 80, 3, true);
 	}
 
 	public void init(FMLInitializationEvent event){
-		SpellCoolDownHook scdh = new SpellCoolDownHook();
-		SpellEffectHandler spfx = new SpellEffectHandler();
+		PowerCoolDownHook scdh = new PowerCoolDownHook();
+		PowerEffectHandler spfx = new PowerEffectHandler();
 		
     	MinecraftForge.EVENT_BUS.register(scdh);
     	MinecraftForge.EVENT_BUS.register(spfx);

@@ -1,13 +1,14 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.spellfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.SpellEffect;
+import com.himself12794.powersapi.util.UsefulMethods;
 
-public class Telekinesis extends SpellInstant {
+public class Telekinesis extends PowerInstant {
 	
 	Telekinesis() {
 		
@@ -33,22 +34,20 @@ public class Telekinesis extends SpellInstant {
 		//SpellEffect.levitate.addTo((EntityLivingBase) target.entityHit, 40, caster);
 		//target.entityHit.moveEntity(x, y, z);
 		if (distance < 5) {
-
 			
 			double dx = target.entityHit.posX - caster.posX;
 			double dy = target.entityHit.posY - caster.posY;
 			double dz = target.entityHit.posZ - caster.posZ;
 			//setThrowableHeading(dx, dy, dz, getVelocity(), 0.0F);
-			setMovingDirection((EntityLivingBase) target.entityHit, dx, dy, dz, 2.0F);
+			UsefulMethods.setMovingDirection((EntityLivingBase) target.entityHit, dx, dy, dz, 2.0F);
 			
 		} else if (distance > 5) {
-
 			
 			double dx = target.entityHit.posX - caster.posX;
 			double dy = target.entityHit.posY - caster.posY;
 			double dz = target.entityHit.posZ - caster.posZ;
 			//setThrowableHeading(dx, dy, dz, getVelocity(), 0.0F);
-			setMovingDirection((EntityLivingBase) target.entityHit, dx, dy, dz, -2.0F);
+			UsefulMethods.setMovingDirection((EntityLivingBase) target.entityHit, dx, dy, dz, -2.0F);
 			
 		} else {
 			
@@ -60,23 +59,5 @@ public class Telekinesis extends SpellInstant {
 		return true;
 		
 	}
-	
-    public void setMovingDirection(EntityLivingBase target, double x, double y, double z, float velocity ) {
-    	
-        float f2 = MathHelper.sqrt_double(x * x + y * y + z * z);
-        x /= (double)f2;
-        y /= (double)f2;
-        z /= (double)f2;
-        x *= (double)velocity;
-        y *= (double)velocity;
-        z *= (double)velocity;
-        target.motionX = x;
-        target.motionY = y;
-        target.motionZ = z;
-        //float f3 = MathHelper.sqrt_double(x * x + z * z);
-        //target.prevRotationYaw = target.rotationYaw = (float)(Math.atan2(x, z) * 180.0D / Math.PI);
-        //target.prevRotationPitch = target.rotationPitch = (float)(Math.atan2(y, (double)f3) * 180.0D / Math.PI);
- 
-    }
 
 }

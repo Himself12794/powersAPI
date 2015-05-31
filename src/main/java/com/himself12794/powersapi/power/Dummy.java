@@ -1,13 +1,13 @@
-package com.himself12794.powersapi.spell;
+package com.himself12794.powersapi.power;
 
-import com.himself12794.powersapi.spellfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.SpellEffect;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-public class Dummy extends SpellRanged {
+public class Dummy extends PowerRanged {
 	
 	Dummy() {
 		setPower(0.0F);

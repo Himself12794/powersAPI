@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.spellfx;
+package com.himself12794.powersapi.powerfx;
 
 import com.himself12794.powersapi.entity.ai.EntityAIDoNothing;
 

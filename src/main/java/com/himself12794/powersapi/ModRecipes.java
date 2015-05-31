@@ -10,7 +10,7 @@ public class ModRecipes {
 	public final static int NUMBER = 1;
 	public static void addRecipes() {
 		
-		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.magicTome), Items.book);
+		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.powerActivator), Items.book);
 		
 	}
 }
