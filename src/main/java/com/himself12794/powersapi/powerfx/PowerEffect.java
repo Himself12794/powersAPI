@@ -4,16 +4,18 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.util.Reference;
 
-public abstract class SpellEffect {
+public abstract class PowerEffect {
 	
-	public static final SpellEffect[] spellEffectIds = new SpellEffect[32];
-	public static final SpellEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
-	public static final SpellEffect lift = new Lift(1);
-	public static final SpellEffect slam = new Slam(2);
-	public static final SpellEffect levitate = new Levitate(3);
-	public static final SpellEffect paralysis = new Paralysis(4);
+	public static final PowerEffect[] spellEffectIds = new PowerEffect[32];
+	public static final PowerEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
+	public static final PowerEffect lift = new Lift(1);
+	public static final PowerEffect slam = new Slam(2);
+	public static final PowerEffect levitate = new Levitate(3);
+	public static final PowerEffect paralysis = new Paralysis(4);
 	
 	private static int spellEffectCount = 0;
 	
@@ -21,7 +23,7 @@ public abstract class SpellEffect {
 	public final int id;
 	protected boolean negateable = false;
 	
-	SpellEffect(int id) {
+	PowerEffect(int id) {
 		this.id = id;
 		spellEffectIds[id] = this;
 	}
@@ -107,6 +109,7 @@ public abstract class SpellEffect {
         	if (location > -1) {
         		activeEffects.removeTag(location);
         		onRemoval(target, caster);
+        		PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(this, target, caster, true, 0));
         	}
         	return;
         	
@@ -127,7 +130,7 @@ public abstract class SpellEffect {
 	/**
 	 * Clears any traces of the effect from the entity, if they have it.
 	 * <p>
-	 * If the duration left is not 0, also triggers {@link SpellEffect#onRemoval(EntityLivingBase)}
+	 * If the duration left is not 0, also triggers {@link PowerEffect#onRemoval(EntityLivingBase)}
 	 * 
 	 * @param target
 	 */
@@ -177,11 +180,11 @@ public abstract class SpellEffect {
 		return getEffectTimeRemainingOn(entity) != 0;
 	}
 	
-	public static SpellEffect[] getRegisteredSpellEffects() {
+	public static PowerEffect[] getRegisteredSpellEffects() {
 		return spellEffectIds;
 	}
 	
-	public static SpellEffect getEffectById(int id) {
+	public static PowerEffect getEffectById(int id) {
 
 		if (spellEffectIds[id] != null) return spellEffectIds[id];
 		return null;

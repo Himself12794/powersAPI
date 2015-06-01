@@ -6,7 +6,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class Paralysis extends SpellEffect {
+public class Paralysis extends PowerEffect {
 
 	Paralysis(int id) {
 		super(id);

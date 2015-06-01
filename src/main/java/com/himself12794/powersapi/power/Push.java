@@ -1,6 +1,6 @@
 package com.himself12794.powersapi.power;
 
-import com.himself12794.powersapi.powerfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 import net.minecraft.entity.EntityLivingBase;

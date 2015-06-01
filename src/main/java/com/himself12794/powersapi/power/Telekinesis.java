@@ -5,7 +5,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.powerfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class Telekinesis extends PowerInstant {

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.powerfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.PowerEffect;
 
 public class Heal extends PowerBuff {
 	
@@ -19,7 +19,7 @@ public class Heal extends PowerBuff {
 	
 	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {
 		boolean flag = false;
-		SpellEffect.rapidCellularRegeneration.addTo(caster, -1, caster);
+		PowerEffect.rapidCellularRegeneration.addTo(caster, -1, caster);
 		if (caster.getHealth() < caster.getMaxHealth()) {
 			flag = true;
 			caster.heal(getPower() * modifier);

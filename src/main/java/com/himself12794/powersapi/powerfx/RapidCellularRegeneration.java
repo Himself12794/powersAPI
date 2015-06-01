@@ -4,7 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-public class RapidCellularRegeneration extends SpellEffect {
+public class RapidCellularRegeneration extends PowerEffect {
 	
 	RapidCellularRegeneration(int id) {
 		super(id);

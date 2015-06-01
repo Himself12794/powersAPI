@@ -1,6 +1,6 @@
 package com.himself12794.powersapi.power;
 
-import com.himself12794.powersapi.powerfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.PowerEffect;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
@@ -19,7 +19,7 @@ public class Dummy extends PowerRanged {
 	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
 		
 		if (target.entityHit != null) {
-			SpellEffect.paralysis.addTo((EntityLivingBase) target.entityHit, 60 * 20, caster);
+			PowerEffect.lift.addTo((EntityLivingBase) target.entityHit, 5 * 20, caster);
 			//SpellEffect.lift.addTo((EntityLivingBase) target.entityHit, 200, caster);
 			target.entityHit.attackEntityFrom(DamageSource.magic, getPower());
 		}

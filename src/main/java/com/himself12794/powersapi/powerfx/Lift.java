@@ -5,7 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class Lift extends SpellEffect {
+public class Lift extends PowerEffect {
 	
 	private double liftHeight = 5.0D;
 	
@@ -24,7 +24,7 @@ public class Lift extends SpellEffect {
 			double groundDistance = UsefulMethods.distanceAboveGround(entity);
 			//System.out.println("Height: " + groundDistance);
 			if (groundDistance < liftHeight) entity.motionY = 1.0D;
-			else entity.motionY = 0.0D;
+			else entity.jumpMovementFactor = 0.0F;
 		}
 
 	}

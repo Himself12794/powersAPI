@@ -17,6 +17,7 @@ import com.himself12794.powersapi.events.PowerCoolDownHook;
 import com.himself12794.powersapi.events.PowerEffectHandler;
 import com.himself12794.powersapi.items.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
+import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.Reference;
@@ -30,6 +31,7 @@ public class CommonProxy {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
 		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
 		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
+		network.registerMessage(PowerEffectsClient.Handler.class, PowerEffectsClient.class, 2, Side.CLIENT);
 		
 		// load config
 		Config.loadConfig(event);

@@ -1,6 +1,6 @@
 package com.himself12794.powersapi.entity.ai;
 
-import com.himself12794.powersapi.powerfx.SpellEffect;
+import com.himself12794.powersapi.powerfx.PowerEffect;
 
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -19,7 +19,7 @@ public class EntityAIDoNothing extends EntityAIBase {
 	@Override
 	public boolean shouldExecute() {
 		
-		return SpellEffect.paralysis.isEffecting(entityLiving);
+		return PowerEffect.paralysis.isEffecting(entityLiving);
 		
 	}
 	
