@@ -52,7 +52,7 @@ public abstract class PowerEffect {
 	
 	private final void addTot(EntityLivingBase target, int duration, EntityLivingBase caster) {
 		
-		NBTTagList activeEffects = getActiveEffects(target);//target.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
+		NBTTagList activeEffects = getActiveEffects(target);//target.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
 		
 		NBTTagCompound data = new NBTTagCompound();
 		data.setShort("id", (short) id);
@@ -61,7 +61,7 @@ public abstract class PowerEffect {
 		//NBTTagIntArray spellEffectData = new NBTTagIntArray(data);
 		
 		activeEffects.appendTag(data);
-		target.getEntityData().setTag(Reference.MODID + ".spell.spellEffects", activeEffects);
+		target.getEntityData().setTag(Reference.TagIdentifiers.powerEffects, activeEffects);
 		
 	}
 
@@ -124,7 +124,7 @@ public abstract class PowerEffect {
             activeEffects.appendTag(nbttagcompound1);
         }
 
-        target.getEntityData().setTag(Reference.MODID + ".spell.spellEffects", activeEffects);
+        target.getEntityData().setTag(Reference.TagIdentifiers.powerEffects, activeEffects);
     }
 	
 	/**
@@ -191,10 +191,10 @@ public abstract class PowerEffect {
 	}
 	
 	public static NBTTagList getActiveEffects(EntityLivingBase entity) {
-		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.MODID + ".spell.spellEffects");
+		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.TagIdentifiers.powerEffects);
 		
-		//return entity.getEntityData().getCompoundTag(Reference.MODID + ".spell.spellEffects");
-		return activeEffects != null && activeEffects.hasKey(Reference.MODID + ".spell.spellEffects", 9) ? (NBTTagList)activeEffects.getTag(Reference.MODID + ".spell.spellEffects") : new NBTTagList();
+		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
+		return activeEffects != null && activeEffects.hasKey(Reference.TagIdentifiers.powerEffects, 9) ? (NBTTagList)activeEffects.getTag(Reference.TagIdentifiers.powerEffects) : new NBTTagList();
 	}
 
 }

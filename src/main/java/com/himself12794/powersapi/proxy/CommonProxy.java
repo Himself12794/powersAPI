@@ -13,8 +13,8 @@ import com.himself12794.powersapi.Config;
 import com.himself12794.powersapi.ModRecipes;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.entity.EntitySpell;
-import com.himself12794.powersapi.events.PowerCoolDownHook;
 import com.himself12794.powersapi.events.PowerEffectHandler;
+import com.himself12794.powersapi.events.UpdatesHandler;
 import com.himself12794.powersapi.items.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
@@ -48,11 +48,12 @@ public class CommonProxy {
 	}
 
 	public void init(FMLInitializationEvent event){
-		PowerCoolDownHook scdh = new PowerCoolDownHook();
+		//PowerCoolDownHook scdh = new PowerCoolDownHook();
 		PowerEffectHandler spfx = new PowerEffectHandler();
+		UpdatesHandler uph = new UpdatesHandler();
 		
-    	MinecraftForge.EVENT_BUS.register(scdh);
     	MinecraftForge.EVENT_BUS.register(spfx);
+    	MinecraftForge.EVENT_BUS.register(uph);
 		 
 		ModRecipes.addRecipes();
 

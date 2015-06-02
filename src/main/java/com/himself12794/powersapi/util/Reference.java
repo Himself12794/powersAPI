@@ -11,6 +11,7 @@ public class Reference {
     	
     	public static final String power = MODID + ".power.currentPower";
     	public static final String powerCooldowns = MODID + ".power.powerCooldowns";
+    	public static final String powerEffects = MODID + ".power.powerEffects";
     	
     }
     

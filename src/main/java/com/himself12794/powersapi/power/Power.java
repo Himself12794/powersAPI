@@ -17,13 +17,33 @@ import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.Reference;
 
+/**
+ * This class is used to add powers to Minecraft. This is manifested as a power on
+ * a generic power actuator, and all powers registered via {@link Power#registerPower(Power)}
+ * will appear in the creative tab.
+ * <p>
+ * Every power has a power field, which is primarily used to display a power field for documentation
+ * purposes, and not necessarily to determine their magnitude, but can be if desired.
+ * <p>
+ * The field {@code duration} is primarily for documentation as well, but again can be used for other purposes.
+ * <p>
+ * The field {@code coolDown} is used as a timeout after the power has been used before it can be used again. This
+ * is used to balance more potent or potentially game-breaking powers.
+ * <p>
+ * The field {@code maxConcentrationTime} is used to determine how long the spell can be used before cooldown is forced.
+ * Ceasing from using the spell before the concentration time is meant will sitll trigger the cooldown. 
+ * @author Himself12794
+ *
+ */
 public abstract class Power {
 	
 	private String displayName;
 	private float power = 2.0F;
 	/**Duration in ticks*/
 	private int duration = 0;
+	/**Cool down time in ticks*/
 	private int coolDown = 4;
+	/**How long the power can be used until a cooldown is forced*/
 	private int maxConcentrationTime = 0;
 	
 	/**
@@ -90,7 +110,7 @@ public abstract class Power {
 	}
 	
 	/**
-	 * Called when power is aborted before duration is over.
+	 * Called when power is aborted before concentration time is over.
 	 * Return false prevent the cooldown
 	 * 
 	 * @param stack
@@ -123,7 +143,7 @@ public abstract class Power {
 	public boolean showDuration(ItemStack stack, EntityPlayer caster, boolean par3) { return true; }
 	
 	
-	/**Gets the power description.
+	/**Gets the power description. This value is localized.
 	 * @param player 
 	 * @param stack 
 	 * 
@@ -243,7 +263,13 @@ public abstract class Power {
 		
 	}
 	
-	private static void registerPower(Power power) {
+	/**
+	 * Used to register created powers. Powers are stored with their unlocalized name, as well
+	 * as a generated id.
+	 * 
+	 * @param power
+	 */
+	public static void registerPower(Power power) {
 		
 		String name = power.getUnlocalizedName();
 		
@@ -314,7 +340,7 @@ public abstract class Power {
 		return Power.getPowers().containsKey(unlocalizedName);
 	}
 	
-	public final boolean canUsePower( EntityPlayer player ) {
+	public final boolean canUsePower( EntityLivingBase player ) {
 		
 		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 		
@@ -322,13 +348,13 @@ public abstract class Power {
 		
 	}
 	
-	public final int getCoolDownRemaining(EntityPlayer player) {
+	public final int getCoolDownRemaining(EntityLivingBase player) {
 		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 		
 		return coolDowns.getInteger(getUnlocalizedName());
 	}
 	
-	public final void setCoolDown(EntityPlayer player, int amount) {
+	public final void setCoolDown(EntityLivingBase player, int amount) {
 		int id = player.getEntityId();
 		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
 		
@@ -336,8 +362,11 @@ public abstract class Power {
 		player.getEntityData().setTag(Reference.TagIdentifiers.powerCooldowns, coolDowns);
 	}
 	
-	public final void triggerCooldown( EntityPlayer player ) {
-		if (!player.capabilities.isCreativeMode) setCoolDown(player, getCoolDown());
+	public final void triggerCooldown( EntityLivingBase player ) {
+		
+		if (player instanceof EntityPlayer)
+			if (((EntityPlayer)player).capabilities.isCreativeMode) return;
+		setCoolDown(player, getCoolDown());
 	}
 	
 	public static boolean hasPower(ItemStack stack) {
@@ -348,7 +377,8 @@ public abstract class Power {
 		return Power.lookupPower(stack);
 	}
 	
-	public static NBTTagCompound getCooldowns(EntityPlayer player) {
-		return player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
+	public static NBTTagCompound getCooldowns(EntityLivingBase player) {
+		NBTTagCompound cooldowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
+		return player.getEntityData().hasKey(Reference.TagIdentifiers.powerCooldowns) && cooldowns != null ? cooldowns : new NBTTagCompound();
 	}	
 }

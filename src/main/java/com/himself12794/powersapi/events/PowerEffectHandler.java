@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.powerfx.PowerEffect;
+import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class PowerEffectHandler {
@@ -27,7 +28,9 @@ public class PowerEffectHandler {
 		//if (groundDistance < 0) event.entityLiving.motionY = 1.0D;
 		//else event.entityLiving.motionY = 0.0D;
 		
-		EntityLivingBase target = event.entityLiving;
+		//DataWrapper.get(event.entityLiving).updateSpellEffects();
+		
+		/*EntityLivingBase target = event.entityLiving;
 		NBTTagList activeEffects = PowerEffect.getActiveEffects(target);
 		
 		if (!activeEffects.hasNoTags()) {
@@ -64,7 +67,7 @@ public class PowerEffectHandler {
 					}
 				}
 			}
-		}
+		}*/
 	}
 	
 	//public static void updateSpellEffects(EntityLivingBase)

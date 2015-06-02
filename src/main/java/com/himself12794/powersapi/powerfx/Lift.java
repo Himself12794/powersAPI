@@ -17,14 +17,17 @@ public class Lift extends PowerEffect {
 	@Override
 	public void onUpdate(EntityLivingBase entity, int timeLeft,	EntityLivingBase caster) {
 		
-		if (!(entity instanceof EntityFlying) && entity.getHealth() > 0 ) {
-			//System.out.println(entity.posY);
-			//entity.motionX = 0.0D;
-			//entity.motionZ = 0.0D;
-			double groundDistance = UsefulMethods.distanceAboveGround(entity);
-			//System.out.println("Height: " + groundDistance);
-			if (groundDistance < liftHeight) entity.motionY = 1.0D;
-			else entity.jumpMovementFactor = 0.0F;
+		if (entity != null) {
+			
+			//System.out.println("Update triggered: " + entity.worldObj.isRemote + ", time left: " + timeLeft);
+			
+			if (!(entity instanceof EntityFlying) && entity.getHealth() > 0 ) {
+				
+				double groundDistance = UsefulMethods.distanceAboveGround(entity);
+				
+				if (groundDistance < liftHeight) entity.motionY = 1.0D;
+				else entity.motionY = 0.0D;//entity.jumpMovementFactor = 0.0F;
+			}
 		}
 
 	}
