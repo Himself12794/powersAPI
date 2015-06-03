@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.power;
 
+import com.himself12794.powersapi.api.power.PowerHoming;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
@@ -7,7 +9,7 @@ import net.minecraft.world.World;
 
 public class DummyHoming extends PowerHoming {
 	
-	DummyHoming() {
+	public DummyHoming() {
 		setPower(2.0F);
 		setCoolDown(20);
 		setDuration(0);

@@ -13,13 +13,14 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.himself12794.powersapi.Config;
+import com.himself12794.powersapi.api.power.PowerRanged;
 import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class Flames extends PowerRanged {
 	
-	Flames() {
+	public Flames() {
 		setMaxConcentrationTime(5 * 20);
 		setPower(3.0F);
 		setCoolDown(100);

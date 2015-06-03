@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.power;
 
+import com.himself12794.powersapi.api.power.PowerInstant;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -7,7 +9,7 @@ import net.minecraft.world.World;
 
 public class Incinerate extends PowerInstant {
 	
-	Incinerate() {
+	public Incinerate() {
 		
 		setPower(0.0F);
 		setCoolDown(60);

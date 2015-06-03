@@ -3,16 +3,14 @@ package com.himself12794.powersapi.powerfx;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
 
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class Lift extends PowerEffect {
 	
 	private double liftHeight = 5.0D;
 	
-	Lift(int id) {
-		super(id);
-		// TODO Auto-generated constructor stub
-	}
+	public Lift() {}
 
 	@Override
 	public void onUpdate(EntityLivingBase entity, int timeLeft,	EntityLivingBase caster) {

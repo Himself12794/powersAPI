@@ -22,8 +22,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.himself12794.powersapi.Powers;
-import com.himself12794.powersapi.power.IHomingPower;
-import com.himself12794.powersapi.power.PowerRanged;
+import com.himself12794.powersapi.api.power.IHomingPower;
+import com.himself12794.powersapi.api.power.PowerRanged;
 /**
  * This is pretty much the same as an EntityThrowable. Biggest difference is that it does not lose speed.
  */

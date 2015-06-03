@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.power;
+package com.himself12794.powersapi.api.power;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,6 +15,16 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.power.Dummy;
+import com.himself12794.powersapi.power.DummyHoming;
+import com.himself12794.powersapi.power.Flames;
+import com.himself12794.powersapi.power.Heal;
+import com.himself12794.powersapi.power.Immortalize;
+import com.himself12794.powersapi.power.Incinerate;
+import com.himself12794.powersapi.power.Lightning;
+import com.himself12794.powersapi.power.Push;
+import com.himself12794.powersapi.power.Slam;
+import com.himself12794.powersapi.power.Telekinesis;
 import com.himself12794.powersapi.util.Reference;
 
 /**
@@ -214,15 +224,15 @@ public abstract class Power {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
 	}
 	
-	protected Power setPower(float value) { power = value; return this; }
+	public Power setPower(float value) { power = value; return this; }
 
 	public float getPower() { return power; }
 	
-	protected Power setCoolDown(int amount) { coolDown = amount; return this; }
+	public Power setCoolDown(int amount) { coolDown = amount; return this; }
 	
 	public int getCoolDown() { return coolDown; }
 	
-	protected Power setUnlocalizedName( String name ) { displayName = name; return this; }
+	public Power setUnlocalizedName( String name ) { displayName = name; return this; }
 	
 	public String getUnlocalizedName() { return "power." + displayName; }
 	
@@ -245,19 +255,6 @@ public abstract class Power {
 	private static int powers = 0;
 	
 	public static void registerPowers() {
-
-		registerPower(new PowerInstant().setUnlocalizedName("damage"));	
-		registerPower(new PowerInstant().setUnlocalizedName("death").setPower(1000.0F).setCoolDown(178));	
-		registerPower(new Incinerate());
-		registerPower(new Lightning());
-		registerPower(new Heal());
-		registerPower(new Dummy());
-		registerPower(new Immortalize());
-		registerPower(new Flames());
-		registerPower(new DummyHoming());
-		registerPower(new Slam());
-		registerPower(new Push());
-		registerPower(new Telekinesis());
 		
 		PowersAPI.logger.info("Registered [" + Power.getPowerCount() + "] powers");
 		
@@ -268,8 +265,9 @@ public abstract class Power {
 	 * as a generated id.
 	 * 
 	 * @param power
+	 * @return 
 	 */
-	public static void registerPower(Power power) {
+	public static Power registerPower(Power power) {
 		
 		String name = power.getUnlocalizedName();
 		
@@ -278,11 +276,13 @@ public abstract class Power {
 			powerRegistry.put(name, power);
 			powerIds.put(powers, name);
 			++powers;
+			return power;
 			
 		} else {
 			
 			PowersAPI.logger.error("Could not register power " + power + " under name \"" + name + "\", name has already been registered for " + lookupPower(name));
-		
+			return null;
+			
 		}
 	}
 	

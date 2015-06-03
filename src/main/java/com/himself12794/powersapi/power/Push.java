@@ -1,17 +1,15 @@
 package com.himself12794.powersapi.power;
 
-import com.himself12794.powersapi.powerfx.PowerEffect;
-import com.himself12794.powersapi.util.UsefulMethods;
-
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import com.himself12794.powersapi.api.power.PowerInstant;
+import com.himself12794.powersapi.util.UsefulMethods;
+
 public class Push extends PowerInstant {
 	
-	Push() {
+	public Push() {
 		
 		setPower(0.0F);
 		setMaxConcentrationTime(10 * 20);

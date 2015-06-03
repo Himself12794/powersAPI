@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.power;
 
+import com.himself12794.powersapi.api.power.PowerInstant;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.util.MovingObjectPosition;
@@ -7,7 +9,7 @@ import net.minecraft.world.World;
 
 public class Lightning extends PowerInstant {
 	
-	Lightning() {
+	public Lightning() {
 		setPower(5.0F);
 		setCoolDown(10);
 		setDuration(0);

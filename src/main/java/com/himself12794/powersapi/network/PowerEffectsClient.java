@@ -1,18 +1,15 @@
 package com.himself12794.powersapi.network;
 
-import com.himself12794.powersapi.entity.EntitySpell;
-import com.himself12794.powersapi.powerfx.PowerEffect;
-import com.himself12794.powersapi.util.Reference;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
 
 public class PowerEffectsClient implements IMessage {
 	
@@ -39,7 +36,7 @@ public class PowerEffectsClient implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		
-		ByteBufUtils.writeVarShort(buf, effect.id);
+		ByteBufUtils.writeVarShort(buf, effect.getId());
 		ByteBufUtils.writeVarInt(buf, affectedEntityId, 4);
 		ByteBufUtils.writeVarInt(buf, casterEntityId, 4);
 		ByteBufUtils.writeVarShort(buf, isDone ? 1 : 0);

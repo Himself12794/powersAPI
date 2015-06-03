@@ -6,10 +6,7 @@ import net.minecraft.util.EnumParticleTypes;
 
 public class Slam extends Lift {
 
-	Slam(int id) {
-		super(id);
-		// TODO Auto-generated constructor stub
-	}
+	public Slam() {}
 
 	@Override
 	public void onRemoval(EntityLivingBase entity, EntityLivingBase caster) {

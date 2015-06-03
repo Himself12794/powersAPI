@@ -1,13 +1,14 @@
 package com.himself12794.powersapi.powerfx;
 
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
 public class RapidCellularRegeneration extends PowerEffect {
 	
-	RapidCellularRegeneration(int id) {
-		super(id);
+	public RapidCellularRegeneration() {
 		negateable = true;
 	}
 	

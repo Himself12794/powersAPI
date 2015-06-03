@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.powerfx;
+package com.himself12794.powersapi.api.powerfx;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -6,35 +6,36 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowerEffectsClient;
+import com.himself12794.powersapi.powerfx.Levitate;
+import com.himself12794.powersapi.powerfx.Lift;
+import com.himself12794.powersapi.powerfx.Paralysis;
+import com.himself12794.powersapi.powerfx.RapidCellularRegeneration;
+import com.himself12794.powersapi.powerfx.Slam;
 import com.himself12794.powersapi.util.Reference;
 
 public abstract class PowerEffect {
 	
-	public static final PowerEffect[] spellEffectIds = new PowerEffect[32];
-	public static final PowerEffect rapidCellularRegeneration = new RapidCellularRegeneration(0);
-	public static final PowerEffect lift = new Lift(1);
-	public static final PowerEffect slam = new Slam(2);
-	public static final PowerEffect levitate = new Levitate(3);
-	public static final PowerEffect paralysis = new Paralysis(4);
+	public static final PowerEffect[] powerEffectIds = new PowerEffect[32];
+	public static final PowerEffect negated = registerEffect(new Negated());
+	public static final PowerEffect rapidCellularRegeneration = registerEffect(new RapidCellularRegeneration());
+	public static final PowerEffect lift = registerEffect(new Lift());
+	public static final PowerEffect slam = registerEffect(new Slam());
+	public static final PowerEffect levitate = registerEffect(new Levitate());
+	public static final PowerEffect paralysis = registerEffect(new Paralysis());
 	
-	private static int spellEffectCount = 0;
+	private static int powerEffectCount = 0;
 	
 	
-	public final int id;
+	private int id = 0;
 	protected boolean negateable = false;
 	
-	PowerEffect(int id) {
-		this.id = id;
-		spellEffectIds[id] = this;
-	}
-	
 	/**
-	 * This function is called every tick the spell is in effect on the target.
+	 * This function is called every tick the power is in effect on the target.
 	 * 
 	 * 
-	 * @param entity The entity on which the spell is effecting
+	 * @param entity The entity on which the power is effecting
 	 * @param timeLeft
-	 * @param caster The entity who cast the spell
+	 * @param caster The entity who cast the power
 	 * @return
 	 */
 	public abstract void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster);
@@ -58,7 +59,7 @@ public abstract class PowerEffect {
 		data.setShort("id", (short) id);
 		data.setInteger("duration", duration);
 		data.setInteger("caster", caster.getEntityId());
-		//NBTTagIntArray spellEffectData = new NBTTagIntArray(data);
+		//NBTTagIntArray powerEffectData = new NBTTagIntArray(data);
 		
 		activeEffects.appendTag(data);
 		target.getEntityData().setTag(Reference.TagIdentifiers.powerEffects, activeEffects);
@@ -67,7 +68,7 @@ public abstract class PowerEffect {
 
 	
 	/**
-	 * Applies the spell effect to the specific entity, for a specific time.
+	 * Applies the power effect to the specific entity, for a specific time.
 	 * <p>
 	 * Setting the duration to less than 0 makes it last until removed.
 	 * 
@@ -128,9 +129,8 @@ public abstract class PowerEffect {
     }
 	
 	/**
-	 * Clears any traces of the effect from the entity, if they have it.
-	 * <p>
-	 * If the duration left is not 0, also triggers {@link PowerEffect#onRemoval(EntityLivingBase)}
+	 * Clears any traces of the effect from the entity, if they have it, 
+	 * and triggers {@link PowerEffect#onRemoval(EntityLivingBase, EntityLivingBase)}
 	 * 
 	 * @param target
 	 */
@@ -180,14 +180,36 @@ public abstract class PowerEffect {
 		return getEffectTimeRemainingOn(entity) != 0;
 	}
 	
+	public final int getId() {
+		return id;
+	}
+	
+	protected void setNegateable(boolean state) {negateable = state;}
+	
+	public boolean isNegateable() {return negateable;}
+	
+	public static PowerEffect registerEffect(PowerEffect effect) {
+		
+		if (powerEffectIds[powerEffectCount + 1] != null && effect.id != 0 && powerEffectIds[effect.id] != effect && getEffectById(effect.id) == null) {
+
+			powerEffectCount++;
+			effect.id = powerEffectCount;
+			powerEffectIds[effect.id] = effect;
+			System.out.println("New effect added");
+			
+		}
+		
+		return effect;
+		
+	}
+	
 	public static PowerEffect[] getRegisteredSpellEffects() {
-		return spellEffectIds;
+		return powerEffectIds;
 	}
 	
 	public static PowerEffect getEffectById(int id) {
 
-		if (spellEffectIds[id] != null) return spellEffectIds[id];
-		return null;
+		return powerEffectIds[id];
 	}
 	
 	public static NBTTagList getActiveEffects(EntityLivingBase entity) {

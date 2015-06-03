@@ -1,15 +1,16 @@
 package com.himself12794.powersapi.power;
 
-import com.himself12794.powersapi.powerfx.PowerEffect;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import com.himself12794.powersapi.api.power.PowerRanged;
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
+
 public class Dummy extends PowerRanged {
 	
-	Dummy() {
+	public Dummy() {
 		setPower(0.0F);
 		setCoolDown(20);
 		setDuration(0);

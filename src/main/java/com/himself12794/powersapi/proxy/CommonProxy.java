@@ -12,14 +12,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import com.himself12794.powersapi.Config;
 import com.himself12794.powersapi.ModRecipes;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.api.event.UpdatesHandler;
+import com.himself12794.powersapi.api.power.Power;
 import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.events.PowerEffectHandler;
-import com.himself12794.powersapi.events.UpdatesHandler;
 import com.himself12794.powersapi.items.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
-import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {

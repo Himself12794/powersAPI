@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.api.power.Power;
 import com.himself12794.powersapi.util.Reference;
 
 public class PowerActivator extends Item {

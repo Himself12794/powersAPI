@@ -1,15 +1,13 @@
 package com.himself12794.powersapi.util;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.PowerEffectsClient;
-import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.powerfx.PowerEffect;
-
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.api.power.Power;
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
+import com.himself12794.powersapi.network.PowerEffectsClient;
 
 public final class DataWrapper {
 	
@@ -77,7 +75,9 @@ public final class DataWrapper {
 				
 				if (spfx != null) {
 					
-					if (timeRemaining > 0) {
+					boolean shouldNegate = (PowerEffect.negated.isEffecting(theEntity) && spfx.isNegateable());
+					
+					if (timeRemaining > 0 && !shouldNegate) {
 						
 						spfx.onUpdate(theEntity, timeRemaining, caster);
 						PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(spfx, theEntity, caster, false, timeRemaining));
@@ -86,7 +86,7 @@ public final class DataWrapper {
 						
 					} 
 					
-					else if (timeRemaining < 0) {
+					else if (timeRemaining < 0 && !shouldNegate) {
 						
 						spfx.onUpdate(theEntity, 0, caster);
 						PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(spfx, theEntity, caster, false, 0));

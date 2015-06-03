@@ -1,17 +1,15 @@
 package com.himself12794.powersapi.powerfx;
 
-import com.himself12794.powersapi.entity.ai.EntityAIDoNothing;
-
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
+import com.himself12794.powersapi.entity.ai.EntityAIDoNothing;
+
 public class Paralysis extends PowerEffect {
 
-	Paralysis(int id) {
-		super(id);
-		// TODO Auto-generated constructor stub
-	}
+	public Paralysis() {}
 
 	@Override
 	public void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster) {

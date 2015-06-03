@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.power;
+package com.himself12794.powersapi.api.power;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

@@ -5,11 +5,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.powerfx.PowerEffect;
+import com.himself12794.powersapi.api.power.PowerBuff;
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
 
 public class Heal extends PowerBuff {
 	
-	Heal() {
+	public Heal() {
 		setDuration(0);
 		setPower(0.25F);
 		setCoolDown(1);

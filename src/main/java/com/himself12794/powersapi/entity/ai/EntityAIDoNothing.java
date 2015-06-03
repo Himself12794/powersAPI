@@ -1,10 +1,9 @@
 package com.himself12794.powersapi.entity.ai;
 
-import com.himself12794.powersapi.powerfx.PowerEffect;
-
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
+
+import com.himself12794.powersapi.api.powerfx.PowerEffect;
 
 public class EntityAIDoNothing extends EntityAIBase {
 
