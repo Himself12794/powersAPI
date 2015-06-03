@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.api.power;
+package com.himself12794.powersapi.power;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,16 +15,6 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.power.Dummy;
-import com.himself12794.powersapi.power.DummyHoming;
-import com.himself12794.powersapi.power.Flames;
-import com.himself12794.powersapi.power.Heal;
-import com.himself12794.powersapi.power.Immortalize;
-import com.himself12794.powersapi.power.Incinerate;
-import com.himself12794.powersapi.power.Lightning;
-import com.himself12794.powersapi.power.Push;
-import com.himself12794.powersapi.power.Slam;
-import com.himself12794.powersapi.power.Telekinesis;
 import com.himself12794.powersapi.util.Reference;
 
 /**

@@ -79,8 +79,10 @@ public class UsefulMethods {
 		return false;
 	}
 	
-	public static MovingObjectPosition getMouseOverExtended(float dist)
-	{
+	public static MovingObjectPosition getMouseOverExtended(float dist) {
+		
+		//System.out.println("Getting the position");
+		
 	    Minecraft mc = FMLClientHandler.instance().getClient();
 	    Entity theRenderViewEntity = mc.getRenderViewEntity();
 	    AxisAlignedBB theViewBoundingBox = new AxisAlignedBB(
@@ -91,6 +93,7 @@ public class UsefulMethods {
 	            theRenderViewEntity.posY+1.5D,
 	            theRenderViewEntity.posZ+0.5D
 	            );
+	    
 	    MovingObjectPosition returnMOP = null;
 	    if (mc.theWorld != null)
 	    {

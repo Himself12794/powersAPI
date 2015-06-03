@@ -15,8 +15,6 @@ public class Config {
 		
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 		
-
-		
 		/*Config for Spell Options*/
 		ConfigCategory powers = config.getCategory("Powers");
 		powers.setComment("Configuration for powers");
@@ -30,17 +28,16 @@ public class Config {
 		powers.put("FlamethrowingGriefing", flames);
 				
 		// Instant Spell Range Option
-		Property instantPower = new Property("InstantSpellRange", "50", Property.Type.INTEGER);
+		Property instantPower = new Property("InstantPowerRange", "50", Property.Type.INTEGER);
 		instantPower.setMinValue(1);
 		instantPower.setMaxValue(100);
 		instantPower.comment = "The range for instant powers. Max is 100 blocks, min is 1";
-		powers.put("InstantSpellRange", instantPower);
+		powers.put("InstantPowerRange", instantPower);
 		
 		config.load();
 		
 		flamethrowing = powers.get("FlamethrowingGriefing").getInt();
-		
-		instantPowerRange = instantPower.getInt();
+		instantPowerRange = powers.get("InstantPowerRange").getInt();
 		
 		config.save();
 	}

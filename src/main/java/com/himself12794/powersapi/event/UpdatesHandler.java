@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.api.event;
+package com.himself12794.powersapi.event;
 
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

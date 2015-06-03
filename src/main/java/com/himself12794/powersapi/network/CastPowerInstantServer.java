@@ -9,7 +9,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import com.himself12794.powersapi.api.power.Power;
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.Reference;
 
 public class CastPowerInstantServer implements IMessage {
@@ -51,8 +52,6 @@ public class CastPowerInstantServer implements IMessage {
        
         @Override
         public IMessage onMessage(CastPowerInstantServer message, MessageContext ctx) {
-    		
-    		//UsefulThings.print("Got message from client to cast a spell");
         	
         	if (ctx.side.isServer()) {
         		
@@ -62,7 +61,7 @@ public class CastPowerInstantServer implements IMessage {
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
         		MovingObjectPosition target = new MovingObjectPosition((EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id));		
         		
-        		caster.getEntityData().setBoolean(prefix + "spell.success", spell.onStrike(target.entityHit.worldObj, target, caster, 1.0F));
+        		caster.getEntityData().setBoolean(prefix + "power.success", spell.onStrike(target.entityHit.worldObj, target, caster, 1.0F));
         		
         	}
         	

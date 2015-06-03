@@ -5,9 +5,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.api.power.Power;
-import com.himself12794.powersapi.api.powerfx.PowerEffect;
 import com.himself12794.powersapi.network.PowerEffectsClient;
+import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.powerfx.PowerEffect;
 
 public final class DataWrapper {
 	

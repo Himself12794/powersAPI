@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.api.powerfx;
+package com.himself12794.powersapi.powerfx;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -6,22 +6,12 @@ import net.minecraft.nbt.NBTTagList;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowerEffectsClient;
-import com.himself12794.powersapi.powerfx.Levitate;
-import com.himself12794.powersapi.powerfx.Lift;
-import com.himself12794.powersapi.powerfx.Paralysis;
-import com.himself12794.powersapi.powerfx.RapidCellularRegeneration;
-import com.himself12794.powersapi.powerfx.Slam;
 import com.himself12794.powersapi.util.Reference;
 
 public abstract class PowerEffect {
 	
 	public static final PowerEffect[] powerEffectIds = new PowerEffect[32];
 	public static final PowerEffect negated = registerEffect(new Negated());
-	public static final PowerEffect rapidCellularRegeneration = registerEffect(new RapidCellularRegeneration());
-	public static final PowerEffect lift = registerEffect(new Lift());
-	public static final PowerEffect slam = registerEffect(new Slam());
-	public static final PowerEffect levitate = registerEffect(new Levitate());
-	public static final PowerEffect paralysis = registerEffect(new Paralysis());
 	
 	private static int powerEffectCount = 0;
 	

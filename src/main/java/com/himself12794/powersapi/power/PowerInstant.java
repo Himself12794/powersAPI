@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.api.power;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +23,11 @@ public class PowerInstant extends Power {
 		
 		if (world.isRemote) {
 			
-			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(Config.instantPowerRange);
+			System.out.println(Config.instantPowerRange);
+			
+			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(40);
+			
+			if (pos == null) return false;
 			
 			if (pos.entityHit != null ) {
 				

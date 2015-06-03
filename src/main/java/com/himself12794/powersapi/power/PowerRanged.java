@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.api.power;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

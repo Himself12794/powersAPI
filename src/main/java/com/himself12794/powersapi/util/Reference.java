@@ -1,6 +1,5 @@
 package com.himself12794.powersapi.util;
 
-
 public class Reference {
 	
     public static final String MODID = "powersAPI";

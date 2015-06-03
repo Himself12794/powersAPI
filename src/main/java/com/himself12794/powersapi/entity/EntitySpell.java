@@ -21,9 +21,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.Powers;
-import com.himself12794.powersapi.api.power.IHomingPower;
-import com.himself12794.powersapi.api.power.PowerRanged;
+import com.himself12794.powersapi.power.IHomingPower;
+import com.himself12794.powersapi.power.PowerRanged;
 /**
  * This is pretty much the same as an EntityThrowable. Biggest difference is that it does not lose speed.
  */
@@ -41,7 +40,7 @@ public class EntitySpell extends Entity implements IProjectile
     private String throwerName;
     private int ticksInGround;
     private int ticksInAir;
-	protected PowerRanged power = Powers.dummy;
+	protected PowerRanged power;
 	protected float modifier = 1.0F;
 
     public EntitySpell(World worldIn)

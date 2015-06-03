@@ -59,8 +59,6 @@ public class PowersAPI {
     
     @EventHandler
     public void init(FMLInitializationEvent event) {
-    	
-    	//MinecraftForge.EVENT_BUS.register(new EagleVision());
     	proxy.init(event);
         
     }
