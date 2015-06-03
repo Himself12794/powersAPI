@@ -34,15 +34,6 @@ public class PowersAPI {
 		logger.info(msg);
 	}
 	
-	public static CreativeTabs powersAPI = new CreativeTabs("powersAPI") {
-	    @Override
-	    @SideOnly(Side.CLIENT)
-	    public Item getTabIconItem() {
-	        return Items.enchanted_book;
-	    }
-	};
-	
-
 	@SidedProxy(
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
