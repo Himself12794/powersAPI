@@ -23,7 +23,7 @@ public class PowerInstant extends Power {
 		
 		if (world.isRemote) {
 			
-			System.out.println(Config.instantPowerRange);
+			//System.out.println(Config.instantPowerRange);
 			
 			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(40);
 			

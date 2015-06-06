@@ -14,6 +14,7 @@ import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
+import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
@@ -33,8 +34,7 @@ public class CommonProxy {
 		// register spells
 		//Power.registerPowers();
 		
-		// register items
-		// ModItems.addItems();
+		PowerEffect.registerEffects();
 		
 		// register entities
 		EntityRegistry.registerModEntity(EntitySpell.class, "spell", 1, PowersAPI.instance, 80, 3, true);

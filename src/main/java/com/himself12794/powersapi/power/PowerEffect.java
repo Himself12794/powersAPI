@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.powerfx;
+package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,12 +11,20 @@ import com.himself12794.powersapi.util.Reference;
 public abstract class PowerEffect {
 	
 	public static final PowerEffect[] powerEffectIds = new PowerEffect[32];
-	public static final PowerEffect negated = registerEffect(new Negated());
+	public static PowerEffect negated;
 	
 	private static int powerEffectCount = 0;
 	
+	public static void registerEffects(){
+		
+		 negated = PowerEffect.registerEffect(new PowerEffect(){
+			@Override
+			public void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster) {}
+		});
+		
+	}
 	
-	private int id = 0;
+	private int id;
 	protected boolean negateable = false;
 	
 	/**
@@ -170,6 +178,10 @@ public abstract class PowerEffect {
 		return getEffectTimeRemainingOn(entity) != 0;
 	}
 	
+	private final void setId(int id) {
+		this.id = id;
+	}
+	
 	public final int getId() {
 		return id;
 	}
@@ -180,16 +192,32 @@ public abstract class PowerEffect {
 	
 	public static PowerEffect registerEffect(PowerEffect effect) {
 		
-		if (powerEffectIds[powerEffectCount + 1] != null && effect.id != 0 && powerEffectIds[effect.id] != effect && getEffectById(effect.id) == null) {
-
-			powerEffectCount++;
-			effect.id = powerEffectCount;
-			powerEffectIds[effect.id] = effect;
-			System.out.println("New effect added");
+		int nextId = getNextIndex();
+		if (nextId != -1) {
+			
+			effect.setId(nextId);
+			powerEffectIds[nextId] = effect;
+			++powerEffectCount;
+			PowersAPI.logger.info("Registered effect " + effect.getClass().getSimpleName());
+			return effect;
+			
+		} else {
+			return powerEffectIds[0];
+		}
+		
+	}
+	
+	private static int getNextIndex() {
+		
+		//System.out.println("Getting next index");
+		
+		for (int i = 0; i < powerEffectIds.length; i++) {
+			PowersAPI.logger.debug(powerEffectIds[i]);
+			if (powerEffectIds[i] == null) return i;
 			
 		}
 		
-		return effect;
+		return -1;
 		
 	}
 	
