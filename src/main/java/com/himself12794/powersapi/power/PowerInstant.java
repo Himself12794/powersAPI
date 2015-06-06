@@ -43,8 +43,8 @@ public class PowerInstant extends Power {
 			
 		} else {
 			
-			successful = caster.getEntityData().getBoolean(Reference.MODID + ".spell.success");
-			caster.getEntityData().setBoolean(Reference.MODID + ".spell.success", false);
+			successful = caster.getEntityData().getBoolean(Reference.MODID + ".power.success");
+			caster.getEntityData().setBoolean(Reference.MODID + ".power.success", false);
 			
 		}
 		
