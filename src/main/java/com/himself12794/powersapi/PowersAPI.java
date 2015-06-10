@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.apache.logging.log4j.Logger;
 
+import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.proxy.CommonProxy;
 import com.himself12794.powersapi.util.Reference;
 
@@ -34,6 +35,14 @@ public class PowersAPI {
 		logger.info(msg);
 	}
 	
+	public static CreativeTabs powersAPI = new CreativeTabs("powersAPI") {
+	    @Override
+	    @SideOnly(Side.CLIENT)
+	    public Item getTabIconItem() {
+	        return Items.enchanted_book;
+	    }
+	};
+	
 	@SidedProxy(
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
@@ -44,7 +53,8 @@ public class PowersAPI {
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {
     	
-    	logger = event.getModLog();
+    	logger = event.getModLog();		// load config
+		Config.loadConfig(event);
     	proxy.preinit(event);
     }
     

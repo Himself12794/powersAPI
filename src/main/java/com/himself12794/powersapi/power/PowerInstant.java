@@ -7,8 +7,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-import com.himself12794.powersapi.Config;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -25,7 +25,7 @@ public class PowerInstant extends Power {
 			
 			//System.out.println(Config.instantPowerRange);
 			
-			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(40);
+			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(Config.instantPowerRange);
 			
 			if (pos == null) return false;
 			

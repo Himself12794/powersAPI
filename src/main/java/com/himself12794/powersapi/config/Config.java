@@ -1,4 +1,4 @@
-package com.himself12794.powersapi;
+package com.himself12794.powersapi.config;
 
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -40,6 +40,8 @@ public class Config {
 		instantPowerRange = powers.get("InstantPowerRange").getInt();
 		
 		config.save();
+		
+		
 	}
 	
 }

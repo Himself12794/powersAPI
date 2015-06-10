@@ -198,7 +198,7 @@ public abstract class PowerEffect {
 			effect.setId(nextId);
 			powerEffectIds[nextId] = effect;
 			++powerEffectCount;
-			PowersAPI.logger.info("Registered effect " + effect.getClass().getSimpleName());
+			//PowersAPI.logger.info("Registered effect " + effect.getClass().getSimpleName());
 			return effect;
 			
 		} else {

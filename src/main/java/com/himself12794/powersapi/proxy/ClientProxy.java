@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.proxy;
 
+import com.himself12794.powersapi.item.ModItems;
+
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,7 +18,7 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event)
     {
     	super.init(event);    	
-    	//ModItems.registerTextures(event);
+    	ModItems.registerTextures(event);
     }
     
     public Side getSide() {

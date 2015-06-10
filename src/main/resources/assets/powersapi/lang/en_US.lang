@@ -1,1 +1,3 @@
-itemGroup
+itemGroup.powersAPI=Powers API
+
+item.powersAPI_powerActivator.name=Power Activator

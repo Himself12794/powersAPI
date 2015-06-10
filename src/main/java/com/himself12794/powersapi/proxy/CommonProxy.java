@@ -11,6 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.entity.EntitySpell;
 import com.himself12794.powersapi.event.UpdatesHandler;
+import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
@@ -27,12 +28,11 @@ public class CommonProxy {
 		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
 		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
 		network.registerMessage(PowerEffectsClient.Handler.class, PowerEffectsClient.class, 2, Side.CLIENT);
-		
-		// load config
-		//Config.loadConfig(event);
        
 		// register spells
 		//Power.registerPowers();
+		
+		ModItems.addItems();
 		
 		PowerEffect.registerEffects();
 		
