@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.power.Power;
@@ -31,7 +32,7 @@ public class PowerActivator extends Item {
 		setHasSubtypes(true);
 		GameRegistry.registerItem(this, name);
 		setUnlocalizedName(Reference.MODID + "_" + name);
-		if (Config.enablePowerActivator) setCreativeTab(PowersAPI.powersAPI);
+		if (Config.enablePowerActivator) setCreativeTab(ModCreativeTabs.powersAPI);
 	}
     
     @Override
