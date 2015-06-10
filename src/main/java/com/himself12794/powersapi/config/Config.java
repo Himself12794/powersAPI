@@ -10,6 +10,7 @@ public class Config {
 	public static ConfigCategory powersConfig;
 	public static int flamethrowing;
 	public static int instantPowerRange;
+	public static boolean enablePowerActivator;
 	
 	public static void loadConfig(FMLPreInitializationEvent event ) {
 		
@@ -19,7 +20,6 @@ public class Config {
 		ConfigCategory powers = config.getCategory("Powers");
 		powers.setComment("Configuration for powers");
 		
-		//Property flames = config.get(spells, "FlamethrowingGriefing");
 		// Flamethrowing Griefing Config Option
 		Property flames = new Property("FlamethrowingGriefing", "1", Property.Type.INTEGER);
 		flames.setMinValue(0);
@@ -34,10 +34,16 @@ public class Config {
 		instantPower.comment = "The range for instant powers. Max is 100 blocks, min is 1";
 		powers.put("InstantPowerRange", instantPower);
 		
+		// Whether or not to make the power activator available
+		Property powerActivator = new Property("EnablePowerActivator", "false", Property.Type.BOOLEAN);
+		powerActivator.comment = "Whether or not the power activator tool should be available in game";
+		powers.put("EnablePowerActivator", powerActivator);
+		
 		config.load();
 		
 		flamethrowing = powers.get("FlamethrowingGriefing").getInt();
 		instantPowerRange = powers.get("InstantPowerRange").getInt();
+		enablePowerActivator = powers.get("EnablePowerActivator").getBoolean();
 		
 		config.save();
 		

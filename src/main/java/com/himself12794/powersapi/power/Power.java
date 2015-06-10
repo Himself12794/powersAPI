@@ -45,6 +45,7 @@ public abstract class Power {
 	private int coolDown = 4;
 	/**How long the power can be used until a cooldown is forced*/
 	private int maxConcentrationTime = 0;
+	private boolean visibility = true;
 	
 	/**
 	 * This determines how the power is cast, then casts it.
@@ -213,6 +214,10 @@ public abstract class Power {
 	public String getDisplayName() {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
 	}
+	
+	public Power setVisibility(boolean value) {visibility = value; return this;}
+	
+	public boolean isVisible() { return visibility; }
 	
 	public Power setPower(float value) { power = value; return this; }
 

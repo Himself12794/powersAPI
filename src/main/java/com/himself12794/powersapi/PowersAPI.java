@@ -19,7 +19,8 @@ import com.himself12794.powersapi.proxy.CommonProxy;
 import com.himself12794.powersapi.util.Reference;
 
 /**
- * This mod is a Powers API. It was whatever I shoved into it, but it's become steady at this.
+ * This is a mod to faciliate adding powers to minecraft. It's optimized to be used like spells,
+ * or super powers, but it is definitely open to creativity.
  * 
  * @author Himself12794
  *
@@ -34,14 +35,6 @@ public class PowersAPI {
 	public static void print(Object msg) {
 		logger.info(msg);
 	}
-	
-	public static CreativeTabs powersAPI = new CreativeTabs("powersAPI") {
-	    @Override
-	    @SideOnly(Side.CLIENT)
-	    public Item getTabIconItem() {
-	        return Items.enchanted_book;
-	    }
-	};
 	
 	@SidedProxy(
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
