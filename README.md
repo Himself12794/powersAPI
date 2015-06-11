@@ -1,4 +1,4 @@
-# powersAPI
+# Powers API
 Facilitating Adding Powers/Spells to Minecraft
 
 This API just adds an interface to make it easier to create any kind of power to Minecraft.
