@@ -28,7 +28,6 @@ public class CommonProxy {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
 		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
 		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
-		network.registerMessage(PowerEffectsClient.Handler.class, PowerEffectsClient.class, 2, Side.CLIENT);
        
 		// register spells
 		//Power.registerPowers();

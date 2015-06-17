@@ -16,9 +16,28 @@ import net.minecraft.world.World;
 public class PowerBuff extends Power {
 
 	public final boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
-		
+
 		return onCast(world, caster, tome, modifier);
 		
+	}
+	
+	@Override
+	public boolean onCast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
+		
+		boolean flag = super.onCast( world, caster, tome, modifier );
+		
+		if (this instanceof IEffectActivator && flag) {
+			
+			PowerEffect pfx = ((IEffectActivator)this).getPowerEffect();
+			
+			if (!pfx.isEffecting( caster )) pfx.addTo( caster, getDuration(), caster );
+			else pfx.clearFrom( caster, caster );
+			
+			return true;
+			
+		}
+		
+		return flag;
 	}
 	
 	public final String getTypeDescriptor(ItemStack stack, EntityPlayer player) {

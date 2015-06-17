@@ -8,6 +8,8 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.himself12794.powersapi.power.PowerEffect;
 
@@ -63,6 +65,7 @@ public class PowerEffectsClient implements IMessage {
         	if (ctx.side.isClient()) {
         		
         		World world = Minecraft.getMinecraft().theWorld;
+        		//World world = ctx.getServerHandler().playerEntity.worldObj;
         		EntityLivingBase target = null;
         		if (world.getEntityByID(message.affectedEntityId) instanceof EntityLivingBase) target = (EntityLivingBase) world.getEntityByID(message.affectedEntityId);
         		EntityLivingBase caster = null;

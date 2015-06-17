@@ -41,8 +41,6 @@ public class PowerActivator extends Item {
 		
     	if (spell != null && spell.canUsePower(player)) {
     		
-    		//UsefulThings.print("Casting spell: " + spell.getDisplayName());
-    		
     		if (spell.onPreparePower(stack, world, player)) {
     			
     			if ( spell.isConcentrationPower() ) {
@@ -52,9 +50,9 @@ public class PowerActivator extends Item {
     				}
         			
     			} else if (spell.cast(world, player, stack, 1)) {
-    				//UsefulThings.print("The spell was successfully cast.");
+
     				if (spell.onFinishedCasting(stack, world, player)) spell.triggerCooldown(player);
-    				//UsefulThings.print("Cooldown is: " + Spells.getCoolDownRemaining(stack) );
+
     			}
     		}
     	}
@@ -114,6 +112,8 @@ public class PowerActivator extends Item {
 			
 			if (spell.getDuration() > 0 && spell.showDuration(stack, player, par4)) 
 				list.add(EnumChatFormatting.GREEN + "Duration: " + String.format("%.2f",(float)spell.getDuration() * modifier / 20.0F) + "s");
+			else if (spell.getDuration() <= -1)
+				list.add( EnumChatFormatting.GREEN + "Duration: Until Removed");
 			
 			int remaining = spell.getCoolDownRemaining(player);
 			if ( remaining > 0 ) list.add(EnumChatFormatting.GRAY + "Time left: " + String.format("%.2f",(float)remaining / 20.0F ) + "s");
@@ -158,6 +158,7 @@ public class PowerActivator extends Item {
     }
     
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean showDurabilityBar(ItemStack stack) {
     	if (PowersAPI.proxy.getSide().isClient()) {
         	
@@ -171,6 +172,7 @@ public class PowerActivator extends Item {
     }
     
     @Override
+    @SideOnly(Side.CLIENT)
     public double getDurabilityForDisplay(ItemStack stack) {
     	
     	if (PowersAPI.proxy.getSide().isClient()) {

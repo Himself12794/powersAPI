@@ -15,6 +15,8 @@ import com.himself12794.powersapi.util.UsefulMethods;
 
 public class PowerInstant extends Power {
 	
+	private int range = 40;
+	
 	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
 		
 		boolean successful = false;
@@ -25,7 +27,7 @@ public class PowerInstant extends Power {
 			
 			//System.out.println(Config.instantPowerRange);
 			
-			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(Config.instantPowerRange);
+			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(range);
 			
 			if (pos == null) return false;
 			
@@ -54,5 +56,9 @@ public class PowerInstant extends Power {
 	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {
 		return "Instant";
 	}
+	
+	public void setRange(int range) { this.range = range; }
+	
+	public int getRange() {return range;}
 
 }

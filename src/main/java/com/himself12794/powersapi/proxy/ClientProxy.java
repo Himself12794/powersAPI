@@ -1,6 +1,7 @@
 package com.himself12794.powersapi.proxy;
 
 import com.himself12794.powersapi.item.ModItems;
+import com.himself12794.powersapi.network.PowerEffectsClient;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -11,6 +12,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preinit(FMLPreInitializationEvent event) {
     	super.preinit(event);
+
+		network.registerMessage(PowerEffectsClient.Handler.class, PowerEffectsClient.class, 2, Side.CLIENT);
     }
 
 

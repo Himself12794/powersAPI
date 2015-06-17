@@ -1,11 +1,14 @@
 package com.himself12794.powersapi.util;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.DamageSource;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowerEffectsClient;
+import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 
@@ -21,7 +24,7 @@ public final class DataWrapper {
 		return new DataWrapper(entity);
 	}
 	
-	public static DataWrapper set(EntityLivingBase entity, NBTTagCompound data) {
+	private static DataWrapper set(EntityLivingBase entity, NBTTagCompound data) {
 
 		NBTTagCompound nbt = entity.getEntityData();
 		
@@ -79,7 +82,12 @@ public final class DataWrapper {
 					
 					if (timeRemaining > 0 && !shouldNegate) {
 						
-						spfx.onUpdate(theEntity, timeRemaining, caster);
+						if (spfx instanceof IPlayerOnly && theEntity instanceof EntityPlayer) {
+							
+							((IPlayerOnly)spfx).onUpdate( (EntityPlayer) theEntity, timeRemaining, caster );
+						
+						} else spfx.onUpdate(theEntity, timeRemaining, caster);
+						
 						PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(spfx, theEntity, caster, false, timeRemaining));
 						//spfx.addTo(theEntity, --timeRemaining, caster);
 						addPowerEffect(spfx, --timeRemaining, caster);
@@ -95,7 +103,99 @@ public final class DataWrapper {
 				}
 			}
 		}
+	}
+	
+	public boolean onAttacked(DamageSource ds, float amount) {
 		
+		if (!activePowerEffects.hasNoTags()) {
+			
+			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+				
+				NBTTagCompound nbttagcompound = activePowerEffects.getCompoundTagAt(i);
+				
+				int timeRemaining = nbttagcompound.getInteger("duration");
+				EntityLivingBase caster = null;
+				
+				if (caster instanceof EntityLivingBase) caster = (EntityLivingBase) theEntity.worldObj.getEntityByID(nbttagcompound.getInteger("caster"));
+				
+				PowerEffect spfx = PowerEffect.getEffectById(nbttagcompound.getShort("id"));
+				
+				if (spfx != null) {
+					
+					boolean shouldNegate = (PowerEffect.negated.isEffecting(theEntity) && spfx.isNegateable());
+					
+					if (!shouldNegate) {
+						
+						return spfx.onAttacked( ds, amount );
+						
+					} 
+				}
+			}
+		}
+		return true;
+	}
+	
+	public float onAttack(EntityLivingBase target, DamageSource ds, float amount) {
+		
+		if (!activePowerEffects.hasNoTags()) {
+			
+			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+				
+				NBTTagCompound nbttagcompound = activePowerEffects.getCompoundTagAt(i);
+				
+				EntityLivingBase caster = null;
+				
+				if (caster instanceof EntityLivingBase) caster = (EntityLivingBase) theEntity.worldObj.getEntityByID(nbttagcompound.getInteger("caster"));
+				
+				PowerEffect spfx = PowerEffect.getEffectById(nbttagcompound.getShort("id"));
+				
+				System.out.println(spfx.getId());
+				
+				if (spfx != null) {
+					
+					boolean shouldNegate = (PowerEffect.negated.isEffecting(theEntity) && spfx.isNegateable());
+					
+					if (!shouldNegate) {
+						
+						System.out.println("was not negated!");
+						
+						return spfx.onAttack( target, ds, amount, caster );
+						
+					} 
+				}
+			}
+		}
+		return amount;
+	}
+	
+	public float onHurt( DamageSource ds, float amount) {
+		
+		if (!activePowerEffects.hasNoTags()) {
+			
+			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+				
+				NBTTagCompound nbttagcompound = activePowerEffects.getCompoundTagAt(i);
+				
+				EntityLivingBase caster = null;
+				
+				if (caster instanceof EntityLivingBase) caster = (EntityLivingBase) theEntity.worldObj.getEntityByID(nbttagcompound.getInteger("caster"));
+				
+				PowerEffect spfx = PowerEffect.getEffectById(nbttagcompound.getShort("id"));
+				
+				if (spfx != null) {
+					
+					boolean shouldNegate = (PowerEffect.negated.isEffecting(theEntity) && spfx.isNegateable());
+					
+					if (!shouldNegate) {
+						
+						return spfx.onHurt( ds, amount );
+						
+					} 
+				}
+			}
+		}
+		
+		return amount;
 	}
 
 	public void updateAll() {

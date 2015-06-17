@@ -3,12 +3,13 @@ package com.himself12794.powersapi.power;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.DamageSource;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.util.Reference;
 
-public abstract class PowerEffect {
+public class PowerEffect {
 	
 	public static final PowerEffect[] powerEffectIds = new PowerEffect[32];
 	public static PowerEffect negated;
@@ -17,15 +18,13 @@ public abstract class PowerEffect {
 	
 	public static void registerEffects(){
 		
-		 negated = PowerEffect.registerEffect(new PowerEffect(){
-			@Override
-			public void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster) {}
-		});
-		
+		 negated = PowerEffect.registerEffect(new PowerEffect());
 	}
 	
 	private int id;
-	protected boolean negateable = false;
+	protected boolean negateable = true;
+	
+	public void onApplied(EntityLivingBase entity, int time, EntityLivingBase caster) {}
 	
 	/**
 	 * This function is called every tick the power is in effect on the target.
@@ -36,7 +35,50 @@ public abstract class PowerEffect {
 	 * @param caster The entity who cast the power
 	 * @return
 	 */
-	public abstract void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster);
+	public void onUpdate(EntityLivingBase entity, int timeLeft, EntityLivingBase caster){};
+	
+	/**
+	 * Called when the entity is attacked, before damage is registered.
+	 * Return false to cancel.<br> 
+	 * <b>Note:</b> the parameters are immutable, this is to determine whether or not
+	 * the attack should continue. Useful for adding type immunities.
+	 * If you want to change the amount of damage, see {@link PowerEffect#onHurt(DamageSource, float)}
+	 * 
+	 * @param damageSource
+	 * @param amount
+	 * @return
+	 */
+	public boolean onAttacked(DamageSource damageSource, float amount) {
+		return true;
+		
+	}
+	
+	/**
+	 * Called when the entity is damaged.
+	 * Return false to cancel. 
+	 * This allows you to change damage amounts. Will not be called if the attack was
+	 * canceled in {@link PowerEffect#onAttacked(DamageSource, float)}<br>
+	 * <b>Note:</b> Canceling this will still play the hurt animation and sound. 
+	 * 
+	 * @param damageSource
+	 * @param amount
+	 * @return the new damage amount.
+	 */
+	public float onHurt(DamageSource damageSource, float amount) {
+		
+		return amount;
+	}
+	
+	/**
+	 * Called when the entity attacks another entity.
+	 * 
+	 * @param damageSource
+	 * @param amount
+	 */
+	public float onAttack(EntityLivingBase target, DamageSource damageSource, float amount, EntityLivingBase caster) {
+		System.out.println("Effect succesfully passed down!");
+		return amount;
+	}
 	
 	/**
 	 * Called when the effect is removed.
@@ -49,7 +91,14 @@ public abstract class PowerEffect {
 	 */
 	public void onRemoval(EntityLivingBase entity, EntityLivingBase caster){}
 	
-	private final void addTot(EntityLivingBase target, int duration, EntityLivingBase caster) {
+	/**
+	 * The old method for adding a power effect to an entity.
+	 * 
+	 * @param target
+	 * @param duration
+	 * @param caster
+	 */
+	private final void addTo2(EntityLivingBase target, int duration, EntityLivingBase caster) {
 		
 		NBTTagList activeEffects = getActiveEffects(target);//target.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
 		
@@ -72,6 +121,7 @@ public abstract class PowerEffect {
 	 * 
 	 * @param target 
 	 * @param duration
+	 * @param caster
 	 */
     public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
     	
@@ -121,6 +171,7 @@ public abstract class PowerEffect {
             nbttagcompound1.setInteger("duration", duration);
             nbttagcompound1.setInteger("caster", (caster != null ? caster.getEntityId() : -1));
             activeEffects.appendTag(nbttagcompound1);
+            this.onApplied( target, duration, caster );
         }
 
         target.getEntityData().setTag(Reference.TagIdentifiers.powerEffects, activeEffects);
