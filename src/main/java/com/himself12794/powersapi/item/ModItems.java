@@ -11,7 +11,7 @@ import com.himself12794.powersapi.util.Reference;
 
 public final class ModItems {
 	
-	public static final int NUMBER = 1;
+	public static final int NUMBER = ModItems.class.getDeclaredFields().length - 1;
 	public static Item powerActivator;
 	
 	public static void addItems() {

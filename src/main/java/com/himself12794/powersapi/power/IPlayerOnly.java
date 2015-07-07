@@ -4,7 +4,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- * Just a convenience interface.
+ * Just a convenience interface. Denotes a PowerEffect that can only
+ * affect players.
  * 
  * @author Himself12794
  *

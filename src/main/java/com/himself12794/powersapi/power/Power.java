@@ -168,7 +168,7 @@ public abstract class Power {
 	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {return null; }
 	
 	/**
-	 * Location for model if the default Magic Tome one is not desired.
+	 * Location for model if the default one is not desired.
 	 * 
 	 * @param stack
 	 * @param player

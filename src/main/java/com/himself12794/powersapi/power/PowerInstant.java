@@ -57,8 +57,8 @@ public class PowerInstant extends Power {
 		return "Instant";
 	}
 	
-	public void setRange(int range) { this.range = range; }
+	protected void setRange(int range) { this.range = range; }
 	
-	public int getRange() {return range;}
+	protected int getRange() {return range;}
 
 }

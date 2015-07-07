@@ -1,6 +1,7 @@
 package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
@@ -24,6 +25,13 @@ public class PowerEffect {
 	private int id;
 	protected boolean negateable = true;
 	
+	/**
+	 * This is called when the effect is first applied to the entity.
+	 * 
+	 * @param entity
+	 * @param time
+	 * @param caster
+	 */
 	public void onApplied(EntityLivingBase entity, int time, EntityLivingBase caster) {}
 	
 	/**
@@ -129,6 +137,8 @@ public class PowerEffect {
         boolean flag = true;
         boolean remove = duration == 0;
         int location = -1;
+        
+        if (this instanceof IPlayerOnly && !(target instanceof EntityPlayer)) return;
 
         for (int i = 0; i < activeEffects.tagCount(); ++i)
         {
@@ -142,9 +152,11 @@ public class PowerEffect {
                 
                 if (caster != null) {
                 	
-	                if (nbttagcompound.getInteger("caster") != caster.getEntityId()) 
+	                if (nbttagcompound.getInteger("caster") != caster.getEntityId()) {
 	                	
 	                	nbttagcompound.setInteger("caster", caster.getEntityId());
+	                	
+	                }
 	                
                 }
 
@@ -286,6 +298,10 @@ public class PowerEffect {
 		
 		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
 		return activeEffects != null && activeEffects.hasKey(Reference.TagIdentifiers.powerEffects, 9) ? (NBTTagList)activeEffects.getTag(Reference.TagIdentifiers.powerEffects) : new NBTTagList();
+	}
+	
+	public static int getEffectCount() {
+		return PowerEffect.powerEffectCount;
 	}
 
 }
