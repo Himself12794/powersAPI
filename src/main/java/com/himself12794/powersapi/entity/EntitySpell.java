@@ -337,15 +337,20 @@ public class EntitySpell extends Entity implements IProjectile
      * Called when this EntityThrowable hits a block or entity.
      */
     protected void onImpact(MovingObjectPosition movingObject) {
+    	
 		if (power != null) {
-			//UsefulThings.print("Attacking the entity " + spell.getSpellSpeed());
+			
 			if (movingObject.entityHit != null && movingObject.entityHit != getThrower()) {
+				
 				power.onStrike(worldObj, movingObject,	getThrower(), 1);
+				
 				if (power.getPower() > 0 && movingObject.entityHit != null ) ((EntityLivingBase)movingObject.entityHit).setLastAttacker(getThrower());
+				
 				if (!power.isPiercingSpell() && movingObject.entityHit != null) setDead();
 				else if (power.isPiercingSpell() && movingObject.entityHit == null) setDead();
 				else if (power.isPiercingSpell() && movingObject.entityHit != null) ;
 				else setDead();
+				
 			} else power.onStrike(worldObj, movingObject, getThrower(), modifier);
 		}
 		else setDead();

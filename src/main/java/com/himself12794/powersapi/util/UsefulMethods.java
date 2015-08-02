@@ -2,6 +2,8 @@ package com.himself12794.powersapi.util;
 
 import java.util.List;
 
+import com.himself12794.powersapi.PowersAPI;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -290,7 +292,9 @@ public class UsefulMethods {
 	}
 	
 	public static BlockPos getBlockFromSide( BlockPos pos, EnumFacing side) {
-
+		
+		PowersAPI.print( "Block pos: " + pos + ", side hit: " + side );
+		
 		switch(side) {
 		
 		case DOWN: 	pos.up();

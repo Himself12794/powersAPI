@@ -1,29 +1,38 @@
 package com.himself12794.powersapi.power;
 
+import java.util.Map;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 
+import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.util.Reference;
 
 public class PowerEffect {
 	
-	public static final PowerEffect[] powerEffectIds = new PowerEffect[32];
-	public static PowerEffect negated;
+	public static final Map<String, Integer> idNameMapping = Maps.newHashMap();
+	public static final PowerEffect[] powerEffectIds = new PowerEffect[128];
+	public static final PowerEffect negated = PowerEffect.registerEffect( new PowerEffect().setUnlocalizedName("negated") );
 	
 	private static int powerEffectCount = 0;
 	
-	public static void registerEffects(){
-		
-		 negated = PowerEffect.registerEffect(new PowerEffect());
+	private int id;
+	protected String name;
+	protected boolean negateable = true;
+	
+	public String getUnlocalizedName() {
+		return name;
 	}
 	
-	private int id;
-	protected boolean negateable = true;
+	protected PowerEffect setUnlocalizedName(String name) {
+		this.name = name;
+		return this;
+	}
 	
 	/**
 	 * This is called when the effect is first applied to the entity.
@@ -260,13 +269,26 @@ public class PowerEffect {
 			
 			effect.setId(nextId);
 			powerEffectIds[nextId] = effect;
+			idNameMapping.put( effect.name, nextId );
 			++powerEffectCount;
-			//PowersAPI.logger.info("Registered effect " + effect.getClass().getSimpleName());
+			PowersAPI.logger.debug("Registered effect " + effect.getClass().getSimpleName());
 			return effect;
 			
 		} else {
 			return powerEffectIds[0];
 		}
+		
+	}
+	
+	public static PowerEffect getPowerEffect(String name) {
+		
+		final Integer index = idNameMapping.get( name );
+		
+		if (index != null) {
+			return powerEffectIds[index];
+		}
+		
+		return null;
 		
 	}
 	

@@ -11,9 +11,7 @@
 /MinecraftForge-License.txt
 /README.txt
 /eclipse/
-/.classpath
 /.gitignore
-/.project
 /.gradle/
-/.settings
+/.settings/
 /Compile to JAR.bat

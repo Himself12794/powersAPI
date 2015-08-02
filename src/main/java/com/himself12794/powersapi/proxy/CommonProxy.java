@@ -35,8 +35,6 @@ public class CommonProxy {
 		
 		ModItems.addItems();
 		
-		PowerEffect.registerEffects();
-		
 		// register entities
 		EntityRegistry.registerModEntity(EntitySpell.class, "spell", 1, PowersAPI.instance, 80, 3, true);
 	}
