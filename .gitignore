@@ -1,0 +1,14 @@
+/bin/
+/build/
+/gradle/
+/CREDITS-fml.txt
+/forge-1.8-11.14.1.1419-changelog.txt
+/gradlew
+/gradlew.bat
+/LICENSE-fml.txt
+/MinecraftForge-Credits.txt
+/MinecraftForge-License.txt
+/README.txt
+/eclipse/
+/.gradle/
+/.settings/
