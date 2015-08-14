@@ -126,7 +126,7 @@ public class PowerEffect {
 		//NBTTagIntArray powerEffectData = new NBTTagIntArray(data);
 		
 		activeEffects.appendTag(data);
-		target.getEntityData().setTag(Reference.TagIdentifiers.powerEffects, activeEffects);
+		target.getEntityData().setTag(Reference.TagIdentifiers.POWER_EFFECTS, activeEffects);
 		
 	}
 
@@ -195,7 +195,7 @@ public class PowerEffect {
             this.onApplied( target, duration, caster );
         }
 
-        target.getEntityData().setTag(Reference.TagIdentifiers.powerEffects, activeEffects);
+        target.getEntityData().setTag(Reference.TagIdentifiers.POWER_EFFECTS, activeEffects);
     }
 	
 	/**
@@ -319,7 +319,7 @@ public class PowerEffect {
 		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.TagIdentifiers.powerEffects);
 		
 		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
-		return activeEffects != null && activeEffects.hasKey(Reference.TagIdentifiers.powerEffects, 9) ? (NBTTagList)activeEffects.getTag(Reference.TagIdentifiers.powerEffects) : new NBTTagList();
+		return activeEffects != null && activeEffects.hasKey(Reference.TagIdentifiers.POWER_EFFECTS, 9) ? (NBTTagList)activeEffects.getTag(Reference.TagIdentifiers.POWER_EFFECTS) : new NBTTagList();
 	}
 	
 	public static int getEffectCount() {

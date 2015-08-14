@@ -28,8 +28,8 @@ public final class DataWrapper {
 
 		NBTTagCompound nbt = entity.getEntityData();
 		
-		nbt.setTag(Reference.TagIdentifiers.powerCooldowns, data.getTag(Reference.TagIdentifiers.powerCooldowns));
-		nbt.setTag(Reference.TagIdentifiers.powerEffects, data.getTag(Reference.TagIdentifiers.powerEffects));
+		nbt.setTag(Reference.TagIdentifiers.POWER_COOLDOWNS, data.getTag(Reference.TagIdentifiers.POWER_COOLDOWNS));
+		nbt.setTag(Reference.TagIdentifiers.POWER_EFFECTS, data.getTag(Reference.TagIdentifiers.POWER_EFFECTS));
 		
 		return new DataWrapper(entity);
 		
@@ -220,8 +220,8 @@ public final class DataWrapper {
 		
 		NBTTagCompound nbt = entity.getEntityData();
 		
-		nbt.setTag(Reference.TagIdentifiers.powerCooldowns, powerCoolDowns);
-		nbt.setTag(Reference.TagIdentifiers.powerEffects, activePowerEffects);
+		nbt.setTag(Reference.TagIdentifiers.POWER_COOLDOWNS, powerCoolDowns);
+		nbt.setTag(Reference.TagIdentifiers.POWER_EFFECTS, activePowerEffects);
 		
 	}
 	

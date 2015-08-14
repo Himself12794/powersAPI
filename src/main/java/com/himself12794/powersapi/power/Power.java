@@ -198,7 +198,7 @@ public abstract class Power {
 			
 		} else {
 			
-			nbt.setString(Reference.TagIdentifiers.power, power);
+			nbt.setString(Reference.TagIdentifiers.POWER_CURRENT, power);
 			stack.setTagCompound(nbt);
 			
 		}
@@ -307,7 +307,7 @@ public abstract class Power {
 		
 		if (Power.hasPower(stack)) {
 			
-			return lookupPower(stack.getTagCompound().getString( Reference.TagIdentifiers.power));
+			return lookupPower(stack.getTagCompound().getString( Reference.TagIdentifiers.POWER_CURRENT));
 			
 		}
 		
@@ -337,24 +337,24 @@ public abstract class Power {
 	
 	public final boolean canUsePower( EntityLivingBase player ) {
 		
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
+		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
 		
 		return coolDowns.getInteger(getUnlocalizedName()) <= 0;
 		
 	}
 	
 	public final int getCoolDownRemaining(EntityLivingBase player) {
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
+		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
 		
 		return coolDowns.getInteger(getUnlocalizedName());
 	}
 	
 	public final void setCoolDown(EntityLivingBase player, int amount) {
 		int id = player.getEntityId();
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
+		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
 		
 		coolDowns.setInteger(getUnlocalizedName(), amount);
-		player.getEntityData().setTag(Reference.TagIdentifiers.powerCooldowns, coolDowns);
+		player.getEntityData().setTag(Reference.TagIdentifiers.POWER_COOLDOWNS, coolDowns);
 	}
 	
 	public final void triggerCooldown( EntityLivingBase player ) {
@@ -365,7 +365,7 @@ public abstract class Power {
 	}
 	
 	public static boolean hasPower(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey(Reference.TagIdentifiers.power);
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey(Reference.TagIdentifiers.POWER_CURRENT);
 	}
 	
 	public static Power getPower(ItemStack stack) {
@@ -373,7 +373,7 @@ public abstract class Power {
 	}
 	
 	public static NBTTagCompound getCooldowns(EntityLivingBase player) {
-		NBTTagCompound cooldowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerCooldowns);
-		return player.getEntityData().hasKey(Reference.TagIdentifiers.powerCooldowns) && cooldowns != null ? cooldowns : new NBTTagCompound();
+		NBTTagCompound cooldowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
+		return player.getEntityData().hasKey(Reference.TagIdentifiers.POWER_COOLDOWNS) && cooldowns != null ? cooldowns : new NBTTagCompound();
 	}	
 }
