@@ -1,6 +1,9 @@
 package com.himself12794.powersapi.proxy;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderFireball;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;

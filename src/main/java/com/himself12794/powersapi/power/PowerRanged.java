@@ -16,6 +16,8 @@ import com.himself12794.powersapi.entity.EntitySpell;
  */
 public class PowerRanged extends Power {
 	
+	protected boolean shouldRender = false;
+	
 	@Override
 	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
 		
@@ -42,6 +44,10 @@ public class PowerRanged extends Power {
 
 	public boolean isPiercingSpell() {
 		return false;
+	}
+	
+	public boolean shouldRender() {
+		return shouldRender;
 	}
 
 }

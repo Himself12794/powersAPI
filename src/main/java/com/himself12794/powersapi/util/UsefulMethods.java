@@ -293,8 +293,6 @@ public class UsefulMethods {
 	
 	public static BlockPos getBlockFromSide( BlockPos pos, EnumFacing side) {
 		
-		PowersAPI.print( "Block pos: " + pos + ", side hit: " + side );
-		
 		switch(side) {
 		
 		case DOWN: 	pos.up();
