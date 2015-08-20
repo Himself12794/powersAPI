@@ -243,6 +243,13 @@ public abstract class Power {
 
 	public float getBrightness() { return 5.0F; }
 	
+	/**
+	 * Gets the name the power is registered under.
+	 * 
+	 * @return
+	 */
+	public String getSimpleName() { return displayName; }
+	
 	/*================================= Begin Power Registration Section ===============================*/ 
 	
 	private static Map<Integer, String> powerIds = Maps.newHashMap();
@@ -326,7 +333,7 @@ public abstract class Power {
 	public static <P extends Power> P lookupPower(Class<P> power) {
 		Power powered = null;
 		try {
-			powered = lookupPower(power.newInstance().displayName);
+			powered = lookupPower(power.newInstance().getSimpleName());
 		} catch (Exception e) {
 			PowersAPI.logger.error( "Could not instantiate class " + power, e );
 		} 
