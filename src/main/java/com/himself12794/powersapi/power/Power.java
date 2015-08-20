@@ -323,6 +323,24 @@ public abstract class Power {
 		
 	}
 	
+	public static <P extends Power> P lookupPower(Class<P> power) {
+		Power powered = null;
+		try {
+			powered = lookupPower(power.newInstance().displayName);
+		} catch (Exception e) {
+			PowersAPI.logger.error( "Could not instantiate class " + power, e );
+		} 
+		
+		if (powered != null) {
+			if (powered.getClass().equals( power )) {
+				return (P)powered;
+			}
+		}
+		
+		return null;
+		
+	}
+	
 	public static Map<String, Power> getPowers() {
 		return powerRegistry;
 	}

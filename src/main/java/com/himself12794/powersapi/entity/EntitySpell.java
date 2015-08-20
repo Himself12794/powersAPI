@@ -340,18 +340,9 @@ public class EntitySpell extends Entity implements IProjectile
     	
 		if (power != null) {
 			
-			if (movingObject.entityHit != null && movingObject.entityHit != getThrower()) {
-				
-				power.onStrike(worldObj, movingObject,	getThrower(), 1);
-				
-				if (power.getPower() > 0 && movingObject.entityHit != null ) ((EntityLivingBase)movingObject.entityHit).setLastAttacker(getThrower());
-				
-				if (!power.isPiercingSpell() && movingObject.entityHit != null) setDead();
-				else if (power.isPiercingSpell() && movingObject.entityHit == null) setDead();
-				else if (power.isPiercingSpell() && movingObject.entityHit != null) ;
-				else setDead();
-				
-			} else power.onStrike(worldObj, movingObject, getThrower(), modifier);
+			power.onStrike(worldObj, movingObject, getThrower(), modifier);
+			setDead();
+			
 		}
 		else setDead();
 	}

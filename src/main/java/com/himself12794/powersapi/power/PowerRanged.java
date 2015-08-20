@@ -8,6 +8,12 @@ import net.minecraft.world.World;
 
 import com.himself12794.powersapi.entity.EntitySpell;
 
+/**
+ * Base class for all ranged Power entities.
+ * 
+ * @author Himself12794
+ *
+ */
 public class PowerRanged extends Power {
 	
 	@Override
