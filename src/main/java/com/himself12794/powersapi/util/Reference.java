@@ -8,9 +8,9 @@ public class Reference {
     
     public static class TagIdentifiers {
     	
-    	public static final String power = MODID + ".power.currentPower";
-    	public static final String powerCooldowns = MODID + ".power.powerCooldowns";
-    	public static final String powerEffects = MODID + ".power.powerEffects";
+    	public static final String POWER_CURRENT = MODID + ".power.currentPower";
+    	public static final String POWER_COOLDOWNS = MODID + ".power.powerCooldowns";
+    	public static final String POWER_EFFECTS = MODID + ".power.powerEffects";
     	
     }
     
