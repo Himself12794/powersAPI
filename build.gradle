@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+ buildscript {
+=======
 buildscript {
+>>>>>>> d98d5ee392732c195823dc1ea09dc83eb915a032
     repositories {
         mavenCentral()
         maven {
@@ -22,7 +26,11 @@ group= "com.himself12794" // http://maven.apache.org/guides/mini/guide-naming-co
 archivesBaseName = "powersAPI"
 
 minecraft {
+<<<<<<< HEAD
+    version = "1.8-11.14.1.1419"
+=======
     version = "1.8-11.14.1.1375"
+>>>>>>> d98d5ee392732c195823dc1ea09dc83eb915a032
     runDir = "eclipse"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -47,6 +55,13 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+<<<<<<< HEAD
+} 
+
+jar {
+	from sourceSets.main.allSource
+=======
+>>>>>>> d98d5ee392732c195823dc1ea09dc83eb915a032
 }
 
 processResources
