@@ -102,8 +102,14 @@ public class PowerActivator extends Item {
 		Power spell = Power.lookupPower(stack);
 		float modifier = 1.0F;
     	if (spell != null) {
+    		String description = spell.getInfo(stack, player);
+    		String[] lines = description.split( "\\n" );
+    		PowersAPI.print( lines.length );
+    		for (final String line : lines) {
+    			PowersAPI.logger.info( line );
+				list.add(line);
+    		}
     		
-			list.add(spell.getInfo(stack, player));
 			if (!spell.getInfo(stack, player).equals("")) list.add("");
 			
 			if (spell.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + spell.getTypeDescriptor(stack, player));

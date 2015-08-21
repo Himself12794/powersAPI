@@ -29,7 +29,7 @@ public class ClientProxy extends CommonProxy {
 		super.init( event );
 		RenderingRegistry.registerEntityRenderingHandler( EntitySpell.class,
 				new RenderSpell(
-						Minecraft.getMinecraft().getRenderManager(), 2.0F ) );
+						Minecraft.getMinecraft().getRenderManager() ) );
 		ModItems.registerTextures( event );
 	}
 
