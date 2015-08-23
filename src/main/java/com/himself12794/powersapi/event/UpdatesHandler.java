@@ -51,15 +51,9 @@ public class UpdatesHandler {
 		
 		if (event.source.getEntity() instanceof EntityLivingBase) {
 			
-			System.out.println("We got a live one!");
-			
 			EntityLivingBase attacker = (EntityLivingBase) event.source.getEntity();
 			
-			System.out.println(attacker.getName());
-			
 			if (!PowerEffect.getActiveEffects( attacker ).hasNoTags()) {
-				
-				System.out.println("And they have an effect too!");
 				
 				float amount = DataWrapper.get( attacker ).onAttack( event.entityLiving, event.source, event.ammount );
 				

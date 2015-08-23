@@ -11,6 +11,7 @@ import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 
 public final class DataWrapper {
 	
@@ -149,18 +150,12 @@ public final class DataWrapper {
 				
 				PowerEffect spfx = PowerEffect.getEffectById(nbttagcompound.getShort("id"));
 				
-				System.out.println(spfx.getId());
-				
 				if (spfx != null) {
 					
 					boolean shouldNegate = (PowerEffect.negated.isEffecting(theEntity) && spfx.isNegateable());
 					
 					if (!shouldNegate) {
-						
-						System.out.println("was not negated!");
-						
 						return spfx.onAttack( target, ds, amount, caster );
-						
 					} 
 				}
 			}
@@ -220,8 +215,8 @@ public final class DataWrapper {
 		
 		NBTTagCompound nbt = entity.getEntityData();
 		
-		nbt.setTag(Reference.TagIdentifiers.POWER_COOLDOWNS, powerCoolDowns);
-		nbt.setTag(Reference.TagIdentifiers.POWER_EFFECTS, activePowerEffects);
+		nbt.setTag(TagIdentifiers.POWER_COOLDOWNS, powerCoolDowns);
+		nbt.setTag(TagIdentifiers.POWER_EFFECTS, activePowerEffects);
 		
 	}
 	
