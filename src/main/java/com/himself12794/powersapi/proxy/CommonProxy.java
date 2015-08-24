@@ -18,6 +18,8 @@ import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
+import com.himself12794.powersapi.network.SendPlayerStoppedUsingPower;
+import com.himself12794.powersapi.network.SendUsePower;
 import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
@@ -31,6 +33,8 @@ public class CommonProxy {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
 		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
 		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
+		network.registerMessage(SendPlayerStoppedUsingPower.Handler.class, SendPlayerStoppedUsingPower.class, 2, Side.SERVER);
+		network.registerMessage(SendUsePower.Handler.class, SendUsePower.class, 3, Side.SERVER);
        
 		// register spells
 		//Power.registerPowers();

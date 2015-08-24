@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,7 +42,9 @@ public class PowersAPI {
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
 	public static CommonProxy proxy;
 	
-	
+	public static SimpleNetworkWrapper getNetWrapper() {
+		return proxy.network;
+	}
 	
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {

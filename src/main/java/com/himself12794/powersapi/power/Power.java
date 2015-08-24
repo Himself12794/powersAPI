@@ -8,6 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
@@ -15,7 +17,9 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.util.Reference;
+import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 
 /**
  * This class is used to add powers to Minecraft. This is manifested as a power on
@@ -177,6 +181,33 @@ public abstract class Power {
 	 */
 	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) { return null; }
 	
+	/**
+	 * Applies the power effect to the specific entity, for a specific time.
+	 * <p>
+	 * Setting the duration to less than 0 makes it last until removed.
+	 * 
+	 * @param target 
+	 * @param duration
+	 * @param caster
+	 */
+    public final void teachPower(EntityLivingBase target) {
+    	
+        NBTTagList learnedPowers = getLearnedPowers(target);
+
+        for (int i = 0; i < learnedPowers.tagCount(); ++i) {
+        	
+            String power = learnedPowers.getStringTagAt(i);
+            if (power.equals( getUnlocalizedName() )) return;
+            
+        }
+        
+        learnedPowers.appendTag( new NBTTagString(getUnlocalizedName()) );
+        target.getEntityData().setTag(TagIdentifiers.POWER_SET, learnedPowers);
+
+		System.out.println( "Taught " + target.getName() + " "
+				+ getDisplayName() );
+    }
+	
 	public final ItemStack setPower(ItemStack stack) {
 		
 		NBTTagCompound nbt = null;
@@ -194,7 +225,7 @@ public abstract class Power {
 		
 		if (!powerExists(power)) {
 			
-			PowersAPI.logger.fatal("Cannot set unregistered power \"" + power + "\"");
+			PowersAPI.logger.error("Cannot set unregistered power \"" + power + "\"");
 			
 		} else {
 			
@@ -213,6 +244,18 @@ public abstract class Power {
 	
 	public String getDisplayName() {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (!(obj instanceof Power)) return false;
+		else {
+			Power power = (Power)obj;
+			return this.getSimpleName().equals( power.getSimpleName() );
+		}
+		
+		
 	}
 	
 	public Power setVisibility(boolean value) {visibility = value; return this;}
@@ -322,6 +365,12 @@ public abstract class Power {
 		
 	}
 	
+	/**
+	 * Looks up the power by name. If it doesn't exist, returns null.
+	 * 
+	 * @param power
+	 * @return
+	 */
 	public static Power lookupPower(String power) {
 		
 		if (Power.powerExists(power)) return (Power)powerRegistry.get(power);
@@ -333,7 +382,7 @@ public abstract class Power {
 	public static <P extends Power> P lookupPower(Class<P> power) {
 		Power powered = null;
 		try {
-			powered = lookupPower(power.newInstance().getSimpleName());
+			powered = lookupPower(power.newInstance().getUnlocalizedName());
 		} catch (Exception e) {
 			PowersAPI.logger.error( "Could not instantiate class " + power, e );
 		} 
@@ -400,5 +449,12 @@ public abstract class Power {
 	public static NBTTagCompound getCooldowns(EntityLivingBase player) {
 		NBTTagCompound cooldowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
 		return player.getEntityData().hasKey(Reference.TagIdentifiers.POWER_COOLDOWNS) && cooldowns != null ? cooldowns : new NBTTagCompound();
-	}	
+	}
+	
+	public static NBTTagList getLearnedPowers(EntityLivingBase entity) {
+		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.TagIdentifiers.powerEffects);
+		
+		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
+		return activeEffects != null && activeEffects.hasKey(TagIdentifiers.POWER_SET, 9) ? (NBTTagList)activeEffects.getTag(TagIdentifiers.POWER_SET) : new NBTTagList();
+	}
 }

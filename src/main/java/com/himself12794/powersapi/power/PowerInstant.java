@@ -11,6 +11,7 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.util.Reference;
+import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class PowerInstant extends Power {
@@ -45,8 +46,8 @@ public class PowerInstant extends Power {
 			
 		} else {
 			
-			successful = caster.getEntityData().getBoolean(Reference.MODID + ".power.success");
-			caster.getEntityData().setBoolean(Reference.MODID + ".power.success", false);
+			successful = caster.getEntityData().getBoolean(TagIdentifiers.POWER_SUCCESS);
+			caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, false);
 			
 		}
 		
@@ -59,6 +60,6 @@ public class PowerInstant extends Power {
 	
 	protected void setRange(int range) { this.range = range; }
 	
-	protected int getRange() {return range;}
+	public int getRange() {return range;}
 
 }

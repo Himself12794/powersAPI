@@ -262,6 +262,10 @@ public class PowerEffect {
 	
 	public boolean isNegateable() {return negateable;}
 	
+	public String toString() {
+		return name;
+	}
+	
 	public static PowerEffect registerEffect(PowerEffect effect) {
 		
 		int nextId = getNextIndex();

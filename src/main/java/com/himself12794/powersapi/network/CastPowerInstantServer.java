@@ -56,9 +56,10 @@ public class CastPowerInstantServer implements IMessage {
         		
         		Power spell = message.spell;
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
-        		MovingObjectPosition target = new MovingObjectPosition((EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id));		
+        		EntityLivingBase target = (EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
+        		MovingObjectPosition targetPos = new MovingObjectPosition(target);		
         		
-        		caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, spell.onStrike(target.entityHit.worldObj, target, caster, 1.0F));
+        		caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, spell.onStrike(targetPos.entityHit.worldObj, targetPos, caster, 1.0F));
         		
         	}
         	

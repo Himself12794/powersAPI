@@ -29,19 +29,18 @@ public class RenderSpell extends Render {
     private static final ResourceLocation spellTextures = new ResourceLocation("textures/entity/beacon_beam.png");
     private static final String __OBFID = "CL_00000978";
 
-    public RenderSpell(RenderManager p_i46193_1_)
-    {
+    public RenderSpell(RenderManager p_i46193_1_) {
         super(p_i46193_1_);
     }
 
-    public void doRender(EntitySpell p_180551_1_, double p_180551_2_, double p_180551_4_, double p_180551_6_, float p_180551_8_, float p_180551_9_)
-    {
-        this.bindEntityTexture(p_180551_1_);
+    public void doRender(EntitySpell entityToRender, double p_180551_2_, double p_180551_4_, double p_180551_6_, float p_180551_8_, float p_180551_9_) {
+    	
+        this.bindEntityTexture(entityToRender);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
         GlStateManager.translate((float)p_180551_2_, (float)p_180551_4_, (float)p_180551_6_);
-        GlStateManager.rotate(p_180551_1_.prevRotationYaw + (p_180551_1_.rotationYaw - p_180551_1_.prevRotationYaw) * p_180551_9_ - 90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(p_180551_1_.prevRotationPitch + (p_180551_1_.rotationPitch - p_180551_1_.prevRotationPitch) * p_180551_9_, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(entityToRender.prevRotationYaw + (entityToRender.rotationYaw - entityToRender.prevRotationYaw) * p_180551_9_ - 90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(entityToRender.prevRotationPitch + (entityToRender.rotationPitch - entityToRender.prevRotationPitch) * p_180551_9_, 0.0F, 0.0F, 1.0F);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         byte b0 = 0;
@@ -57,8 +56,7 @@ public class RenderSpell extends Render {
         GlStateManager.enableRescaleNormal();
         float f11 = 0.0F;
 
-        if (f11 > 0.0F)
-        {
+        if (f11 > 0.0F) {
             float f12 = -MathHelper.sin(f11 * 3.0F) * f11;
             GlStateManager.rotate(f12, 0.0F, 0.0F, 1.0F);
         }
@@ -81,8 +79,8 @@ public class RenderSpell extends Render {
         worldrenderer.addVertexWithUV(-7.0D, -2.0D, -2.0D, (double)f6, (double)f9);
         tessellator.draw();
 
-        for (int i = 0; i < 4; ++i)
-        {
+        for (int i = 0; i < 4; ++i) {
+        	
             GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glNormal3f(0.0F, 0.0F, f10);
             worldrenderer.startDrawingQuads();
@@ -95,19 +93,19 @@ public class RenderSpell extends Render {
 
         GlStateManager.disableRescaleNormal();
         GlStateManager.popMatrix();
-        super.doRender(p_180551_1_, p_180551_2_, p_180551_4_, p_180551_6_, p_180551_8_, p_180551_9_);
+        super.doRender(entityToRender, p_180551_2_, p_180551_4_, p_180551_6_, p_180551_8_, p_180551_9_);
     }
 
-    protected ResourceLocation getEntityTexture(EntitySpell p_180550_1_)
-    {
+    protected ResourceLocation getEntityTexture(EntitySpell p_180550_1_) {
+    	
         return spellTextures;
     }
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(Entity entity)
-    {
+    protected ResourceLocation getEntityTexture(Entity entity) {
+    	
         return this.getEntityTexture((EntitySpell)entity);
     }
 
@@ -117,8 +115,8 @@ public class RenderSpell extends Render {
      * (Render<T extends Entity>) and this method has signature public void func_76986_a(T entity, double d, double d1,
      * double d2, float f, float f1). But JAD is pre 1.5 so doe
      */
-    public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float partialTicks)
-    {
+    public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float partialTicks) {
+    	
         this.doRender((EntitySpell)entity, x, y, z, p_76986_8_, partialTicks);
     }
 
