@@ -99,7 +99,7 @@ public class PowerEffect {
 	/**
 	 * Called when the effect is removed.
 	 * <p>
-	 * Useful for adding countdown effects. 
+	 * Useful for adding countdowns. 
 	 * 
 	 * @param entity
 	 * @param caster 
@@ -178,6 +178,7 @@ public class PowerEffect {
         	if (location > -1) {
         		activeEffects.removeTag(location);
         		onRemoval(target, caster);
+        		PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(this, target, caster, true, 0));
         	}
         	return;
         	
