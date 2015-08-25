@@ -178,7 +178,6 @@ public class PowerEffect {
         	if (location > -1) {
         		activeEffects.removeTag(location);
         		onRemoval(target, caster);
-        		PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(this, target, caster, true, 0));
         	}
         	return;
         	
