@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.entity.EntitySpell;
+import com.himself12794.powersapi.entity.EntityPower;
 
 /**
  * Base class for all ranged Power entities.
@@ -22,13 +22,13 @@ public class PowerRanged extends Power {
 	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
 		
 		boolean flag1 = onCast(world, caster, tome, modifier);
-		EntitySpell casting = new EntitySpell(world, caster, this, modifier );
+		EntityPower casting = new EntityPower(world, caster, this, modifier );
 		boolean flag2 = world.spawnEntityInWorld(casting);
 		return flag1 && flag2;
 		
 	}
 
-	public void onUpdate(EntitySpell entitySpell) {}
+	public void onUpdate(EntityPower entitySpell) {}
 	
 	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier) {
 		return true;

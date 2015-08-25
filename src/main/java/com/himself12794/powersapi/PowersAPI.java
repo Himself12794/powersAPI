@@ -42,10 +42,6 @@ public class PowersAPI {
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static SimpleNetworkWrapper getNetWrapper() {
-		return proxy.network;
-	}
-	
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {
     	

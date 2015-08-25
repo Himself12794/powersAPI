@@ -20,20 +20,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.entity.EntitySpell;
+import com.himself12794.powersapi.entity.EntityPower;
 
 
 @SideOnly(Side.CLIENT)
-public class RenderSpell extends Render {
+public class RenderPower extends Render {
 	
     private static final ResourceLocation spellTextures = new ResourceLocation("textures/entity/beacon_beam.png");
     private static final String __OBFID = "CL_00000978";
 
-    public RenderSpell(RenderManager p_i46193_1_) {
+    public RenderPower(RenderManager p_i46193_1_) {
         super(p_i46193_1_);
     }
 
-    public void doRender(EntitySpell entityToRender, double p_180551_2_, double p_180551_4_, double p_180551_6_, float p_180551_8_, float p_180551_9_) {
+    public void doRender(EntityPower entityToRender, double p_180551_2_, double p_180551_4_, double p_180551_6_, float p_180551_8_, float p_180551_9_) {
     	
         this.bindEntityTexture(entityToRender);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -96,7 +96,7 @@ public class RenderSpell extends Render {
         super.doRender(entityToRender, p_180551_2_, p_180551_4_, p_180551_6_, p_180551_8_, p_180551_9_);
     }
 
-    protected ResourceLocation getEntityTexture(EntitySpell p_180550_1_) {
+    protected ResourceLocation getEntityTexture(EntityPower p_180550_1_) {
     	
         return spellTextures;
     }
@@ -106,7 +106,7 @@ public class RenderSpell extends Render {
      */
     protected ResourceLocation getEntityTexture(Entity entity) {
     	
-        return this.getEntityTexture((EntitySpell)entity);
+        return this.getEntityTexture((EntityPower)entity);
     }
 
     /**
@@ -117,7 +117,7 @@ public class RenderSpell extends Render {
      */
     public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float partialTicks) {
     	
-        this.doRender((EntitySpell)entity, x, y, z, p_76986_8_, partialTicks);
+        this.doRender((EntityPower)entity, x, y, z, p_76986_8_, partialTicks);
     }
 
 }

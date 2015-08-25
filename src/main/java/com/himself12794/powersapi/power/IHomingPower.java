@@ -2,7 +2,7 @@ package com.himself12794.powersapi.power;
 
 import net.minecraft.util.MovingObjectPosition;
 
-import com.himself12794.powersapi.entity.EntitySpell;
+import com.himself12794.powersapi.entity.EntityPower;
 
 /**
  * This is implemented by instances of PowerRanged to continuously redirect path to a specified target.
@@ -19,6 +19,6 @@ public interface IHomingPower {
 	 * 
 	 * @param caster
 	 */
-	MovingObjectPosition getTarget(EntitySpell spell, MovingObjectPosition target);
+	MovingObjectPosition getTarget(EntityPower spell, MovingObjectPosition target);
 	
 }

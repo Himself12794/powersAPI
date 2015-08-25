@@ -1,11 +1,16 @@
 package com.himself12794.powersapi.event;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.SyncNBTData;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.DataWrapper;
 
@@ -15,8 +20,18 @@ public class UpdatesHandler {
 	public void updates(LivingUpdateEvent event) {
 		
 		//System.out.println("Updating all event");
+		if (event.entityLiving instanceof EntityPlayer) {
+			PowersAPI.logger.info( event.entityLiving.getEntityData() );
+		}
 		DataWrapper.get(event.entityLiving).updateAll();
 		
+	}
+	
+	@SubscribeEvent
+	public void loggedIn(PlayerLoggedInEvent event) {
+		if (!event.player.worldObj.isRemote) {
+			PowersAPI.proxy.network.sendTo( new SyncNBTData(event.player), (EntityPlayerMP) event.player );
+		}
 	}
 	
 	@SubscribeEvent

@@ -2,6 +2,7 @@ package com.himself12794.powersapi.proxy;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.entity.EntitySpell;
+import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
@@ -25,7 +26,7 @@ public class CommonProxy {
 
 	public static SimpleNetworkWrapper network;
 
-	protected static int currId = 0;
+	protected static int currId = -1;
 
 	public void preinit(FMLPreInitializationEvent event) {
 
@@ -45,7 +46,7 @@ public class CommonProxy {
 		ModItems.addItems();
 
 		// register entities
-		EntityRegistry.registerModEntity( EntitySpell.class, "spell", 1,
+		EntityRegistry.registerModEntity( EntityPower.class, "spell", 1,
 				PowersAPI.instance, 80, 3, true );
 	}
 
@@ -54,6 +55,8 @@ public class CommonProxy {
 		UpdatesHandler uph = new UpdatesHandler();
 
 		MinecraftForge.EVENT_BUS.register( uph );
+		
+		FMLCommonHandler.instance().bus().register( uph );
 
 		// ModRecipes.addRecipes();
 

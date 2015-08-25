@@ -39,8 +39,8 @@ public final class KeyBindingsHandler {
 		if (wrapper.isUsingPower()){
 			
 	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
-	        	wrapper.stopUsingPowerEarly();
-	        	PowersAPI.getNetWrapper().sendToServer( new SendPlayerStoppedUsingPower() );
+	        	wrapper.stopUsingPower();
+	        	PowersAPI.proxy.network.sendToServer( new SendPlayerStoppedUsingPower() );
 	        }
 	
 	        label435:
@@ -74,7 +74,7 @@ public final class KeyBindingsHandler {
 	        	
 	        	if (power != null) {
 		        	wrapper.usePower( power );
-		        	PowersAPI.getNetWrapper().sendToServer( new SendUsePower(power) );
+		        	PowersAPI.proxy.network.sendToServer( new SendUsePower(power) );
 	        	}
 	        }
 	    }
@@ -85,7 +85,7 @@ public final class KeyBindingsHandler {
         	
         	if (power != null) {
 	        	wrapper.usePower( power );
-	        	PowersAPI.getNetWrapper().sendToServer( new SendUsePower(power) );
+	        	PowersAPI.proxy.network.sendToServer( new SendUsePower(power) );
         	}
 	    }
 		

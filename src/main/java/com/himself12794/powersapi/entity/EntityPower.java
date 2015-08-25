@@ -28,7 +28,7 @@ import com.himself12794.powersapi.power.PowerRanged;
  * This is pretty much the same as an EntityThrowable. Biggest difference is
  * that it does not lose speed.
  */
-public class EntitySpell extends Entity implements IProjectile
+public class EntityPower extends Entity implements IProjectile
 {
 
 	private int xTile = -1;
@@ -46,14 +46,14 @@ public class EntitySpell extends Entity implements IProjectile
 	protected PowerRanged power;
 	protected float modifier = 1.0F;
 
-	public EntitySpell(World worldIn)
+	public EntityPower(World worldIn)
 	{
 
 		super( worldIn );
 		this.setSize( 0.25F, 0.25F );
 	}
 
-	public EntitySpell(World worldIn, EntityLivingBase throwerIn,
+	public EntityPower(World worldIn, EntityLivingBase throwerIn,
 			PowerRanged spell, float modifier)
 	{
 
@@ -87,14 +87,14 @@ public class EntitySpell extends Entity implements IProjectile
 				this.getVelocity(), 1.0F );
 	}
 
-	public EntitySpell(World worldIn, EntityLivingBase throwerIn,
+	public EntityPower(World worldIn, EntityLivingBase throwerIn,
 			PowerRanged spell, float modifier, MovingObjectPosition target) {
 
 		this( worldIn, throwerIn, spell, modifier );
 		this.target = target;
 	}
 
-	public EntitySpell(World worldIn, double x, double y, double p_i1778_6_,
+	public EntityPower(World worldIn, double x, double y, double p_i1778_6_,
 			PowerRanged spell)
 	{
 

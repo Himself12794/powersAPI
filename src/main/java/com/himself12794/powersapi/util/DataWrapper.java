@@ -21,10 +21,10 @@ import com.himself12794.powersapi.util.Reference.TagIdentifiers;
  */
 public class DataWrapper {
 
-	private EntityLivingBase theEntity;
-	private NBTTagList activePowerEffects;
-	private NBTTagCompound powerCoolDowns;
-	private NBTTagList powerSet;
+	protected EntityLivingBase theEntity;
+	protected NBTTagList activePowerEffects;
+	protected NBTTagCompound powerCoolDowns;
+	protected NBTTagList powerSet;
 	/** Unimplemented */
 	private NBTTagList learnedAbilitySets;
 
@@ -33,14 +33,33 @@ public class DataWrapper {
 		return new DataWrapper( entity );
 	}
 
-	private static DataWrapper set(EntityLivingBase entity, NBTTagCompound data) {
+	public static DataWrapper set(EntityLivingBase entity, NBTTagCompound data) {
 
 		NBTTagCompound nbt = entity.getEntityData();
 
 		nbt.setTag( TagIdentifiers.POWER_COOLDOWNS,
 				data.getTag( TagIdentifiers.POWER_COOLDOWNS ) );
+		
 		nbt.setTag( TagIdentifiers.POWER_EFFECTS,
 				data.getTag( TagIdentifiers.POWER_EFFECTS ) );
+		
+		nbt.setString( TagIdentifiers.POWER_CURRENT,
+				data.getString( TagIdentifiers.POWER_CURRENT ) );
+		
+		nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT,
+				data.getInteger( TagIdentifiers.POWER_CURRENT_USELEFT ) );
+		
+		nbt.setString( TagIdentifiers.POWER_PRIMARY,
+				data.getString( TagIdentifiers.POWER_PRIMARY ) );
+		
+		nbt.setString( TagIdentifiers.POWER_SECONDARY,
+				data.getString( TagIdentifiers.POWER_SECONDARY ) );
+		
+		nbt.setTag( TagIdentifiers.POWER_SET,
+				data.getTag( TagIdentifiers.POWER_SET ) );
+		
+		nbt.setBoolean( TagIdentifiers.POWER_SUCCESS,
+				data.getBoolean( TagIdentifiers.POWER_SUCCESS ) );
 
 		return new DataWrapper( entity );
 
@@ -54,38 +73,72 @@ public class DataWrapper {
 		powerSet = Power.getLearnedPowers( theEntity );
 
 	}
-
+	
+	/**
+	 * Sets the primary power. If the entity does not know the power,
+	 * it teaches it to them.
+	 * 
+	 * @param power
+	 */
 	public void setPrimaryPower(Power power) {
 		
 		teachPower(power);
 		theEntity.getEntityData().setString( TagIdentifiers.POWER_PRIMARY,
 				power.getUnlocalizedName() );
 	}
-
+	
+	/**
+	 * Sets the secondary power. If the entity does not know the power,
+	 * it teaches it to them.
+	 * 
+	 * @param power
+	 */
 	public void setSecondaryPower(Power power) {
 
 		if (knowsPower( power )) theEntity.getEntityData().setString(
 				TagIdentifiers.POWER_SECONDARY, power.getUnlocalizedName() );
 	}
-
+	
+	/**
+	 * Gets the power designated as the primary power.
+	 * 
+	 * @return
+	 */
 	public Power getPrimaryPower() {
 		
 		return Power.lookupPower( theEntity.getEntityData().getString(
 				TagIdentifiers.POWER_PRIMARY ) );
 	}
-
+	
+	/**
+	 * Gets the power designated as the secondary power.
+	 * 
+	 * @return
+	 */
 	public Power getSecondaryPower() {
 
 		return Power.lookupPower( theEntity.getEntityData().getString(
 				TagIdentifiers.POWER_SECONDARY ) );
 	}
-
+	
+	/**
+	 * Teaches the entity the designated power.
+	 * 
+	 * @param power
+	 * @return
+	 */
 	public DataWrapper teachPower(Power power) {
 
 		power.teachPower( theEntity );
 		return this;
 	}
-
+	
+	/**
+	 * Detects if the player knows the specfified power.
+	 * 
+	 * @param power
+	 * @return
+	 */
 	public boolean knowsPower(Power power) {
 
 		for (int i = 0; i < powerSet.tagCount(); i++) {
@@ -98,6 +151,11 @@ public class DataWrapper {
 		return false;
 	}
 	
+	/**
+	 * Causes the player to use the designated power.
+	 * 
+	 * @param power
+	 */
 	public void usePower(Power power) {
 		
 		if (theEntity instanceof EntityPlayer) {
@@ -122,15 +180,24 @@ public class DataWrapper {
 		
 	}
 	
+	/**
+	 * Uses the power designated as primary.
+	 */
 	public void usePrimaryPower() {
 		usePower(getPrimaryPower());
 	}
 	
+	/**
+	 * Uses the power designated secondary.
+	 */
 	public void useSecondaryPower() {
 		usePower(getSecondaryPower());
 	}
-
-	public void stopUsingPowerEarly() {
+	
+	/**
+	 * Makes the player stop using the power.
+	 */
+	public void stopUsingPower() {
 		Power power = getPowerInUse();
 		
 		if (theEntity instanceof EntityPlayer && power != null) {
@@ -142,6 +209,11 @@ public class DataWrapper {
 		}
 	}
 	
+	/**
+	 * Sets the current power in use.
+	 * 
+	 * @param power
+	 */
 	public void setPowerInUse(Power power) {
 		NBTTagCompound nbt = theEntity.getEntityData();
 		if (power != null) {
@@ -277,6 +349,14 @@ public class DataWrapper {
 		}
 	}
 
+	public void updateAll() {
+		
+		updatePowerEffects();
+		updateCooldowns();
+		updateUsingPowers();
+
+	}
+
 	public boolean onAttacked(DamageSource ds, float amount) {
 
 		if (!activePowerEffects.hasNoTags()) {
@@ -376,14 +456,6 @@ public class DataWrapper {
 		return amount;
 	}
 
-	public void updateAll() {
-		
-		updatePowerEffects();
-		updateCooldowns();
-		updateUsingPowers();
-
-	}
-
 	public NBTTagCompound toNBT() {
 
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -421,7 +493,5 @@ public class DataWrapper {
 
 		return theEntity;
 	}
-	
-	public static enum Usage {PRIMARY, SECONDARY}
 
 }

@@ -26,7 +26,7 @@ public class SendPlayerStoppedUsingPower implements IMessage {
         	if (ctx.side.isServer()) {
         		
         		EntityPlayer player = ctx.getServerHandler().playerEntity;
-        		DataWrapper.get( player ).stopUsingPowerEarly();
+        		DataWrapper.get( player ).stopUsingPower();
         		
         	}
         	

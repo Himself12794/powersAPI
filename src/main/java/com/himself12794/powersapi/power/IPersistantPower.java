@@ -2,7 +2,7 @@ package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 
-import com.himself12794.powersapi.entity.EntitySpell;
+import com.himself12794.powersapi.entity.EntityPower;
 
 /**
  * Used when it is desired that a ranged spell remain in the world after striking a target.
@@ -21,7 +21,7 @@ public interface IPersistantPower {
 	 * @param timeLeft time left until projectile death
 	 * @return whether or not the entity projectile should die next tick
 	 */
-	boolean onUpdate(EntitySpell projectile, EntityLivingBase caster, PowerRanged power, int timeLeft);
+	boolean onUpdate(EntityPower projectile, EntityLivingBase caster, PowerRanged power, int timeLeft);
 
 	int getLingerTime();
 	

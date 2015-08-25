@@ -46,7 +46,6 @@ public class CastPowerInstantServer implements IMessage {
 		
 	}
 	
-	// TODO fix issue with lightning spell
 	public static class Handler implements IMessageHandler<CastPowerInstantServer, IMessage> {
        
         @Override
@@ -57,10 +56,13 @@ public class CastPowerInstantServer implements IMessage {
         		Power spell = message.spell;
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
         		EntityLivingBase target = (EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
-        		MovingObjectPosition targetPos = new MovingObjectPosition(target);		
         		
-        		caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, spell.onStrike(targetPos.entityHit.worldObj, targetPos, caster, 1.0F));
-        		
+        		if (target != null) {
+	        		MovingObjectPosition targetPos = new MovingObjectPosition(target);		
+	        		caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, spell.onStrike(targetPos.entityHit.worldObj, targetPos, caster, 1.0F));
+        		} else {
+        			caster.getEntityData().setBoolean( TagIdentifiers.POWER_SUCCESS, false );
+        		}
         	}
         	
         	return null;
