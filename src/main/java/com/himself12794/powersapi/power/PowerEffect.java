@@ -93,14 +93,13 @@ public class PowerEffect {
 	 * @param amount
 	 */
 	public float onAttack(EntityLivingBase target, DamageSource damageSource, float amount, EntityLivingBase caster) {
-		System.out.println("Effect succesfully passed down!");
 		return amount;
 	}
 	
 	/**
 	 * Called when the effect is removed.
 	 * <p>
-	 * Intended mostly for cleanup after effect removal. 
+	 * Useful for adding countdown effects. 
 	 * 
 	 * @param entity
 	 * @param caster 
@@ -179,7 +178,6 @@ public class PowerEffect {
         	if (location > -1) {
         		activeEffects.removeTag(location);
         		onRemoval(target, caster);
-        		PowersAPI.proxy.network.sendToAll(new PowerEffectsClient(this, target, caster, true, 0));
         	}
         	return;
         	

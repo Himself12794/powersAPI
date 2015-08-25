@@ -12,6 +12,7 @@ import com.himself12794.powersapi.util.DataWrapper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,12 +22,13 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 public final class KeyBindingsHandler {
 	
-	private final ItemStack primaryPower = new ItemStack(ModItems.powerActivator);
-	private final ItemStack secondaryPower = new ItemStack(ModItems.powerActivator);
-	
 	@SubscribeEvent
 	public void onKeyUsage(KeyInputEvent event) {
-
+		handleKeyBinding(KeyBindings.PRIMARY_POWER);
+		handleKeyBinding(KeyBindings.SECONDARY_POWER);
+	}
+	
+	private void handleKeyBinding(KeyBinding binding) {
 		
 		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 		World world = Minecraft.getMinecraft().theWorld;
@@ -36,7 +38,7 @@ public final class KeyBindingsHandler {
 		
 		if (wrapper.isUsingPower()){
 			
-	        if (!KeyBindings.PRIMARY_POWER.isKeyDown()) {
+	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
 	        	wrapper.stopUsingPowerEarly();
 	        	PowersAPI.getNetWrapper().sendToServer( new SendPlayerStoppedUsingPower() );
 	        }
@@ -47,7 +49,7 @@ public final class KeyBindingsHandler {
 	        {
 	            if (!gameSettings.keyBindAttack.isPressed())
 	            {
-	                while (KeyBindings.PRIMARY_POWER.isPressed())
+	                while (binding.isPressed())
 	                {
 	                    ;
 	                }
@@ -66,22 +68,27 @@ public final class KeyBindingsHandler {
 	    }
 	    else {
 	
-	        while (KeyBindings.PRIMARY_POWER.isPressed()) {
+	        while (binding.isPressed()) {
 	        	
-	        	if (wrapper.getPrimaryPower() != null) {
-		        	wrapper.usePrimaryPower();
-		        	PowersAPI.getNetWrapper().sendToServer( new SendUsePower(wrapper.getPrimaryPower()) );
+	        	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
+	        	
+	        	if (power != null) {
+		        	wrapper.usePower( power );
+		        	PowersAPI.getNetWrapper().sendToServer( new SendUsePower(power) );
 	        	}
 	        }
 	    }
 	
-	    if (KeyBindings.PRIMARY_POWER.isKeyDown() /*&& this.rightClickDelayTimer == 0*/ && !wrapper.isUsingPower()) {
+	    if (binding.isKeyDown() && !wrapper.isUsingPower()) {
         	
-        	if (wrapper.getPrimaryPower() != null) {
-	        	wrapper.usePrimaryPower();
-	        	PowersAPI.getNetWrapper().sendToServer( new SendUsePower(wrapper.getPrimaryPower()) );
+        	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
+        	
+        	if (power != null) {
+	        	wrapper.usePower( power );
+	        	PowersAPI.getNetWrapper().sendToServer( new SendUsePower(power) );
         	}
 	    }
+		
 	}
 
 }

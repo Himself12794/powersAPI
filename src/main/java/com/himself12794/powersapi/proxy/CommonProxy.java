@@ -1,9 +1,7 @@
 package com.himself12794.powersapi.proxy;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderFireball;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -20,43 +18,58 @@ import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SendPlayerStoppedUsingPower;
 import com.himself12794.powersapi.network.SendUsePower;
-import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
-	
+
 	public static SimpleNetworkWrapper network;
-	
+
+	protected static int currId = 0;
+
 	public void preinit(FMLPreInitializationEvent event) {
-		
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
-		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
-		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
-		network.registerMessage(SendPlayerStoppedUsingPower.Handler.class, SendPlayerStoppedUsingPower.class, 2, Side.SERVER);
-		network.registerMessage(SendUsePower.Handler.class, SendUsePower.class, 3, Side.SERVER);
-       
+
+		network = NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID
+				+ " NetChannel" );
+		network.registerMessage( CastPowerInstantServer.Handler.class,
+				CastPowerInstantServer.class, currId++, Side.SERVER );
+		network.registerMessage( SendPlayerStoppedUsingPower.Handler.class,
+				SendPlayerStoppedUsingPower.class, currId++, Side.SERVER );
+		network.registerMessage( SendUsePower.Handler.class,
+				SendUsePower.class, currId++, Side.SERVER );
+
 		// register spells
-		//Power.registerPowers();
+		// Power.registerPowers();
 		ModCreativeTabs.addCreativeTabs();
-		
+
 		ModItems.addItems();
-		
+
 		// register entities
-		EntityRegistry.registerModEntity(EntitySpell.class, "spell", 1, PowersAPI.instance, 80, 3, true);
+		EntityRegistry.registerModEntity( EntitySpell.class, "spell", 1,
+				PowersAPI.instance, 80, 3, true );
 	}
 
-	public void init(FMLInitializationEvent event){
+	public void init(FMLInitializationEvent event) {
+
 		UpdatesHandler uph = new UpdatesHandler();
-		
-    	MinecraftForge.EVENT_BUS.register(uph);
-		 
-		//ModRecipes.addRecipes();
+
+		MinecraftForge.EVENT_BUS.register( uph );
+
+		// ModRecipes.addRecipes();
 
 	}
-	
+
+	public void doPowerEffectUpdate(PowerEffect effect,
+			EntityLivingBase target, int timeLeft, EntityLivingBase caster) {
+
+		effect.onUpdate( target, timeLeft, caster );
+		network.sendToAll( new PowerEffectsClient( effect, target, caster,
+				false, timeLeft ) );
+	}
+
 	public Side getSide() {
+
 		return Side.SERVER;
 	}
-	
+
 }

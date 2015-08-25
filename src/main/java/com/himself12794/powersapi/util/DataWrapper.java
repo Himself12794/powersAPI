@@ -56,13 +56,10 @@ public class DataWrapper {
 	}
 
 	public void setPrimaryPower(Power power) {
-
-		if (knowsPower( power )) {
-			System.out.println( "Primary power for " + theEntity.getName()
-					+ " set as " + power.getDisplayName() );
-			theEntity.getEntityData().setString( TagIdentifiers.POWER_PRIMARY,
-					power.getUnlocalizedName() );
-		}
+		
+		teachPower(power);
+		theEntity.getEntityData().setString( TagIdentifiers.POWER_PRIMARY,
+				power.getUnlocalizedName() );
 	}
 
 	public void setSecondaryPower(Power power) {
@@ -102,7 +99,7 @@ public class DataWrapper {
 	}
 	
 	public void usePower(Power power) {
-    	
+		
 		if (theEntity instanceof EntityPlayer) {
 	    	if (power != null && power.canUsePower( theEntity )) {
 	    		
@@ -135,7 +132,7 @@ public class DataWrapper {
 
 	public void stopUsingPowerEarly() {
 		Power power = getPowerInUse();
-
+		
 		if (theEntity instanceof EntityPlayer && power != null) {
 			if (power.onFinishedCastingEarly( null, theEntity.worldObj,
 					(EntityPlayer) theEntity, getPowerUseTimeLeft() )) {
@@ -260,20 +257,19 @@ public class DataWrapper {
 
 						} else spfx.onUpdate( theEntity, timeRemaining, caster );
 
-						PowersAPI.proxy.network
-								.sendToAll( new PowerEffectsClient( spfx,
-										theEntity, caster, false, timeRemaining ) );
-						// spfx.addTo(theEntity, --timeRemaining, caster);
 						addPowerEffect( spfx, --timeRemaining, caster );
 
 					}
 
 					else if (timeRemaining < 0 && !shouldNegate) {
 
+						/*if (!theEntity.worldObj.isRemote) {
+							PowersAPI.proxy.network
+									.sendToAll( new PowerEffectsClient( spfx,
+											theEntity, caster, false, 0 ) );
+						} 
+						}*/
 						spfx.onUpdate( theEntity, 0, caster );
-						PowersAPI.proxy.network
-								.sendToAll( new PowerEffectsClient( spfx,
-										theEntity, caster, false, 0 ) );
 
 					}
 				}
@@ -381,7 +377,7 @@ public class DataWrapper {
 	}
 
 	public void updateAll() {
-
+		
 		updatePowerEffects();
 		updateCooldowns();
 		updateUsingPowers();
@@ -425,5 +421,7 @@ public class DataWrapper {
 
 		return theEntity;
 	}
+	
+	public static enum Usage {PRIMARY, SECONDARY}
 
 }

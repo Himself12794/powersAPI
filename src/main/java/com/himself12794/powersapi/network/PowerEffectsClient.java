@@ -8,8 +8,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.himself12794.powersapi.power.PowerEffect;
 
@@ -42,7 +40,7 @@ public class PowerEffectsClient implements IMessage {
 		ByteBufUtils.writeVarInt(buf, affectedEntityId, 4);
 		ByteBufUtils.writeVarInt(buf, casterEntityId, 4);
 		ByteBufUtils.writeVarShort(buf, isDone ? 1 : 0);
-		ByteBufUtils.writeVarInt(buf, timeLeft, 4);
+		ByteBufUtils.writeVarInt(buf, timeLeft, 5);
 		
 	}
 
@@ -53,7 +51,7 @@ public class PowerEffectsClient implements IMessage {
 		affectedEntityId = ByteBufUtils.readVarInt(buf, 4);
 		casterEntityId = ByteBufUtils.readVarInt(buf, 4);
 		isDone = ByteBufUtils.readVarShort(buf) == 1;
-		timeLeft = ByteBufUtils.readVarInt(buf, 4);
+		timeLeft = ByteBufUtils.readVarInt(buf, 5);
 		
 	}
 	

@@ -21,6 +21,7 @@ import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.Reference;
 
 @SuppressWarnings("unchecked")
@@ -39,6 +40,8 @@ public class PowerActivator extends Item {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
     	Power spell = Power.getPower(stack);
 		
+    	if (DataWrapper.get( player ).isUsingPower()) return stack;
+    	
     	if (spell != null && spell.canUsePower(player)) {
     		
     		if (spell.onPreparePower(stack, world, player)) {
