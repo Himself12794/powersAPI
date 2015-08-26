@@ -1,5 +1,6 @@
 package com.himself12794.powersapi.util;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -121,6 +122,14 @@ public class DataWrapper {
 				TagIdentifiers.POWER_SECONDARY ) );
 	}
 	
+	public int getPrimaryPowerCooldownLeft() {
+		return getPrimaryPower()!= null ? powerCoolDowns.getInteger( getPrimaryPower().getUnlocalizedName() ) : 0;
+	}
+	
+	public int getSecondaryPowerCooldownLeft() {
+		return getPrimaryPower() != null ? powerCoolDowns.getInteger( getSecondaryPower().getUnlocalizedName() ) : 0;
+	}
+	
 	/**
 	 * Teaches the entity the designated power.
 	 * 
@@ -160,6 +169,8 @@ public class DataWrapper {
 		
 		if (theEntity instanceof EntityPlayer) {
 	    	if (power != null && power.canUsePower( theEntity )) {
+	    		
+	    		theEntity.swingItem();
 	    		
 	    		if (power.onPreparePower(null, theEntity.worldObj, (EntityPlayer) theEntity)) {
 	    			
@@ -255,6 +266,8 @@ public class DataWrapper {
 			
 			if (power != null) {
 				
+				if (theEntity.isSwingInProgress) { theEntity.swingProgressInt = 1; }
+				
 				if (useTime > 0) {
 					
 					if ( useTime % 4  == 0 ) {
@@ -305,10 +318,10 @@ public class DataWrapper {
 						.getCompoundTagAt( i );
 
 				int timeRemaining = nbttagcompound.getInteger( "duration" );
-				EntityLivingBase caster = null;
-
-				if (caster instanceof EntityLivingBase) caster = (EntityLivingBase) theEntity.worldObj
+				
+				Entity temp = theEntity.worldObj
 						.getEntityByID( nbttagcompound.getInteger( "caster" ) );
+				EntityLivingBase caster = temp instanceof EntityLivingBase ? (EntityLivingBase)temp : null;
 
 				PowerEffect spfx = PowerEffect.getEffectById( nbttagcompound
 						.getShort( "id" ) );

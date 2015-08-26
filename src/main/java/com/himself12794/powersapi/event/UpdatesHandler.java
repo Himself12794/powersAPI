@@ -18,19 +18,13 @@ public class UpdatesHandler {
 	
 	@SubscribeEvent
 	public void updates(LivingUpdateEvent event) {
-		
-		//System.out.println("Updating all event");
-		if (event.entityLiving instanceof EntityPlayer) {
-			PowersAPI.logger.info( event.entityLiving.getEntityData() );
-		}
-		DataWrapper.get(event.entityLiving).updateAll();
-		
+		DataWrapper.get(event.entityLiving).updateAll();		
 	}
 	
 	@SubscribeEvent
 	public void loggedIn(PlayerLoggedInEvent event) {
 		if (!event.player.worldObj.isRemote) {
-			PowersAPI.proxy.network.sendTo( new SyncNBTData(event.player), (EntityPlayerMP) event.player );
+			PowersAPI.proxy.network.sendTo( new SyncNBTData( event.player ), (EntityPlayerMP) event.player );
 		}
 	}
 	
@@ -38,19 +32,8 @@ public class UpdatesHandler {
 	public void onAttacked(LivingAttackEvent event) {
 		
 		if (!PowerEffect.getActiveEffects( event.entityLiving ).hasNoTags()) {
-
 			if (!DataWrapper.get( event.entityLiving ).onAttacked( event.source, event.ammount )) event.setCanceled( true );
-			
 		}
-		
-		/*if (event.source.getEntity() instanceof EntityLivingBase) {
-			
-			EntityLivingBase attacker = (EntityLivingBase) event.source.getEntity();
-			
-			if (!PowerEffect.getActiveEffects( attacker ).hasNoTags()) 
-				DataWrapper.get( attacker ).onAttack( event.entityLiving, event.source, event.ammount );
-			
-		}*/
 		
 	}
 	
