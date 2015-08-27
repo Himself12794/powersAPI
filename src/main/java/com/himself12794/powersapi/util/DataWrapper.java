@@ -20,7 +20,8 @@ import com.himself12794.powersapi.util.Reference.TagIdentifiers;
  *
  */
 public class DataWrapper {
-
+	
+	private static final String BUTTON_DELAY = Reference.MODID + ".buttonDelay";
 	protected EntityLivingBase theEntity;
 	protected NBTTagList activePowerEffects;
 	protected NBTTagCompound powerCoolDowns;
@@ -32,7 +33,13 @@ public class DataWrapper {
 
 		return new DataWrapper( entity );
 	}
-
+	
+	/**
+	 * Used to sync entity data client-side 
+	 * @param entity
+	 * @param data
+	 * @return
+	 */
 	public static DataWrapper set(EntityLivingBase entity, NBTTagCompound data) {
 
 		NBTTagCompound nbt = entity.getEntityData();
@@ -60,6 +67,9 @@ public class DataWrapper {
 
 		nbt.setBoolean( TagIdentifiers.POWER_SUCCESS,
 				data.getBoolean( TagIdentifiers.POWER_SUCCESS ) );
+		
+		nbt.setTag( TagIdentifiers.POWER_PREVIOUS_TARGET,
+				data.getCompoundTag( TagIdentifiers.POWER_PREVIOUS_TARGET ) );
 
 		return new DataWrapper( entity );
 
@@ -98,8 +108,8 @@ public class DataWrapper {
 		teachPower( power );
 		theEntity.getEntityData().setString(
 				TagIdentifiers.POWER_SECONDARY, power.getUnlocalizedName() );
-		
-		System.out.println("Set secondary power as " + power);
+
+		System.out.println( "Set secondary power as " + power );
 	}
 
 	/**
@@ -256,9 +266,9 @@ public class DataWrapper {
 	 * Makes the player stop using the power.
 	 */
 	public void stopUsingPower() {
-		
+
 		Power power = getPowerInUse();
-		
+
 		if (theEntity instanceof EntityPlayer && power != null) {
 			if (power.onFinishedCastingEarly( null, theEntity.worldObj,
 					(EntityPlayer) theEntity, getPowerUseTimeLeft(),
@@ -277,7 +287,7 @@ public class DataWrapper {
 	 * @param power
 	 */
 	public void setPowerInUse(Power power) {
-		
+
 		NBTTagCompound nbt = theEntity.getEntityData();
 		if (power != null) {
 			nbt.setString( TagIdentifiers.POWER_CURRENT,
@@ -602,15 +612,57 @@ public class DataWrapper {
 		}
 	}
 
-	public void removePowerEffectNoSideEffects(PowerEffect effect) {
+	public void removePowerEffect(PowerEffect effect) {
 
-		effect.clearFrom( theEntity );
+		this.addPowerEffect( getEffectContainer( effect ).newWithDuration( 0 ) );
+	}
 
+	/**
+	 * Removes the effect without triggering
+	 * {@link PowerEffect#onRemoval()}. Still triggers cooldowns on linked spells.
+	 * 
+	 * @param effect
+	 */
+	public void removePowerEffectSparingly(PowerEffect effect) {
+		if (effect == null) return;
+		effect.clearQuietly( theEntity );
+
+	}
+	
+	/**
+	 * Clears power effect, triggering linked power cooldown.
+	 * 
+	 * @return
+	 */
+	public void removePowerEffectQuietly(PowerEffect effect) {
+		if (effect == null) return;
+		effect.clear( this.getEffectContainer( effect ) );
 	}
 
 	public EntityLivingBase getEntity() {
 
 		return theEntity;
+	}
+	
+	public void setButtonDelay( int delay ) {
+		theEntity.getEntityData().setInteger( BUTTON_DELAY, delay );
+	}
+	
+	public int getButtonDelayRemaining() {
+		return theEntity.getEntityData().getInteger( BUTTON_DELAY );
+	}
+	
+	public NBTTagCompound getModDataCompound() {
+		NBTTagCompound data = null;
+		
+		if (!theEntity.getEntityData().hasKey( Reference.MODID, 10 )) {
+			data = new NBTTagCompound();
+			theEntity.getEntityData().setTag( Reference.MODID, data );
+		} else {
+			data = theEntity.getEntityData().getCompoundTag( Reference.MODID );
+		}
+		
+		return data;
 	}
 
 }

@@ -45,6 +45,8 @@ public class PowerEffectContainer {
 		return initiatedPower;
 	}
 	
+	public PowerEffectContainer newWithDuration( int duration ) {
+		return new PowerEffectContainer( affectedEntity, casterEntity, duration, theEffect, initiatedPower);
+	}
 	
-
 }

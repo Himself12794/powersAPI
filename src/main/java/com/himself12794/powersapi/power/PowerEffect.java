@@ -2,6 +2,7 @@ package com.himself12794.powersapi.power;
 
 import java.util.Map;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +11,7 @@ import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.util.PowerEffectContainer;
 import com.himself12794.powersapi.util.Reference;
 
 public class PowerEffect {
@@ -108,9 +110,9 @@ public class PowerEffect {
 	 */
 	public void onRemoval(EntityLivingBase entity, EntityLivingBase caster, Power power){}
 	
-	 public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
-		 addTo(target, duration, caster, null);
-	 }
+	public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
+		addTo(target, duration, caster, null);
+	}
 	
 	/**
 	 * Applies the power effect to the specific entity, for a specific time.
@@ -189,9 +191,36 @@ public class PowerEffect {
 	 * 
 	 * @param target
 	 */
-	public final void clearFrom(EntityLivingBase target) {
+	public final void clear(PowerEffectContainer target) {
 		
-		getActiveEffects(target).removeTag(id);
+		NBTTagList effects = getActiveEffects(target.getAffectedEntity());
+		
+		for (int i = 0; i < effects.tagCount(); i++) {
+			if (effects.getCompoundTagAt( i ).getInteger( "id" ) == id) {
+				effects.removeTag( i );
+
+        		if (target.getInitiatedPower() instanceof IEffectActivator) {
+        			target.getInitiatedPower().triggerCooldown(target.getCasterEntity());
+        		}
+			}
+		}
+		
+	}
+	
+	/**
+	 * Clears the effect from the entity without side effects.
+	 * 
+	 * @param target
+	 */
+	public final void clearQuietly(EntityLivingBase target) {
+		
+		NBTTagList effects = getActiveEffects(target);
+		
+		for (int i = 0; i < effects.tagCount(); i++) {
+			if (effects.getCompoundTagAt( i ).getInteger( "id" ) == id) {
+				effects.removeTag( i );
+			}
+		}
 		
 	}
 	

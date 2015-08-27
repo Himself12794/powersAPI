@@ -3,6 +3,7 @@ package com.himself12794.powersapi.power;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.himself12794.powersapi.PowersAPI;
@@ -24,17 +25,13 @@ public abstract class PowerEffectActivatorBuff extends PowerBuff implements
 	{
 		setDuration( getEffectDuration() );
 	}
-
-	/**
-	 * To ensure core stability, this is final. For additional operations, override
-	 * {@link PowerEffectActivatorBuff#onCastAdditional(World, EntityLivingBase, ItemStack, float)}.
-	 * <p>
-	 * This method will be called after this method has finished its operations.
-	 */
-	@Override
-	public final boolean onCast(World world, EntityLivingBase caster,
-			ItemStack tome, float modifier) {
-
+	
+	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { 
+		return this.onFinishedCasting( stack, world, playerIn, target ); 
+	}
+	
+	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster, MovingObjectPosition target) { 
+		
 		boolean alreadyAffectingEntity = false;
 		DataWrapper wrapper = DataWrapper.get( caster );
 
@@ -51,24 +48,8 @@ public abstract class PowerEffectActivatorBuff extends PowerBuff implements
 		} else {
 			wrapper.addPowerEffect( getPowerEffect(), 0, caster, this );
 		}
-
-		return alreadyAffectingEntity
-				&& onCastAdditional( world, caster, tome, modifier );
-	}
-
-	/**
-	 * Allows for additional operations without compromising core mechanics.
-	 * 
-	 * @param world
-	 * @param caster
-	 * @param tome
-	 * @param modifier
-	 * @return
-	 */
-	public boolean onCastAdditional(World world, EntityLivingBase caster,
-			ItemStack tome, float modifier) {
-
-		return true;
+		
+		return alreadyAffectingEntity; 
 	}
 
 }
