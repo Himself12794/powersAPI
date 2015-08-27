@@ -1,7 +1,5 @@
 package com.himself12794.powersapi.network;
 
-import java.lang.reflect.Field;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +10,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 
 public class SyncNBTData implements IMessage {
 	

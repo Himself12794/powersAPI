@@ -8,9 +8,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.util.DataWrapper;
 
-public class SendPlayerStoppedUsingPower implements IMessage {
+public class SendStopUsePower implements IMessage {
 
-    public SendPlayerStoppedUsingPower() {  }
+    public SendStopUsePower() {  }
 
 	@Override
 	public void toBytes(ByteBuf buf) {	}
@@ -18,10 +18,10 @@ public class SendPlayerStoppedUsingPower implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {  }
 	
-	public static class Handler implements IMessageHandler<SendPlayerStoppedUsingPower, IMessage> {
+	public static class Handler implements IMessageHandler<SendStopUsePower, IMessage> {
        
         @Override
-        public IMessage onMessage(SendPlayerStoppedUsingPower message, MessageContext ctx) {
+        public IMessage onMessage(SendStopUsePower message, MessageContext ctx) {
         	
         	if (ctx.side.isServer()) {
         		

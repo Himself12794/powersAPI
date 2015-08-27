@@ -1,9 +1,9 @@
 package com.himself12794.powersapi.config;
 
-import org.lwjgl.input.Keyboard;
-
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+
+import org.lwjgl.input.Keyboard;
 
 
 public final class KeyBindings {

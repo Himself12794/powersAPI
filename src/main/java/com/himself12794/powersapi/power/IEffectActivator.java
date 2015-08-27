@@ -9,5 +9,7 @@ package com.himself12794.powersapi.power;
 public interface IEffectActivator {
 	
 	PowerEffect getPowerEffect();
+	
+	int getEffectDuration();
 
 }

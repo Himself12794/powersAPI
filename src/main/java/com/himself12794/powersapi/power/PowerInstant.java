@@ -3,15 +3,16 @@ package com.himself12794.powersapi.power;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
-import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.Reference.TagIdentifiers;
+import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class PowerInstant extends Power {
@@ -30,18 +31,15 @@ public class PowerInstant extends Power {
 			
 			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(range);
 			
-			if (pos == null) return false;
+			if (pos == null) pos = new MovingObjectPosition(new Vec3(0.0D, 0.0D, 0.0D), EnumFacing.UP);
 			
-			if (pos.entityHit != null ) {
-				
-				if (pos.entityHit instanceof EntityLivingBase) {
-					
-					IMessage msg = new CastPowerInstantServer( (EntityLivingBase) pos.entityHit, modifier, this );
-					PowersAPI.proxy.network.sendToServer(msg);
-					
-					successful = true;
-					
-				} 
+			successful = onStrike( world, pos, caster, modifier );
+			IMessage msg = new CastPowerInstantServer( pos, modifier, this );
+			PowersAPI.proxy.network.sendToServer(msg);
+
+			
+			if (successful) {
+				DataWrapper.get( caster ).setPreviousPowerTarget( pos );
 			}
 			
 		} else {
@@ -51,7 +49,9 @@ public class PowerInstant extends Power {
 			
 		}
 		
-		return hasEffect && successful;
+		boolean result = hasEffect && successful;
+		
+		return result;
 	}
 	
 	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {
@@ -60,6 +60,6 @@ public class PowerInstant extends Power {
 	
 	protected void setRange(int range) { this.range = range; }
 	
-	public int getRange() {return range;}
+	public int getRange() { return range; }
 
 }

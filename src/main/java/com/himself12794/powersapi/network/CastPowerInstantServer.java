@@ -1,30 +1,33 @@
 package com.himself12794.powersapi.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.util.Reference;
+import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.Reference.TagIdentifiers;
+import com.himself12794.powersapi.util.UsefulMethods;
 
 public class CastPowerInstantServer implements IMessage {
 	
-	private int id;
+	private NBTTagCompound mop;
 	private Power spell;
+	private float modifier;
 	//private float modifier;
 
     public CastPowerInstantServer() {  }
 	
-	public CastPowerInstantServer(EntityLivingBase entity, float modifier, Power spell) {
+	public CastPowerInstantServer(MovingObjectPosition pos, float modifier, Power spell) {
 		
-		this.id = entity.getEntityId();
+		this.mop = UsefulMethods.movingObjectPosToNBT( pos );
+		this.modifier = modifier;
 		this.spell = spell;
 		
 	}
@@ -32,7 +35,10 @@ public class CastPowerInstantServer implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		
-		ByteBufUtils.writeVarInt(buf, id, 4);
+		ByteBufUtils.writeTag( buf, mop );
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setFloat( "modifier", modifier );
+		ByteBufUtils.writeTag( buf, nbt );
 		ByteBufUtils.writeVarInt(buf, Power.getPowerId(spell), 4);
 
 	}
@@ -40,10 +46,14 @@ public class CastPowerInstantServer implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		
-		//System.out.println("Decoding data");
-		id = ByteBufUtils.readVarInt(buf, 4);
+		mop = ByteBufUtils.readTag( buf );
+		modifier = ByteBufUtils.readTag( buf ).getFloat( "modifier" );
 		spell = Power.lookupPowerById(ByteBufUtils.readVarInt(buf, 4));
 		
+	}
+	
+	private MovingObjectPosition getMovingObjectPosition(World world){
+		return UsefulMethods.movingObjectPositionFromNBT( mop, world );
 	}
 	
 	public static class Handler implements IMessageHandler<CastPowerInstantServer, IMessage> {
@@ -55,14 +65,13 @@ public class CastPowerInstantServer implements IMessage {
         		
         		Power spell = message.spell;
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
-        		EntityLivingBase target = (EntityLivingBase) ctx.getServerHandler().playerEntity.worldObj.getEntityByID(message.id);
+        		MovingObjectPosition targetPos = message.getMovingObjectPosition( caster.getEntityWorld() );
+        		boolean success = spell.onStrike(ctx.getServerHandler().playerEntity.getEntityWorld(), targetPos, caster, message.modifier);
         		
-        		if (target != null) {
-	        		MovingObjectPosition targetPos = new MovingObjectPosition(target);		
-	        		caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, spell.onStrike(targetPos.entityHit.worldObj, targetPos, caster, 1.0F));
-        		} else {
-        			caster.getEntityData().setBoolean( TagIdentifiers.POWER_SUCCESS, false );
-        		}
+        		if (success) DataWrapper.get( caster ).setPreviousPowerTarget( targetPos );
+        		
+	        	caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, success);
+  
         	}
         	
         	return null;

@@ -2,7 +2,6 @@ package com.himself12794.powersapi.item;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -12,6 +11,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -53,9 +53,11 @@ public class PowerActivator extends Item {
     				}
         			
     			} else if (spell.cast(world, player, stack, 1)) {
-
-    				if (spell.onFinishedCasting(stack, world, player)) spell.triggerCooldown(player);
-
+    	    		
+    	    		DataWrapper wrapper = DataWrapper.get( player );
+    				if (spell.onFinishedCasting(stack, world, player, wrapper.getPreviousPowerTarget())) spell.triggerCooldown(player);
+    				wrapper.removePreviousPowerTarget();
+    				
     			}
     		}
     	}
@@ -82,7 +84,9 @@ public class PowerActivator extends Item {
     	Power spell = Power.getPower(stack);
     	if (spell != null) {
     		
-    		if (spell.onFinishedCastingEarly(stack, world, playerIn, timeLeft)) spell.triggerCooldown(playerIn);
+    		DataWrapper wrapper = DataWrapper.get( playerIn );
+    		if (spell.onFinishedCastingEarly(stack, world, playerIn, timeLeft, wrapper.getPreviousPowerTarget())) spell.triggerCooldown(playerIn);
+    		wrapper.removePreviousPowerTarget();
     		
     	}
     }
@@ -92,8 +96,10 @@ public class PowerActivator extends Item {
     	Power spell = Power.getPower(stack);
     	
     	if (spell != null) {
-    		if( spell.onFinishedCasting(stack, worldIn, playerIn)) spell.triggerCooldown(playerIn);
     		
+    		DataWrapper wrapper = DataWrapper.get( playerIn );
+    		if( spell.onFinishedCasting(stack, worldIn, playerIn, wrapper.getPreviousPowerTarget())) spell.triggerCooldown(playerIn);
+    		wrapper.removePreviousPowerTarget();
     	}
     	
         return stack;

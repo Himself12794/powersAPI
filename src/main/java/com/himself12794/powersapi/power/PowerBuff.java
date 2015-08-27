@@ -1,11 +1,11 @@
 package com.himself12794.powersapi.power;
 
-import com.himself12794.powersapi.PowersAPI;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import com.himself12794.powersapi.PowersAPI;
 
 /**
  * Can be used cast powers that effect the world and the caster only.
@@ -34,9 +34,9 @@ public class PowerBuff extends Power {
 			PowerEffect pfx = ((IEffectActivator)this).getPowerEffect();
 			
 			if (!pfx.isEffecting( caster )) { 
-				pfx.addTo( caster, getDuration(), caster );
+				pfx.addTo( caster, getDuration(), caster, this );
 				PowersAPI.print( "Effect " + pfx.getId() + " added to " + caster.getName() );
-			} else pfx.clearFrom( caster, caster );
+			} else pfx.addTo( caster, getDuration(), caster, this );
 			
 			return true;
 			

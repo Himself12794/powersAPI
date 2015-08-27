@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 
 public class PowerEffectsClient implements IMessage {
@@ -18,18 +19,20 @@ public class PowerEffectsClient implements IMessage {
 	private int casterEntityId;
 	private boolean isDone;
 	private int timeLeft;
+	private Power power;
 	
 	public PowerEffectsClient () {
 		
 	}
 	
-	public PowerEffectsClient(PowerEffect pfx, EntityLivingBase affectedEntity, EntityLivingBase caster, boolean isDone, int timeLeft) {
+	public PowerEffectsClient(PowerEffect pfx, EntityLivingBase affectedEntity, EntityLivingBase caster, boolean isDone, int timeLeft, Power power) {
 		
 		effect = pfx;
 		this.affectedEntityId = affectedEntity.getEntityId();
 		casterEntityId = caster != null ? caster.getEntityId() : 0;
 		this.isDone = isDone;
 		this.timeLeft = timeLeft;
+		this.power = power;
 		
 	}
 
@@ -41,6 +44,7 @@ public class PowerEffectsClient implements IMessage {
 		ByteBufUtils.writeVarInt(buf, casterEntityId, 4);
 		ByteBufUtils.writeVarShort(buf, isDone ? 1 : 0);
 		ByteBufUtils.writeVarInt(buf, timeLeft, 5);
+		ByteBufUtils.writeUTF8String( buf, Power.validatePowerName( power ) );
 		
 	}
 
@@ -52,6 +56,7 @@ public class PowerEffectsClient implements IMessage {
 		casterEntityId = ByteBufUtils.readVarInt(buf, 4);
 		isDone = ByteBufUtils.readVarShort(buf) == 1;
 		timeLeft = ByteBufUtils.readVarInt(buf, 5);
+		power = Power.lookupPower( ByteBufUtils.readUTF8String( buf ) );
 		
 	}
 	
@@ -70,8 +75,8 @@ public class PowerEffectsClient implements IMessage {
         		if (world.getEntityByID(message.casterEntityId) instanceof EntityLivingBase) caster = (EntityLivingBase) world.getEntityByID(message.casterEntityId);
         		
         		
-        		if (message.isDone) message.effect.onRemoval(target, caster);
-        		else message.effect.onUpdate(target, message.timeLeft, caster);
+        		if (message.isDone) message.effect.onRemoval(target, caster, message.power);
+        		else message.effect.onUpdate(target, message.timeLeft, caster, message.power);
     
         	}
         	return null;

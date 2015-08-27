@@ -16,6 +16,7 @@ public class Reference {
     	public static final String POWER_SET = MODID + ".power.powerSet";
     	public static final String POWER_PRIMARY = MODID + ".power.primaryPower";
     	public static final String POWER_SECONDARY = MODID + ".power.primarySecondary";
+    	public static final String POWER_PREVIOUS_TARGET = MODID + ".power.previousTarget";
     	
     }
     

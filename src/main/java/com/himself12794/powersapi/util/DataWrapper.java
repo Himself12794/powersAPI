@@ -6,9 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
@@ -40,25 +39,25 @@ public class DataWrapper {
 
 		nbt.setTag( TagIdentifiers.POWER_COOLDOWNS,
 				data.getTag( TagIdentifiers.POWER_COOLDOWNS ) );
-		
+
 		nbt.setTag( TagIdentifiers.POWER_EFFECTS,
 				data.getTag( TagIdentifiers.POWER_EFFECTS ) );
-		
+
 		nbt.setString( TagIdentifiers.POWER_CURRENT,
 				data.getString( TagIdentifiers.POWER_CURRENT ) );
-		
+
 		nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT,
 				data.getInteger( TagIdentifiers.POWER_CURRENT_USELEFT ) );
-		
+
 		nbt.setString( TagIdentifiers.POWER_PRIMARY,
 				data.getString( TagIdentifiers.POWER_PRIMARY ) );
-		
+
 		nbt.setString( TagIdentifiers.POWER_SECONDARY,
 				data.getString( TagIdentifiers.POWER_SECONDARY ) );
-		
+
 		nbt.setTag( TagIdentifiers.POWER_SET,
 				data.getTag( TagIdentifiers.POWER_SET ) );
-		
+
 		nbt.setBoolean( TagIdentifiers.POWER_SUCCESS,
 				data.getBoolean( TagIdentifiers.POWER_SUCCESS ) );
 
@@ -74,43 +73,46 @@ public class DataWrapper {
 		powerSet = Power.getLearnedPowers( theEntity );
 
 	}
-	
+
 	/**
-	 * Sets the primary power. If the entity does not know the power,
-	 * it teaches it to them.
+	 * Sets the primary power. If the entity does not know the power, it teaches
+	 * it to them.
 	 * 
 	 * @param power
 	 */
 	public void setPrimaryPower(Power power) {
-		
-		teachPower(power);
+
+		teachPower( power );
 		theEntity.getEntityData().setString( TagIdentifiers.POWER_PRIMARY,
 				power.getUnlocalizedName() );
 	}
-	
+
 	/**
-	 * Sets the secondary power. If the entity does not know the power,
-	 * it teaches it to them.
+	 * Sets the secondary power. If the entity does not know the power, it
+	 * teaches it to them.
 	 * 
 	 * @param power
 	 */
 	public void setSecondaryPower(Power power) {
 
-		if (knowsPower( power )) theEntity.getEntityData().setString(
+		teachPower( power );
+		theEntity.getEntityData().setString(
 				TagIdentifiers.POWER_SECONDARY, power.getUnlocalizedName() );
+		
+		System.out.println("Set secondary power as " + power);
 	}
-	
+
 	/**
 	 * Gets the power designated as the primary power.
 	 * 
 	 * @return
 	 */
 	public Power getPrimaryPower() {
-		
+
 		return Power.lookupPower( theEntity.getEntityData().getString(
 				TagIdentifiers.POWER_PRIMARY ) );
 	}
-	
+
 	/**
 	 * Gets the power designated as the secondary power.
 	 * 
@@ -121,15 +123,32 @@ public class DataWrapper {
 		return Power.lookupPower( theEntity.getEntityData().getString(
 				TagIdentifiers.POWER_SECONDARY ) );
 	}
-	
+
 	public int getPrimaryPowerCooldownLeft() {
-		return getPrimaryPower()!= null ? powerCoolDowns.getInteger( getPrimaryPower().getUnlocalizedName() ) : 0;
+
+		return getPrimaryPower() != null ? powerCoolDowns
+				.getInteger( getPrimaryPower().getUnlocalizedName() ) : 0;
 	}
-	
+
 	public int getSecondaryPowerCooldownLeft() {
-		return getPrimaryPower() != null ? powerCoolDowns.getInteger( getSecondaryPower().getUnlocalizedName() ) : 0;
+
+		return getPrimaryPower() != null ? powerCoolDowns
+				.getInteger( getSecondaryPower().getUnlocalizedName() ) : 0;
 	}
-	
+
+	public int getCooldownRemaining(Power power) {
+
+		return power != null ? powerCoolDowns
+				.getInteger( power.getUnlocalizedName() ) : 0;
+	}
+
+	public void triggerCooldown(Power power) {
+
+		if (power != null) {
+			power.triggerCooldown( theEntity );
+		}
+	}
+
 	/**
 	 * Teaches the entity the designated power.
 	 * 
@@ -141,7 +160,7 @@ public class DataWrapper {
 		power.teachPower( theEntity );
 		return this;
 	}
-	
+
 	/**
 	 * Detects if the player knows the specfified power.
 	 * 
@@ -159,77 +178,112 @@ public class DataWrapper {
 
 		return false;
 	}
-	
+
+	public void setPreviousPowerTarget(MovingObjectPosition pos) {
+
+		theEntity.getEntityData().setTag( TagIdentifiers.POWER_PREVIOUS_TARGET,
+				UsefulMethods.movingObjectPosToNBT( pos ) );
+	}
+
+	public MovingObjectPosition getPreviousPowerTarget() {
+
+		return UsefulMethods.movingObjectPositionFromNBT(
+				theEntity.getEntityData().getCompoundTag(
+						TagIdentifiers.POWER_PREVIOUS_TARGET ),
+				theEntity.getEntityWorld() );
+	}
+
+	public void removePreviousPowerTarget() {
+
+		theEntity.getEntityData().removeTag(
+				TagIdentifiers.POWER_PREVIOUS_TARGET );
+	}
+
 	/**
 	 * Causes the player to use the designated power.
 	 * 
 	 * @param power
 	 */
 	public void usePower(Power power) {
-		
+
 		if (theEntity instanceof EntityPlayer) {
-	    	if (power != null && power.canUsePower( theEntity )) {
-	    		
-	    		theEntity.swingItem();
-	    		
-	    		if (power.onPreparePower(null, theEntity.worldObj, (EntityPlayer) theEntity)) {
-	    			
-	    			if ( power.isConcentrationPower() ) {
-	    				
-	    				if (power.cast(theEntity.worldObj, theEntity, null, 1)) {
-	    					setPowerInUse( power );
-	    				}
-	        			
-	    			} else if (power.cast(theEntity.worldObj, theEntity, null, 1)) {
-	
-	    				if (power.onFinishedCasting(null, theEntity.worldObj, (EntityPlayer) theEntity)) power.triggerCooldown(theEntity);
-	
-	    			}
-	    		}
-	    	}
-    	}
-		
+			if (power != null && power.canUsePower( theEntity )) {
+
+				theEntity.swingItem();
+
+				if (power.onPreparePower( null, theEntity.worldObj,
+						(EntityPlayer) theEntity )) {
+
+					if (power.isConcentrationPower()) {
+
+						if (power.cast( theEntity.worldObj, theEntity, null, 1 )) {
+							setPowerInUse( power );
+						}
+
+					} else if (power.cast( theEntity.worldObj, theEntity, null,
+							1 )) {
+
+						if (power.onFinishedCasting( null, theEntity.worldObj,
+								(EntityPlayer) theEntity,
+								this.getPreviousPowerTarget() )) power
+								.triggerCooldown( theEntity );
+						removePreviousPowerTarget();
+
+					}
+				}
+			}
+		}
+
 	}
-	
+
 	/**
 	 * Uses the power designated as primary.
 	 */
 	public void usePrimaryPower() {
-		usePower(getPrimaryPower());
+
+		usePower( getPrimaryPower() );
 	}
-	
+
 	/**
 	 * Uses the power designated secondary.
 	 */
 	public void useSecondaryPower() {
-		usePower(getSecondaryPower());
+
+		usePower( getSecondaryPower() );
 	}
-	
+
 	/**
 	 * Makes the player stop using the power.
 	 */
 	public void stopUsingPower() {
+		
 		Power power = getPowerInUse();
 		
 		if (theEntity instanceof EntityPlayer && power != null) {
 			if (power.onFinishedCastingEarly( null, theEntity.worldObj,
-					(EntityPlayer) theEntity, getPowerUseTimeLeft() )) {
+					(EntityPlayer) theEntity, getPowerUseTimeLeft(),
+					getPreviousPowerTarget() )) {
 				power.triggerCooldown( theEntity );
 			}
-			theEntity.getEntityData().setString( TagIdentifiers.POWER_CURRENT, "" );
+			removePreviousPowerTarget();
+			theEntity.getEntityData().setString( TagIdentifiers.POWER_CURRENT,
+					"" );
 		}
 	}
-	
+
 	/**
 	 * Sets the current power in use.
 	 * 
 	 * @param power
 	 */
 	public void setPowerInUse(Power power) {
+		
 		NBTTagCompound nbt = theEntity.getEntityData();
 		if (power != null) {
-			nbt.setString( TagIdentifiers.POWER_CURRENT, power.getUnlocalizedName() );
-			nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT, power.getMaxConcentrationTime() );
+			nbt.setString( TagIdentifiers.POWER_CURRENT,
+					power.getUnlocalizedName() );
+			nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT,
+					power.getMaxConcentrationTime() );
 		} else {
 			nbt.setString( TagIdentifiers.POWER_CURRENT, "" );
 			nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT, -1 );
@@ -247,9 +301,11 @@ public class DataWrapper {
 		return theEntity.getEntityData().getInteger(
 				TagIdentifiers.POWER_CURRENT_USELEFT );
 	}
-	
+
 	public void setPowerUseTimeLeft(int x) {
-		theEntity.getEntityData().setInteger( TagIdentifiers.POWER_CURRENT_USELEFT, x );
+
+		theEntity.getEntityData().setInteger(
+				TagIdentifiers.POWER_CURRENT_USELEFT, x );
 	}
 
 	public boolean isUsingPower() {
@@ -257,37 +313,73 @@ public class DataWrapper {
 		return Power.lookupPower( theEntity.getEntityData()
 				.getString( TagIdentifiers.POWER_CURRENT ) ) != null;
 	}
-	
+
 	public void updateUsingPowers() {
-		
+
 		if (theEntity instanceof EntityPlayer) {
 			Power power = getPowerInUse();
 			int useTime = getPowerUseTimeLeft();
-			
+
 			if (power != null) {
-				
-				if (theEntity.isSwingInProgress) { theEntity.swingProgressInt = 1; }
-				
-				if (useTime > 0) {
-					
-					if ( useTime % 4  == 0 ) {
-						
-						power.cast(theEntity.worldObj, theEntity, null, 1);
-						
-					}
-					setPowerUseTimeLeft(useTime - 1);
-					
-				} else if (useTime <= 0) {
-	
-		    		if( power.onFinishedCasting(null, theEntity.worldObj, (EntityPlayer) theEntity)) power.triggerCooldown(theEntity);
-		    		setPowerUseTimeLeft(0);
-		    		setPowerInUse(null);
+
+				if (theEntity.isSwingInProgress) {
+					theEntity.swingProgressInt = 1;
 				}
-				
+
+				if (useTime > 0) {
+
+					if (useTime % 4 == 0) {
+
+						power.cast( theEntity.worldObj, theEntity, null, 1 );
+
+					}
+					setPowerUseTimeLeft( useTime - 1 );
+
+				} else if (useTime <= 0) {
+
+					if (power.onFinishedCasting( null, theEntity.worldObj,
+							(EntityPlayer) theEntity, getPreviousPowerTarget() )) power
+							.triggerCooldown( theEntity );
+					removePreviousPowerTarget();
+					setPowerUseTimeLeft( 0 );
+					setPowerInUse( null );
+				}
+
 			}
-			
+
 		}
-		
+
+	}
+
+	public PowerEffectContainer getEffectContainer(PowerEffect effect) {
+
+		EntityLivingBase caster = null;
+		int timeRemaining = 0;
+
+		if (!activePowerEffects.hasNoTags()) {
+
+			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+
+				NBTTagCompound nbttagcompound = activePowerEffects
+						.getCompoundTagAt( i );
+
+				PowerEffect temp = PowerEffect.getEffectById( nbttagcompound
+						.getShort( "id" ) );
+				if (temp != effect) continue;
+
+				timeRemaining = nbttagcompound.getInteger( "duration" );
+				Entity tempEntity = theEntity.getEntityWorld().getEntityByID(
+						nbttagcompound.getInteger( "caster" ) );
+				caster = (EntityLivingBase) (tempEntity != null
+						&& tempEntity instanceof EntityLivingBase ? tempEntity
+						: null);
+
+			}
+		}
+
+		return new PowerEffectContainer( theEntity, caster, timeRemaining,
+				effect );
+
 	}
 
 	public void updateCooldowns() {
@@ -318,13 +410,17 @@ public class DataWrapper {
 						.getCompoundTagAt( i );
 
 				int timeRemaining = nbttagcompound.getInteger( "duration" );
-				
+
 				Entity temp = theEntity.worldObj
 						.getEntityByID( nbttagcompound.getInteger( "caster" ) );
-				EntityLivingBase caster = temp instanceof EntityLivingBase ? (EntityLivingBase)temp : null;
+				EntityLivingBase caster = temp instanceof EntityLivingBase ? (EntityLivingBase) temp
+						: null;
 
 				PowerEffect spfx = PowerEffect.getEffectById( nbttagcompound
 						.getShort( "id" ) );
+
+				Power power = Power.lookupPower( nbttagcompound
+						.getString( "initiatedPower" ) );
 
 				if (spfx != null) {
 
@@ -340,21 +436,22 @@ public class DataWrapper {
 									(EntityPlayer) theEntity, timeRemaining,
 									caster );
 
-						} else spfx.onUpdate( theEntity, timeRemaining, caster );
+						} else spfx.onUpdate( theEntity, timeRemaining, caster,
+								power );
 
-						addPowerEffect( spfx, --timeRemaining, caster );
+						addPowerEffect( spfx, --timeRemaining, caster, power );
 
 					}
 
 					else if (timeRemaining < 0 && !shouldNegate) {
 
-						/*if (!theEntity.worldObj.isRemote) {
-							PowersAPI.proxy.network
-									.sendToAll( new PowerEffectsClient( spfx,
-											theEntity, caster, false, 0 ) );
-						} 
-						}*/
-						spfx.onUpdate( theEntity, 0, caster );
+						/*
+						 * if (!theEntity.worldObj.isRemote) {
+						 * PowersAPI.proxy.network .sendToAll( new
+						 * PowerEffectsClient( spfx, theEntity, caster, false, 0
+						 * ) ); } }
+						 */
+						spfx.onUpdate( theEntity, -1, caster, power );
 
 					}
 				}
@@ -363,7 +460,7 @@ public class DataWrapper {
 	}
 
 	public void updateAll() {
-		
+
 		updatePowerEffects();
 		updateCooldowns();
 		updateUsingPowers();
@@ -490,15 +587,24 @@ public class DataWrapper {
 	}
 
 	public void addPowerEffect(PowerEffect effect, int duration,
-			EntityLivingBase caster) {
+			EntityLivingBase caster, Power power) {
 
-		effect.addTo( theEntity, duration, caster );
+		effect.addTo( theEntity, duration, caster, power );
 
 	}
 
-	public void removePowerEffect(PowerEffect effect) {
+	public void addPowerEffect(PowerEffectContainer container) {
 
-		effect.clearFrom( theEntity, null );
+		if (container != null) {
+			addPowerEffect( container.getTheEffect(),
+					container.getTimeRemaining(), container.getCasterEntity(),
+					container.getInitiatedPower() );
+		}
+	}
+
+	public void removePowerEffectNoSideEffects(PowerEffect effect) {
+
+		effect.clearFrom( theEntity );
 
 	}
 

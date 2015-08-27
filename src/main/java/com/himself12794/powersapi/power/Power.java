@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 
@@ -102,16 +101,7 @@ public abstract class Power {
 	 * @return success
 	 */
 	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
-		boolean flag = false;
-		
-		if (target.entityHit != null) {
-			
-			flag = target.entityHit.attackEntityFrom(DamageSource.magic, getPower() * modifier);
-			((EntityLivingBase)target.entityHit).setLastAttacker(caster);
-			
-		} 
-		
-		return flag;
+		return true;
 	}
 	
 	/**
@@ -124,7 +114,7 @@ public abstract class Power {
 	 * @param timeLeft
 	 * @return whether or not to cancel the cooldown
 	 */
-	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft) { return true; }
+	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { return true; }
 	
 	/**
 	 * Called when power is done being cast, before the cool down is triggered.
@@ -133,9 +123,10 @@ public abstract class Power {
 	 * @param stack
 	 * @param world
 	 * @param caster
+	 * @param movingObjectPosition 
 	 * @return whether or not to negate the cool down
 	 */
-	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster) { return true; }
+	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster, MovingObjectPosition movingObjectPosition) { return true; }
 	
 	/**
 	 * Determines whether or not powers that have a duration should show this on the tooltip.
@@ -433,8 +424,9 @@ public abstract class Power {
 	
 	public final void triggerCooldown( EntityLivingBase player ) {
 		
-		if (player instanceof EntityPlayer)
+		if (player instanceof EntityPlayer) {
 			if (((EntityPlayer)player).capabilities.isCreativeMode) return;
+		}
 		setCoolDown(player, getCoolDown());
 	}
 	
@@ -444,6 +436,16 @@ public abstract class Power {
 	
 	public static Power getPower(ItemStack stack) {
 		return Power.lookupPower(stack);
+	}
+	
+	/**
+	 * If the given power is valid, returns unlocalized name, else returns "".
+	 * 
+	 * @param power
+	 * @return
+	 */
+	public static String validatePowerName(Power power) {
+		return power != null ? power.getUnlocalizedName() : "";
 	}
 	
 	public static NBTTagCompound getCooldowns(EntityLivingBase player) {
@@ -456,5 +458,9 @@ public abstract class Power {
 		
 		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
 		return activeEffects != null && activeEffects.hasKey(TagIdentifiers.POWER_SET, 9) ? (NBTTagList)activeEffects.getTag(TagIdentifiers.POWER_SET) : new NBTTagList();
+	}
+	
+	public String toString() {
+		return getDisplayName();
 	}
 }

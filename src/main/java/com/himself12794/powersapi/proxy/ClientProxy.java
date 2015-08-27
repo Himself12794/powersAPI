@@ -1,7 +1,6 @@
 package com.himself12794.powersapi.proxy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -14,7 +13,6 @@ import com.himself12794.powersapi.event.KeyBindingsHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SyncNBTData;
-import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.render.RenderPower;
 
 public class ClientProxy extends CommonProxy {
@@ -39,10 +37,6 @@ public class ClientProxy extends CommonProxy {
 		ModItems.registerTextures( event );
 		KeyBindings.registerKeyBindings();
 		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler() );
-	}
-	
-	public void doPowerEffectUpdate(PowerEffect effect, EntityLivingBase target, int timeLeft, EntityLivingBase caster) {
-		effect.onUpdate( target, timeLeft, caster );
 	}
 
 	public Side getSide() {

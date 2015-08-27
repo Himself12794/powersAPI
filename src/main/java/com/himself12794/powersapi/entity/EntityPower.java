@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.himself12794.powersapi.power.IHomingPower;
 import com.himself12794.powersapi.power.PowerRanged;
+import com.himself12794.powersapi.util.DataWrapper;
 
 /**
  * This is pretty much the same as an EntityThrowable. Biggest difference is
@@ -412,6 +413,7 @@ public class EntityPower extends Entity implements IProjectile
 		if (power != null) {
 
 			power.onStrike( worldObj, movingObject, getThrower(), modifier );
+			DataWrapper.get( getThrower() ).setPreviousPowerTarget( movingObject );
 			setDead();
 
 		}

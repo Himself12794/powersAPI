@@ -1,6 +1,5 @@
 package com.himself12794.powersapi.proxy;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -16,10 +15,8 @@ import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
-import com.himself12794.powersapi.network.PowerEffectsClient;
-import com.himself12794.powersapi.network.SendPlayerStoppedUsingPower;
+import com.himself12794.powersapi.network.SendStopUsePower;
 import com.himself12794.powersapi.network.SendUsePower;
-import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
@@ -34,8 +31,8 @@ public class CommonProxy {
 				+ " NetChannel" );
 		network.registerMessage( CastPowerInstantServer.Handler.class,
 				CastPowerInstantServer.class, currId++, Side.SERVER );
-		network.registerMessage( SendPlayerStoppedUsingPower.Handler.class,
-				SendPlayerStoppedUsingPower.class, currId++, Side.SERVER );
+		network.registerMessage( SendStopUsePower.Handler.class,
+				SendStopUsePower.class, currId++, Side.SERVER );
 		network.registerMessage( SendUsePower.Handler.class,
 				SendUsePower.class, currId++, Side.SERVER );
 
@@ -60,14 +57,6 @@ public class CommonProxy {
 
 		// ModRecipes.addRecipes();
 
-	}
-
-	public void doPowerEffectUpdate(PowerEffect effect,
-			EntityLivingBase target, int timeLeft, EntityLivingBase caster) {
-
-		effect.onUpdate( target, timeLeft, caster );
-		network.sendToAll( new PowerEffectsClient( effect, target, caster,
-				false, timeLeft ) );
 	}
 
 	public Side getSide() {
