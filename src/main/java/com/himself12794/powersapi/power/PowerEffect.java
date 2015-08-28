@@ -2,7 +2,6 @@ package com.himself12794.powersapi.power;
 
 import java.util.Map;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,8 +10,8 @@ import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.PowerEffectContainer;
-import com.himself12794.powersapi.util.Reference;
 
 public class PowerEffect {
 	
@@ -110,6 +109,18 @@ public class PowerEffect {
 	 */
 	public void onRemoval(EntityLivingBase entity, EntityLivingBase caster, Power power){}
 	
+	/**
+	 * An extra check to make sure both the power and effect are ready
+	 * 
+	 * @param entityHit
+	 * @param caster
+	 * @param powerEffectActivatorInstant
+	 * @return
+	 */
+	public boolean shouldApplyEffect(EntityLivingBase entityHit, EntityLivingBase caster, Power power) {
+		return true;
+	}
+	
 	public final void addTo(EntityLivingBase target, int duration, EntityLivingBase caster) {
 		addTo(target, duration, caster, null);
 	}
@@ -164,7 +175,7 @@ public class PowerEffect {
         	if (location > -1) {
         		activeEffects.removeTag(location);
         		onRemoval(target, caster, power);
-        		if (power instanceof IEffectActivator) {
+        		if (power instanceof IEffectActivator && caster != null) {
         			power.triggerCooldown(caster);
         		}
         	}
@@ -172,7 +183,7 @@ public class PowerEffect {
         	
         }
 
-        if (flag) {
+        if (flag && this.shouldApplyEffect(caster, target, power)) {
         	
             NBTTagCompound nbttagcompound1 = new NBTTagCompound();
             nbttagcompound1.setShort("id", (short) id);
@@ -180,14 +191,12 @@ public class PowerEffect {
             nbttagcompound1.setInteger("caster", (caster != null ? caster.getEntityId() : -1));
             nbttagcompound1.setString( "initiatedPower", power != null ? power.getUnlocalizedName() : "" );
             activeEffects.appendTag(nbttagcompound1);
-            this.onApplied( target, duration, caster, power );
+            onApplied( target, duration, caster, power );
         }
-
-        target.getEntityData().setTag(Reference.TagIdentifiers.POWER_EFFECTS, activeEffects);
     }
 	
 	/**
-	 * Clears the effect from the entity without side effects.
+	 * Clears the effect from the entity without calling PowerEffect#onRemoval().
 	 * 
 	 * @param target
 	 */
@@ -330,15 +339,12 @@ public class PowerEffect {
 		return powerEffectIds[id];
 	}
 	
-	public static NBTTagList getActiveEffects(EntityLivingBase entity) {
-		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.TagIdentifiers.powerEffects);
-		
-		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
-		return activeEffects != null && activeEffects.hasKey(Reference.TagIdentifiers.POWER_EFFECTS, 9) ? (NBTTagList)activeEffects.getTag(Reference.TagIdentifiers.POWER_EFFECTS) : new NBTTagList();
-	}
-	
 	public static int getEffectCount() {
 		return PowerEffect.powerEffectCount;
+	}
+	
+	public static NBTTagList getActiveEffects(EntityLivingBase target) {
+		return DataWrapper.get( target ).getActiveEffects();
 	}
 
 }

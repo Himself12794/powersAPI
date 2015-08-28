@@ -35,7 +35,7 @@ public final class KeyBindingsHandler {
 			
 	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
 	        	wrapper.stopUsingPower();
-	        	PowersAPI.proxy.network.sendToServer( new SendStopUsePower() );
+	        	PowersAPI.network.sendToServer( new SendStopUsePower() );
 	        }
 	    }
 	
@@ -45,7 +45,7 @@ public final class KeyBindingsHandler {
         	
         	if (power != null) {
 	        	wrapper.usePower( power );
-	        	PowersAPI.proxy.network.sendToServer( new SendUsePower(power) );
+	        	PowersAPI.network.sendToServer( new SendUsePower(power) );
         	}
 	    }
 		

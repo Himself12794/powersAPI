@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import org.apache.logging.log4j.Logger;
 
@@ -26,6 +27,8 @@ public class PowersAPI {
 	@Instance(value = Reference.MODID)
 	public static PowersAPI instance;
 	
+	public static SimpleNetworkWrapper network;
+	
 	public static Logger logger;
 	public static void print(Object msg) {
 		logger.info(msg);
@@ -35,6 +38,8 @@ public class PowersAPI {
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
 	public static CommonProxy proxy;
+	
+	public int currId = 0;
 	
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {

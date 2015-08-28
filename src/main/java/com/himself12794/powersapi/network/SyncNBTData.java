@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
 
 public class SyncNBTData implements IMessage {
@@ -17,8 +18,8 @@ public class SyncNBTData implements IMessage {
 	
     public SyncNBTData() {  }
     
-    public SyncNBTData(EntityPlayer player) { 
-    	nbttags = player.getEntityData();
+    public SyncNBTData(NBTTagCompound nbttags) { 
+    	this.nbttags = nbttags;
     }
 
 	@Override
@@ -36,7 +37,10 @@ public class SyncNBTData implements IMessage {
         @Override
         public IMessage onMessage(SyncNBTData message, MessageContext ctx) {
         	if (ctx.side.isClient()) {
-        		EntityPlayer player = (EntityPlayer) DataWrapper.set( Minecraft.getMinecraft().thePlayer, message.nbttags ).getEntity();
+        		
+        		if (PowersAPI.proxy.getPlayer() != null) {
+        			NBTTagCompound nbt = DataWrapper.set( PowersAPI.proxy.getPlayer(), message.nbttags ).getModEntityData();
+        		}
         	}
         	
         	return null;

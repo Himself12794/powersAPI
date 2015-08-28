@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class CastPowerInstantServer implements IMessage {
@@ -66,11 +65,12 @@ public class CastPowerInstantServer implements IMessage {
         		Power spell = message.spell;
         		EntityPlayer caster = ctx.getServerHandler().playerEntity;
         		MovingObjectPosition targetPos = message.getMovingObjectPosition( caster.getEntityWorld() );
+        		DataWrapper wrapper = DataWrapper.get( caster );
         		boolean success = spell.onStrike(ctx.getServerHandler().playerEntity.getEntityWorld(), targetPos, caster, message.modifier);
         		
-        		if (success) DataWrapper.get( caster ).setPreviousPowerTarget( targetPos );
+        		if (success) wrapper.setPreviousPowerTarget( targetPos );
         		
-	        	caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, success);
+	        	wrapper.setPowerSuccess( success );
   
         	}
         	

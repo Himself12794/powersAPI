@@ -2,7 +2,6 @@ package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -26,16 +25,16 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 	 * Made final to preserve logic.
 	 */
 	// TODO add optional onFinishedCastingEarly
-	public final boolean onFinishedCastingEarly(ItemStack stack, World world,
+	public final boolean onFinishedCastingEarly(World world,
 			EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) {
 
-		return this.onFinishedCasting( stack, world, playerIn, target );
+		return this.onFinishedCasting(  world, playerIn, target );
 	}
 	/**
 	 * Made final to preserve logic.
 	 */
 	// TODO add optional onFinishedCasting
-	public final boolean onFinishedCasting(ItemStack stack, World world,
+	public final boolean onFinishedCasting(World world,
 			EntityPlayer caster, MovingObjectPosition target) {
 
 		if (getPowerEffect() == null) return false;
@@ -45,6 +44,7 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 
 		for (EntityLivingBase entity : UsefulMethods.getEntitiesWithEffect(
 				world, getPowerEffect() )) {
+			
 			DataWrapper wrapper = DataWrapper.get( entity );
 
 			PowerEffectContainer container = wrapper
@@ -69,6 +69,8 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 		} else if (entityAlreadyAffected != null) {
 			DataWrapper.get( entityAlreadyAffected ).addPowerEffect(
 					getPowerEffect(), 0, caster, this );
+		} else {
+			
 		}
 
 		return alreadyAffectingEntity;

@@ -8,7 +8,7 @@ package com.himself12794.powersapi.power;
  */
 public interface IEffectActivator {
 	
-	PowerEffectApplied getPowerEffect();
+	PowerEffect getPowerEffect();
 	
 	int getEffectDuration();
 

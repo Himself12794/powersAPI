@@ -5,13 +5,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 
 /**
  * Utility class used for easier access of information stored in NBT tag data.
@@ -20,68 +21,65 @@ import com.himself12794.powersapi.util.Reference.TagIdentifiers;
  *
  */
 public class DataWrapper {
-	
-	private static final String BUTTON_DELAY = Reference.MODID + ".buttonDelay";
+
+	protected static final String POWER_GROUP = "power";
+	protected static final String POWER_CURRENT = "currentPower";
+	protected static final String POWER_CURRENT_USELEFT = "currentPower.useLeft";
+	protected static final String POWER_SUCCESS = "success";
+	protected static final String POWER_COOLDOWNS = "cooldowns";
+	protected static final String POWER_SET = "powerSet";
+	protected static final String POWER_PRIMARY = "primaryPower";
+	protected static final String POWER_SECONDARY = "primarySecondary";
+	protected static final String POWER_PREVIOUS_TARGET = "previousTarget";
+
+	protected static final String POWER_EFFECTS_GROUP = "powerEffects";
+	protected static final String POWER_EFFECTS = "activeEffects";
+
+	protected static final String BUTTON_DELAY = Reference.MODID + ".buttonDelay";
+	protected static final String LAST_UPDATE = "lastUpdate";
+	protected static final String HAS_SYNCED = "hasSynced";
+
 	protected EntityLivingBase theEntity;
-	protected NBTTagList activePowerEffects;
-	protected NBTTagCompound powerCoolDowns;
-	protected NBTTagList powerSet;
-	/** Unimplemented */
-	private NBTTagList learnedAbilitySets;
 
 	public static DataWrapper get(EntityLivingBase entity) {
-
+		if (entity == null) {
+			throw new NullPointerException("Entity is null");
+		}
 		return new DataWrapper( entity );
 	}
-	
+
 	/**
-	 * Used to sync entity data client-side 
+	 * Used to sync entity data client-side. Sets the mod data tag as data, so
+	 * be careful when using this.
+	 * 
 	 * @param entity
 	 * @param data
 	 * @return
 	 */
 	public static DataWrapper set(EntityLivingBase entity, NBTTagCompound data) {
-
+		
 		NBTTagCompound nbt = entity.getEntityData();
 
-		nbt.setTag( TagIdentifiers.POWER_COOLDOWNS,
-				data.getTag( TagIdentifiers.POWER_COOLDOWNS ) );
-
-		nbt.setTag( TagIdentifiers.POWER_EFFECTS,
-				data.getTag( TagIdentifiers.POWER_EFFECTS ) );
-
-		nbt.setString( TagIdentifiers.POWER_CURRENT,
-				data.getString( TagIdentifiers.POWER_CURRENT ) );
-
-		nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT,
-				data.getInteger( TagIdentifiers.POWER_CURRENT_USELEFT ) );
-
-		nbt.setString( TagIdentifiers.POWER_PRIMARY,
-				data.getString( TagIdentifiers.POWER_PRIMARY ) );
-
-		nbt.setString( TagIdentifiers.POWER_SECONDARY,
-				data.getString( TagIdentifiers.POWER_SECONDARY ) );
-
-		nbt.setTag( TagIdentifiers.POWER_SET,
-				data.getTag( TagIdentifiers.POWER_SET ) );
-
-		nbt.setBoolean( TagIdentifiers.POWER_SUCCESS,
-				data.getBoolean( TagIdentifiers.POWER_SUCCESS ) );
+		nbt.setTag( Reference.MODID, data );
 		
-		nbt.setTag( TagIdentifiers.POWER_PREVIOUS_TARGET,
-				data.getCompoundTag( TagIdentifiers.POWER_PREVIOUS_TARGET ) );
+		//System.out.println(nbt);
 
 		return new DataWrapper( entity );
 
 	}
 
-	private DataWrapper(EntityLivingBase entity) {
-
+	protected DataWrapper(EntityLivingBase entity) {
+		
+		/*if (entity instanceof EntityPlayer) {
+			NBTTagCompound data = entity.getEntityData().getCompoundTag( Reference.MODID );
+			if (data.hasKey( POWER_GROUP )) {
+				if (!data.getCompoundTag( POWER_GROUP ).hasKey( POWER_SET )) {
+					Thread.dumpStack();
+				}
+			}
+		}*/
+		
 		theEntity = entity;
-		activePowerEffects = PowerEffect.getActiveEffects( entity );
-		powerCoolDowns = Power.getCooldowns( entity );
-		powerSet = Power.getLearnedPowers( theEntity );
-
 	}
 
 	/**
@@ -91,10 +89,17 @@ public class DataWrapper {
 	 * @param power
 	 */
 	public void setPrimaryPower(Power power) {
-
+		
+		if (power == null || getPrimaryPower() == power) return;
+		
 		teachPower( power );
-		theEntity.getEntityData().setString( TagIdentifiers.POWER_PRIMARY,
-				power.getUnlocalizedName() );
+		getPowerData().setString( POWER_PRIMARY, power.getUnlocalizedName() );
+
+		ChatComponentTranslation message = new ChatComponentTranslation(
+				"chat.setPrimaryPower", power.getDisplayName() );
+
+		if (theEntity instanceof EntityPlayer && !theEntity.worldObj.isRemote) theEntity
+				.addChatMessage( message );
 	}
 
 	/**
@@ -105,11 +110,16 @@ public class DataWrapper {
 	 */
 	public void setSecondaryPower(Power power) {
 
-		teachPower( power );
-		theEntity.getEntityData().setString(
-				TagIdentifiers.POWER_SECONDARY, power.getUnlocalizedName() );
+		if (power == null) return;
 
-		System.out.println( "Set secondary power as " + power );
+		teachPower( power );
+		getPowerData().setString( POWER_SECONDARY, power.getUnlocalizedName() );
+
+		ChatComponentTranslation message = new ChatComponentTranslation(
+				"chat.setSecondaryPower", power.getDisplayName() );
+
+		if (theEntity instanceof EntityPlayer) theEntity
+				.addChatMessage( message );
 	}
 
 	/**
@@ -119,8 +129,7 @@ public class DataWrapper {
 	 */
 	public Power getPrimaryPower() {
 
-		return Power.lookupPower( theEntity.getEntityData().getString(
-				TagIdentifiers.POWER_PRIMARY ) );
+		return Power.lookupPower( getPowerData().getString( POWER_PRIMARY ) );
 	}
 
 	/**
@@ -130,26 +139,20 @@ public class DataWrapper {
 	 */
 	public Power getSecondaryPower() {
 
-		return Power.lookupPower( theEntity.getEntityData().getString(
-				TagIdentifiers.POWER_SECONDARY ) );
+		return Power.lookupPower( getPowerData().getString(
+				POWER_SECONDARY ) );
 	}
 
 	public int getPrimaryPowerCooldownLeft() {
 
-		return getPrimaryPower() != null ? powerCoolDowns
+		return getPrimaryPower() != null ? getPowerCooldowns()
 				.getInteger( getPrimaryPower().getUnlocalizedName() ) : 0;
 	}
 
 	public int getSecondaryPowerCooldownLeft() {
 
-		return getPrimaryPower() != null ? powerCoolDowns
+		return getPrimaryPower() != null ? getPowerCooldowns()
 				.getInteger( getSecondaryPower().getUnlocalizedName() ) : 0;
-	}
-
-	public int getCooldownRemaining(Power power) {
-
-		return power != null ? powerCoolDowns
-				.getInteger( power.getUnlocalizedName() ) : 0;
 	}
 
 	public void triggerCooldown(Power power) {
@@ -165,10 +168,14 @@ public class DataWrapper {
 	 * @param power
 	 * @return
 	 */
-	public DataWrapper teachPower(Power power) {
-
-		power.teachPower( theEntity );
-		return this;
+	public void teachPower(Power power) {
+		
+        NBTTagList learnedPowers = getLearnedPowers();
+        
+        if (knowsPower(power)) return;
+        
+        learnedPowers.appendTag( new NBTTagString(power.getUnlocalizedName()) );
+        getPowerData().setTag(POWER_SET, learnedPowers);
 	}
 
 	/**
@@ -179,34 +186,35 @@ public class DataWrapper {
 	 */
 	public boolean knowsPower(Power power) {
 
-		for (int i = 0; i < powerSet.tagCount(); i++) {
-			if (powerSet.getStringTagAt( i )
-					.equals( power.getUnlocalizedName() )) {
-				return true;
-			}
-		}
+		if (power == null) return false;
 
-		return false;
+        for (int i = 0; i < getLearnedPowers().tagCount(); ++i) {
+        	
+            String powerName = getLearnedPowers().getStringTagAt(i);
+            if (powerName.equals( power.getUnlocalizedName() )) return true;
+            
+        }
+        
+        return false;
 	}
 
 	public void setPreviousPowerTarget(MovingObjectPosition pos) {
 
-		theEntity.getEntityData().setTag( TagIdentifiers.POWER_PREVIOUS_TARGET,
+		getPowerData().setTag( POWER_PREVIOUS_TARGET,
 				UsefulMethods.movingObjectPosToNBT( pos ) );
 	}
 
 	public MovingObjectPosition getPreviousPowerTarget() {
 
 		return UsefulMethods.movingObjectPositionFromNBT(
-				theEntity.getEntityData().getCompoundTag(
-						TagIdentifiers.POWER_PREVIOUS_TARGET ),
+				getPowerData().getCompoundTag( POWER_PREVIOUS_TARGET ),
 				theEntity.getEntityWorld() );
 	}
 
 	public void removePreviousPowerTarget() {
 
-		theEntity.getEntityData().removeTag(
-				TagIdentifiers.POWER_PREVIOUS_TARGET );
+		if (getPowerData().hasKey( POWER_PREVIOUS_TARGET )) getPowerData()
+				.removeTag( POWER_PREVIOUS_TARGET );
 	}
 
 	/**
@@ -221,19 +229,18 @@ public class DataWrapper {
 
 				theEntity.swingItem();
 
-				if (power.onPreparePower( null, theEntity.worldObj,
+				if (power.onPreparePower( theEntity.worldObj,
 						(EntityPlayer) theEntity )) {
 
 					if (power.isConcentrationPower()) {
 
-						if (power.cast( theEntity.worldObj, theEntity, null, 1 )) {
+						if (power.cast( theEntity.worldObj, theEntity, 1.0F )) {
 							setPowerInUse( power );
 						}
 
-					} else if (power.cast( theEntity.worldObj, theEntity, null,
-							1 )) {
+					} else if (power.cast( theEntity.worldObj, theEntity, 1.0F )) {
 
-						if (power.onFinishedCasting( null, theEntity.worldObj,
+						if (power.onFinishedCasting( theEntity.worldObj,
 								(EntityPlayer) theEntity,
 								this.getPreviousPowerTarget() )) power
 								.triggerCooldown( theEntity );
@@ -270,14 +277,17 @@ public class DataWrapper {
 		Power power = getPowerInUse();
 
 		if (theEntity instanceof EntityPlayer && power != null) {
-			if (power.onFinishedCastingEarly( null, theEntity.worldObj,
+
+			boolean flag = power.onFinishedCastingEarly( theEntity.worldObj,
 					(EntityPlayer) theEntity, getPowerUseTimeLeft(),
-					getPreviousPowerTarget() )) {
+					getPreviousPowerTarget() );
+
+			if (flag) {
 				power.triggerCooldown( theEntity );
 			}
+
 			removePreviousPowerTarget();
-			theEntity.getEntityData().setString( TagIdentifiers.POWER_CURRENT,
-					"" );
+			getPowerData().setString( POWER_CURRENT, "" );
 		}
 	}
 
@@ -288,45 +298,39 @@ public class DataWrapper {
 	 */
 	public void setPowerInUse(Power power) {
 
-		NBTTagCompound nbt = theEntity.getEntityData();
+		NBTTagCompound nbt = getPowerData();
 		if (power != null) {
-			nbt.setString( TagIdentifiers.POWER_CURRENT,
-					power.getUnlocalizedName() );
-			nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT,
+			nbt.setString( POWER_CURRENT, power.getUnlocalizedName() );
+			nbt.setInteger( POWER_CURRENT_USELEFT,
 					power.getMaxConcentrationTime() );
-		} else {
-			nbt.setString( TagIdentifiers.POWER_CURRENT, "" );
-			nbt.setInteger( TagIdentifiers.POWER_CURRENT_USELEFT, -1 );
 		}
 	}
 
 	public Power getPowerInUse() {
 
-		return Power.lookupPower( theEntity.getEntityData().getString(
-				TagIdentifiers.POWER_CURRENT ) );
+		return Power.lookupPower( getPowerData().getString( POWER_CURRENT ) );
 	}
 
 	public int getPowerUseTimeLeft() {
 
-		return theEntity.getEntityData().getInteger(
-				TagIdentifiers.POWER_CURRENT_USELEFT );
+		return getPowerData().getInteger( POWER_CURRENT_USELEFT );
 	}
 
 	public void setPowerUseTimeLeft(int x) {
 
-		theEntity.getEntityData().setInteger(
-				TagIdentifiers.POWER_CURRENT_USELEFT, x );
+		getPowerData().setInteger( POWER_CURRENT_USELEFT, x );
 	}
 
 	public boolean isUsingPower() {
 
-		return Power.lookupPower( theEntity.getEntityData()
-				.getString( TagIdentifiers.POWER_CURRENT ) ) != null;
+		return Power.lookupPower( getPowerData()
+				.getString( POWER_CURRENT ) ) != null;
 	}
 
 	public void updateUsingPowers() {
 
 		if (theEntity instanceof EntityPlayer) {
+			
 			Power power = getPowerInUse();
 			int useTime = getPowerUseTimeLeft();
 
@@ -339,15 +343,13 @@ public class DataWrapper {
 				if (useTime > 0) {
 
 					if (useTime % 4 == 0) {
-
-						power.cast( theEntity.worldObj, theEntity, null, 1 );
-
+						power.cast( theEntity.worldObj, theEntity, 1 );
 					}
 					setPowerUseTimeLeft( useTime - 1 );
 
 				} else if (useTime <= 0) {
 
-					if (power.onFinishedCasting( null, theEntity.worldObj,
+					if (power.onFinishedCasting( theEntity.worldObj,
 							(EntityPlayer) theEntity, getPreviousPowerTarget() )) power
 							.triggerCooldown( theEntity );
 					removePreviousPowerTarget();
@@ -366,11 +368,11 @@ public class DataWrapper {
 		EntityLivingBase caster = null;
 		int timeRemaining = 0;
 
-		if (!activePowerEffects.hasNoTags()) {
+		if (!getActiveEffects().hasNoTags()) {
 
-			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+			for (int i = 0; i < getActiveEffects().tagCount(); ++i) {
 
-				NBTTagCompound nbttagcompound = activePowerEffects
+				NBTTagCompound nbttagcompound = getActiveEffects()
 						.getCompoundTagAt( i );
 
 				PowerEffect temp = PowerEffect.getEffectById( nbttagcompound
@@ -394,10 +396,10 @@ public class DataWrapper {
 
 	public void updateCooldowns() {
 
-		for (Object name : this.powerCoolDowns.getKeySet()) {
+		for (Object name : this.getPowerCooldowns().getKeySet()) {
 
 			String powerName = (String) name;
-			int remaining = this.powerCoolDowns.getInteger( powerName );
+			int remaining = this.getPowerCooldowns().getInteger( powerName );
 			Power power = Power.lookupPower( powerName );
 
 			if (remaining > 0 && power != null) {
@@ -412,11 +414,11 @@ public class DataWrapper {
 
 	public void updatePowerEffects() {
 
-		if (!activePowerEffects.hasNoTags()) {
+		if (!getActiveEffects().hasNoTags()) {
 
-			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+			for (int i = 0; i < getActiveEffects().tagCount(); ++i) {
 
-				NBTTagCompound nbttagcompound = activePowerEffects
+				NBTTagCompound nbttagcompound = getActiveEffects()
 						.getCompoundTagAt( i );
 
 				int timeRemaining = nbttagcompound.getInteger( "duration" );
@@ -455,12 +457,6 @@ public class DataWrapper {
 
 					else if (timeRemaining < 0 && !shouldNegate) {
 
-						/*
-						 * if (!theEntity.worldObj.isRemote) {
-						 * PowersAPI.proxy.network .sendToAll( new
-						 * PowerEffectsClient( spfx, theEntity, caster, false, 0
-						 * ) ); } }
-						 */
 						spfx.onUpdate( theEntity, -1, caster, power );
 
 					}
@@ -468,22 +464,33 @@ public class DataWrapper {
 			}
 		}
 	}
+	
+	public void updateTimers() {
+		int lastUpdate = getLastUpdate();
+		
+		if (lastUpdate <= 0) {
+			getModEntityData().setInteger( LAST_UPDATE, 20 );
+		} else {
+			getModEntityData().setInteger( LAST_UPDATE, lastUpdate - 1 );
+		}
+	}
 
 	public void updateAll() {
-
+		
 		updatePowerEffects();
 		updateCooldowns();
 		updateUsingPowers();
+		updateTimers();
 
 	}
 
 	public boolean onAttacked(DamageSource ds, float amount) {
 
-		if (!activePowerEffects.hasNoTags()) {
+		if (!getActiveEffects().hasNoTags()) {
 
-			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+			for (int i = 0; i < getActiveEffects().tagCount(); ++i) {
 
-				NBTTagCompound nbttagcompound = activePowerEffects
+				NBTTagCompound nbttagcompound = getActiveEffects()
 						.getCompoundTagAt( i );
 
 				int timeRemaining = nbttagcompound.getInteger( "duration" );
@@ -513,11 +520,11 @@ public class DataWrapper {
 
 	public float onAttack(EntityLivingBase target, DamageSource ds, float amount) {
 
-		if (!activePowerEffects.hasNoTags()) {
+		if (!getActiveEffects().hasNoTags()) {
 
-			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+			for (int i = 0; i < getActiveEffects().tagCount(); ++i) {
 
-				NBTTagCompound nbttagcompound = activePowerEffects
+				NBTTagCompound nbttagcompound = getActiveEffects()
 						.getCompoundTagAt( i );
 
 				EntityLivingBase caster = null;
@@ -544,11 +551,11 @@ public class DataWrapper {
 
 	public float onHurt(DamageSource ds, float amount) {
 
-		if (!activePowerEffects.hasNoTags()) {
+		if (!getActiveEffects().hasNoTags()) {
 
-			for (int i = 0; i < activePowerEffects.tagCount(); ++i) {
+			for (int i = 0; i < getActiveEffects().tagCount(); ++i) {
 
-				NBTTagCompound nbttagcompound = activePowerEffects
+				NBTTagCompound nbttagcompound = getActiveEffects()
 						.getCompoundTagAt( i );
 
 				EntityLivingBase caster = null;
@@ -576,26 +583,6 @@ public class DataWrapper {
 		return amount;
 	}
 
-	public NBTTagCompound toNBT() {
-
-		NBTTagCompound nbt = new NBTTagCompound();
-
-		nbt.setTag( "activeEffects", activePowerEffects );
-		nbt.setTag( "powerCooldowns", powerCoolDowns );
-
-		return nbt;
-
-	}
-
-	public void copyTo(EntityLivingBase entity) {
-
-		NBTTagCompound nbt = entity.getEntityData();
-
-		nbt.setTag( TagIdentifiers.POWER_COOLDOWNS, powerCoolDowns );
-		nbt.setTag( TagIdentifiers.POWER_EFFECTS, activePowerEffects );
-
-	}
-
 	public void addPowerEffect(PowerEffect effect, int duration,
 			EntityLivingBase caster, Power power) {
 
@@ -618,23 +605,25 @@ public class DataWrapper {
 	}
 
 	/**
-	 * Removes the effect without triggering
-	 * {@link PowerEffect#onRemoval()}. Still triggers cooldowns on linked spells.
+	 * Removes the effect without triggering {@link PowerEffect#onRemoval()} or
+	 * activating linked power cooldown.
 	 * 
 	 * @param effect
 	 */
-	public void removePowerEffectSparingly(PowerEffect effect) {
+	public void removePowerEffectQuietly(PowerEffect effect) {
+
 		if (effect == null) return;
 		effect.clearQuietly( theEntity );
 
 	}
-	
+
 	/**
 	 * Clears power effect, triggering linked power cooldown.
 	 * 
 	 * @return
 	 */
-	public void removePowerEffectQuietly(PowerEffect effect) {
+	public void removePowerEffectSparingly(PowerEffect effect) {
+
 		if (effect == null) return;
 		effect.clear( this.getEffectContainer( effect ) );
 	}
@@ -643,26 +632,129 @@ public class DataWrapper {
 
 		return theEntity;
 	}
-	
-	public void setButtonDelay( int delay ) {
+
+	public void setButtonDelay(int delay) {
+
 		theEntity.getEntityData().setInteger( BUTTON_DELAY, delay );
 	}
-	
+
 	public int getButtonDelayRemaining() {
+
 		return theEntity.getEntityData().getInteger( BUTTON_DELAY );
 	}
-	
-	public NBTTagCompound getModDataCompound() {
+
+	public NBTTagCompound getModEntityData() {
+
 		NBTTagCompound data = null;
-		
+
 		if (!theEntity.getEntityData().hasKey( Reference.MODID, 10 )) {
 			data = new NBTTagCompound();
 			theEntity.getEntityData().setTag( Reference.MODID, data );
 		} else {
 			data = theEntity.getEntityData().getCompoundTag( Reference.MODID );
 		}
-		
+
 		return data;
 	}
 
+	public NBTTagCompound getPowerData() {
+
+		NBTTagCompound modData = getModEntityData();
+		NBTTagCompound powerData = null;
+
+		if (!modData.hasKey( POWER_GROUP, 10 )) {
+			powerData = new NBTTagCompound();
+			modData.setTag( POWER_GROUP, powerData );
+		} else {
+			powerData = modData.getCompoundTag( POWER_GROUP );
+		}
+
+		return powerData;
+	}
+
+	public NBTTagCompound getPowerEffectData() {
+
+		NBTTagCompound modData = getModEntityData();
+		NBTTagCompound powerData = null;
+
+		if (!modData.hasKey( POWER_EFFECTS_GROUP, 10 )) {
+			powerData = new NBTTagCompound();
+			modData.setTag( POWER_EFFECTS_GROUP, powerData );
+		} else {
+			powerData = modData.getCompoundTag( POWER_EFFECTS_GROUP );
+		}
+
+		return powerData;
+	}
+
+	public NBTTagList getLearnedPowers() {
+
+		NBTTagList names = getPowerData().hasKey( POWER_SET, 9 ) ? (NBTTagList) getPowerData()
+				.getTag( POWER_SET ) : new NBTTagList();
+		getPowerData().setTag( POWER_SET, names );
+
+		return names;
+	}
+
+	public NBTTagCompound getPowerCooldowns() {
+
+		NBTTagCompound cooldowns = null;
+
+		if (!getPowerData().hasKey( POWER_COOLDOWNS, 10 )) {
+			cooldowns = new NBTTagCompound();
+			getPowerData().setTag( POWER_COOLDOWNS, cooldowns );
+		} else {
+			cooldowns = getPowerData().getCompoundTag( POWER_COOLDOWNS );
+		}
+
+		return cooldowns;
+	}
+	
+	public int getCooldownRemaining(Power power) {
+		
+		if (power == null) return 0;
+		NBTTagCompound coolDowns = getPowerCooldowns();
+		
+		return coolDowns.getInteger(power.getUnlocalizedName());
+	}
+	
+	public NBTTagList getActiveEffects() {
+		NBTTagCompound effectData = getPowerEffectData();
+		NBTTagList activeEffects = null;
+		
+		if (effectData.hasKey(POWER_EFFECTS, 9)) { 
+			activeEffects = (NBTTagList)effectData.getTag(POWER_EFFECTS);
+		} else {
+			activeEffects = new NBTTagList();
+			effectData.setTag( POWER_EFFECTS, activeEffects );
+		}
+		
+		return activeEffects;
+	}
+	
+	public boolean wasPowerSuccess() {
+		return getPowerData().getBoolean( POWER_SUCCESS );
+	}
+	
+	public void setPowerSuccess(boolean status) {
+		getPowerData().setBoolean( POWER_SUCCESS, status );
+	}
+	
+	public boolean getHasSynced() {
+		return getModEntityData().getBoolean( HAS_SYNCED );
+	}
+	
+	public void setHasSynced(boolean status) {
+		getModEntityData().setBoolean( HAS_SYNCED, status );
+	}
+	
+	public int getLastUpdate() {
+		return getModEntityData().getInteger( LAST_UPDATE );
+	}
+	
+	@Override
+	public String toString() {
+		return getModEntityData().toString();
+	}
+	
 }

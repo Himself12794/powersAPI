@@ -397,8 +397,8 @@ public class UsefulMethods {
 		nbtTagCompound.setDouble( "vecX", pos.hitVec.xCoord );
 		nbtTagCompound.setDouble( "vecY", pos.hitVec.yCoord );
 		nbtTagCompound.setDouble( "vecZ", pos.hitVec.zCoord );
-		nbtTagCompound.setString( "sideHit",
-				pos.sideHit != null ? pos.sideHit.getName2() : "" );
+		nbtTagCompound.setInteger( "sideHit",
+				pos.sideHit != null ? pos.sideHit.getIndex() : 0 );
 		nbtTagCompound.setInteger( "subHit", pos.subHit );
 		nbtTagCompound.setIntArray( "blockPos",
 				pos.getBlockPos() != null ? new int[] {
@@ -426,8 +426,8 @@ public class UsefulMethods {
 				nbtTagCompound.getDouble( "vecY" ),
 				nbtTagCompound.getDouble( "vecZ" ) );
 
-		EnumFacing sideHit = EnumFacing.byName( nbtTagCompound
-				.getString( "sideHit" ) );
+		EnumFacing sideHit = EnumFacing.getFront( nbtTagCompound
+				.getInteger( "sideHit" ) );
 		int subHit = nbtTagCompound.getInteger( "subHit" );
 
 		int[] c = nbtTagCompound.getIntArray( "blockPos" );

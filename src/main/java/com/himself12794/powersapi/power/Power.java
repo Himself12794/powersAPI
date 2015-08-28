@@ -8,17 +8,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.util.Reference;
-import com.himself12794.powersapi.util.Reference.TagIdentifiers;
+import com.himself12794.powersapi.util.DataWrapper;
 
 /**
  * This class is used to add powers to Minecraft. This is manifested as a power on
@@ -60,7 +56,7 @@ public abstract class Power {
 	 * @param modifier
 	 * @return success
 	 */
-	public abstract boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier);
+	public abstract boolean cast(World world, EntityLivingBase caster, float modifier);
 	
 	/**
 	 * The action to be performed when the power is being prepared, before it is actually cast.
@@ -69,7 +65,7 @@ public abstract class Power {
 	 * 
 	 * @return whether or not casting should continue.
 	 */
-	public boolean onPreparePower(ItemStack stack, World worldIn, EntityPlayer playerIn) {
+	public boolean onPreparePower(World worldIn, EntityPlayer playerIn) {
 		return true;
 	}
 	
@@ -84,7 +80,7 @@ public abstract class Power {
 	 * @param stack
 	 * @return whether or not the power counts as successful, and should count as a use
 	 */
-	public boolean onCast(World world, EntityLivingBase caster, ItemStack stack, float modifier) {return true;}
+	public boolean onCast(World world, EntityLivingBase caster, float modifier) {return true;}
 	
 	/**
 	 * Called when the power affects a target.
@@ -114,7 +110,7 @@ public abstract class Power {
 	 * @param timeLeft
 	 * @return whether or not to cancel the cooldown
 	 */
-	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { return true; }
+	public boolean onFinishedCastingEarly(World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { return true; }
 	
 	/**
 	 * Called when power is done being cast, before the cool down is triggered.
@@ -126,7 +122,7 @@ public abstract class Power {
 	 * @param movingObjectPosition 
 	 * @return whether or not to negate the cool down
 	 */
-	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster, MovingObjectPosition movingObjectPosition) { return true; }
+	public boolean onFinishedCasting(World world, EntityPlayer caster, MovingObjectPosition movingObjectPosition) { return true; }
 	
 	/**
 	 * Determines whether or not powers that have a duration should show this on the tooltip.
@@ -173,30 +169,14 @@ public abstract class Power {
 	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) { return null; }
 	
 	/**
-	 * Applies the power effect to the specific entity, for a specific time.
-	 * <p>
-	 * Setting the duration to less than 0 makes it last until removed.
+	 * Teaches the entity the power.
 	 * 
 	 * @param target 
 	 * @param duration
 	 * @param caster
 	 */
     public final void teachPower(EntityLivingBase target) {
-    	
-        NBTTagList learnedPowers = getLearnedPowers(target);
-
-        for (int i = 0; i < learnedPowers.tagCount(); ++i) {
-        	
-            String power = learnedPowers.getStringTagAt(i);
-            if (power.equals( getUnlocalizedName() )) return;
-            
-        }
-        
-        learnedPowers.appendTag( new NBTTagString(getUnlocalizedName()) );
-        target.getEntityData().setTag(TagIdentifiers.POWER_SET, learnedPowers);
-
-		System.out.println( "Taught " + target.getName() + " "
-				+ getDisplayName() );
+    	DataWrapper.get(target).teachPower( this );
     }
 	
 	public final ItemStack setPower(ItemStack stack) {
@@ -220,7 +200,7 @@ public abstract class Power {
 			
 		} else {
 			
-			nbt.setString(Reference.TagIdentifiers.POWER_CURRENT, power);
+			nbt.setString("currentPower", power);
 			stack.setTagCompound(nbt);
 			
 		}
@@ -348,7 +328,7 @@ public abstract class Power {
 		
 		if (Power.hasPower(stack)) {
 			
-			return lookupPower(stack.getTagCompound().getString( Reference.TagIdentifiers.POWER_CURRENT));
+			return lookupPower(stack.getTagCompound().getString( "currentPower"));
 			
 		}
 		
@@ -401,25 +381,16 @@ public abstract class Power {
 	}
 	
 	public final boolean canUsePower( EntityLivingBase player ) {
-		
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
-		
-		return coolDowns.getInteger(getUnlocalizedName()) <= 0;
-		
-	}
-	
-	public final int getCoolDownRemaining(EntityLivingBase player) {
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
-		
-		return coolDowns.getInteger(getUnlocalizedName());
+		return DataWrapper.get( player ).getCooldownRemaining( this ) <= 0;
 	}
 	
 	public final void setCoolDown(EntityLivingBase player, int amount) {
-		int id = player.getEntityId();
-		NBTTagCompound coolDowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
+		
+		DataWrapper data = DataWrapper.get( player );
+		
+		NBTTagCompound coolDowns = data.getPowerCooldowns();
 		
 		coolDowns.setInteger(getUnlocalizedName(), amount);
-		player.getEntityData().setTag(Reference.TagIdentifiers.POWER_COOLDOWNS, coolDowns);
 	}
 	
 	public final void triggerCooldown( EntityLivingBase player ) {
@@ -431,7 +402,7 @@ public abstract class Power {
 	}
 	
 	public static boolean hasPower(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey(Reference.TagIdentifiers.POWER_CURRENT);
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("currentPower");
 	}
 	
 	public static Power getPower(ItemStack stack) {
@@ -448,19 +419,7 @@ public abstract class Power {
 		return power != null ? power.getUnlocalizedName() : "";
 	}
 	
-	public static NBTTagCompound getCooldowns(EntityLivingBase player) {
-		NBTTagCompound cooldowns = player.getEntityData().getCompoundTag(Reference.TagIdentifiers.POWER_COOLDOWNS);
-		return player.getEntityData().hasKey(Reference.TagIdentifiers.POWER_COOLDOWNS) && cooldowns != null ? cooldowns : new NBTTagCompound();
-	}
-	
-	public static NBTTagList getLearnedPowers(EntityLivingBase entity) {
-		NBTTagCompound activeEffects = entity.getEntityData();//.getCompoundTag(Reference.TagIdentifiers.powerEffects);
-		
-		//return entity.getEntityData().getCompoundTag(Reference.TagIdentifiers.powerEffects);
-		return activeEffects != null && activeEffects.hasKey(TagIdentifiers.POWER_SET, 9) ? (NBTTagList)activeEffects.getTag(TagIdentifiers.POWER_SET) : new NBTTagList();
-	}
-	
 	public String toString() {
-		return getDisplayName();
+		return getUnlocalizedName();
 	}
 }

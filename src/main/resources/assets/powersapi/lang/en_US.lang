@@ -1,3 +1,5 @@
 itemGroup.powersAPI=Powers API
 
 item.powersAPI_powerActivator.name=Power Activator
+chat.setPrimaryPower=Set primary power as %1$s
+chat.setSecondaryPower=Set secondary power as %1$s

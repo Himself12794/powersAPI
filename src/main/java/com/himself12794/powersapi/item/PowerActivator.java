@@ -11,7 +11,6 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,6 +25,7 @@ import com.himself12794.powersapi.util.Reference;
 
 @SuppressWarnings("unchecked")
 public class PowerActivator extends Item {
+	
 	private final String name = "powerActivator";
 	
 	public PowerActivator() {
@@ -38,9 +38,13 @@ public class PowerActivator extends Item {
     
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
-    	Power spell = Power.getPower(stack);
+    	Power power = Power.getPower(stack);
+    	
+    	if (power != null) {
+    		DataWrapper.get( player ).setPrimaryPower( power );
+    	}
 		
-    	if (DataWrapper.get( player ).isUsingPower()) return stack;
+    	/*if (DataWrapper.get( player ).isUsingPower()) return stack;
     	
     	if (spell != null && spell.canUsePower(player)) {
     		
@@ -60,11 +64,11 @@ public class PowerActivator extends Item {
     				
     			}
     		}
-    	}
+    	}*/
     	return stack;
     }
 	
-	@Override
+	/*@Override
 	public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
 		
 		Power spell = Power.lookupPower(stack);
@@ -103,33 +107,33 @@ public class PowerActivator extends Item {
     	}
     	
         return stack;
-    }
+    }*/
     
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4){
 
-		Power spell = Power.lookupPower(stack);
+		Power power = Power.lookupPower(stack);
 		float modifier = 1.0F;
-    	if (spell != null) {
+    	if (power != null) {
     		
-    		String description = spell.getInfo(stack, player);
+    		String description = power.getInfo(stack, player);
     		String[] lines = description.split( "\\n" );
     		for (final String line : lines) {
 				list.add(line);
     		}
     		
-			if (!spell.getInfo(stack, player).equals("")) list.add("");
+			if (!power.getInfo(stack, player).equals("")) list.add("");
 			
-			if (spell.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + spell.getTypeDescriptor(stack, player));
-			list.add(EnumChatFormatting.RED + "Power: " + spell.getPower());
-			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)spell.getCoolDown() / 20.0F) + "s");
+			if (power.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + power.getTypeDescriptor(stack, player));
+			list.add(EnumChatFormatting.RED + "Power: " + power.getPower());
+			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCoolDown() / 20.0F) + "s");
 			
-			if (spell.getDuration() > 0 && spell.showDuration(stack, player, par4)) 
-				list.add(EnumChatFormatting.GREEN + "Duration: " + String.format("%.2f",(float)spell.getDuration() * modifier / 20.0F) + "s");
-			else if (spell.getDuration() <= -1)
+			if (power.getDuration() > 0 && power.showDuration(stack, player, par4)) 
+				list.add(EnumChatFormatting.GREEN + "Duration: " + String.format("%.2f",(float)power.getDuration() * modifier / 20.0F) + "s");
+			else if (power.getDuration() <= -1)
 				list.add( EnumChatFormatting.GREEN + "Duration: Until Removed");
 			
-			int remaining = spell.getCoolDownRemaining(player);
+			int remaining = DataWrapper.get( player ).getCooldownRemaining( power );
 			if ( remaining > 0 ) list.add(EnumChatFormatting.GRAY + "Time left: " + String.format("%.2f",(float)remaining / 20.0F ) + "s");
 			
 		} else list.add("Casts Powers");
@@ -177,7 +181,7 @@ public class PowerActivator extends Item {
     	if (PowersAPI.proxy.getSide().isClient()) {
         	
     	    EntityPlayer player = Minecraft.getMinecraft().thePlayer;	    	
-    	    if (Power.getPower(stack) != null) return Power.hasPower(stack) && Power.getPower(stack).getCoolDownRemaining(player) > 0;
+    	    if (Power.getPower(stack) != null) return Power.hasPower(stack) && DataWrapper.get( player ).getCooldownRemaining(Power.getPower(stack)) > 0;
     	    return false;
     		
     	} else {
@@ -194,9 +198,9 @@ public class PowerActivator extends Item {
         	if (!Power.hasPower(stack)) return 1.0D;
         	
         	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        	Power spell = Power.getPower(stack);
+        	Power power = Power.getPower(stack);
         	
-            return ((double)spell.getCoolDownRemaining(player) ) / (double)spell.getCoolDown();
+            return ((double)DataWrapper.get( player ).getCooldownRemaining( power ) ) / (double)power.getCoolDown();
     		
     	}
     	return 2.0D;

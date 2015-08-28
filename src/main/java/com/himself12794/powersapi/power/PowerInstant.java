@@ -11,7 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
-import com.himself12794.powersapi.util.Reference.TagIdentifiers;
 import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
@@ -19,15 +18,13 @@ public class PowerInstant extends Power {
 	
 	private int range = 40;
 	
-	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
+	public boolean cast(World world, EntityLivingBase caster, float modifier) {
 		
 		boolean successful = false;
-		boolean hasEffect = onCast(world, caster, tome, modifier);
-			
+		boolean hasEffect = onCast(world, caster, modifier);
+		DataWrapper wrapper = DataWrapper.get( caster );
 		
 		if (world.isRemote) {
-			
-			//System.out.println(Config.instantPowerRange);
 			
 			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(range);
 			
@@ -35,17 +32,17 @@ public class PowerInstant extends Power {
 			
 			successful = onStrike( world, pos, caster, modifier );
 			IMessage msg = new CastPowerInstantServer( pos, modifier, this );
-			PowersAPI.proxy.network.sendToServer(msg);
+			PowersAPI.network.sendToServer(msg);
 
 			
 			if (successful) {
-				DataWrapper.get( caster ).setPreviousPowerTarget( pos );
+				wrapper.setPreviousPowerTarget( pos );
 			}
 			
 		} else {
 			
-			successful = caster.getEntityData().getBoolean(TagIdentifiers.POWER_SUCCESS);
-			caster.getEntityData().setBoolean(TagIdentifiers.POWER_SUCCESS, false);
+			successful = wrapper.wasPowerSuccess();
+			wrapper.setPowerSuccess( false );
 			
 		}
 		

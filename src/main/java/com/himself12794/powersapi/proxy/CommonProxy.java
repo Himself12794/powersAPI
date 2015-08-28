@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.proxy;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,26 +17,31 @@ import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.CastPowerInstantServer;
+import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SendStopUsePower;
 import com.himself12794.powersapi.network.SendUsePower;
+import com.himself12794.powersapi.network.SyncNBTData;
 import com.himself12794.powersapi.util.Reference;
+
+import static com.himself12794.powersapi.PowersAPI.network;
 
 public class CommonProxy {
 
-	public static SimpleNetworkWrapper network;
-
-	protected static int currId = -1;
-
 	public void preinit(FMLPreInitializationEvent event) {
 
-		network = NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID
-				+ " NetChannel" );
+		network = NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID );
+
 		network.registerMessage( CastPowerInstantServer.Handler.class,
-				CastPowerInstantServer.class, currId++, Side.SERVER );
+				CastPowerInstantServer.class, 0, Side.SERVER );
 		network.registerMessage( SendStopUsePower.Handler.class,
-				SendStopUsePower.class, currId++, Side.SERVER );
+				SendStopUsePower.class, 1, Side.SERVER );
 		network.registerMessage( SendUsePower.Handler.class,
-				SendUsePower.class, currId++, Side.SERVER );
+				SendUsePower.class, 2, Side.SERVER );
+
+		network.registerMessage( PowerEffectsClient.Handler.class,
+				PowerEffectsClient.class, 3, Side.CLIENT );
+		network.registerMessage( SyncNBTData.Handler.class, SyncNBTData.class,
+				4, Side.CLIENT );
 
 		// register spells
 		// Power.registerPowers();
@@ -52,7 +59,7 @@ public class CommonProxy {
 		UpdatesHandler uph = new UpdatesHandler();
 
 		MinecraftForge.EVENT_BUS.register( uph );
-		
+
 		FMLCommonHandler.instance().bus().register( uph );
 
 		// ModRecipes.addRecipes();
@@ -62,6 +69,10 @@ public class CommonProxy {
 	public Side getSide() {
 
 		return Side.SERVER;
+	}
+	
+	public EntityPlayer getPlayer() {
+		return null;
 	}
 
 }
