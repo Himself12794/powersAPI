@@ -9,21 +9,27 @@ import com.himself12794.powersapi.util.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 
-public class Teach implements ISubCommand {
+public class TeachPowers implements ICommand {
 
 	@Override
-	public String getUsage() {
+	public String getCommandUsage(ICommandSender sender) {
 		return "t(each) <power> [user] ";
+	}
+	
+	public String getName() {
+		return "teach";
 	}
 
 	@Override
-	public List getNames() {
+	public List getAliases() {
 		return Lists.newArrayList( "teach", "t" );
 	}
 
@@ -102,6 +108,28 @@ public class Teach implements ISubCommand {
 	@Override
 	public boolean isUsernameIndex(String[] args, int index) {
 		return args.length >= 2 && index == 1;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean canCommandSenderUse(ICommandSender sender) {
+
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args,
+			BlockPos pos) {
+
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -107,7 +107,6 @@ public class EntityPower extends Entity implements IProjectile
 	}
 
 	protected void entityInit() {
-
 	}
 
 	/**
@@ -224,7 +223,7 @@ public class EntityPower extends Entity implements IProjectile
 
 			power.onUpdate( this );
 
-		}
+		} 
 
 		this.lastTickPosX = this.posX;
 		this.lastTickPosY = this.posY;
@@ -416,8 +415,11 @@ public class EntityPower extends Entity implements IProjectile
 			DataWrapper.get( getThrower() ).setPreviousPowerTarget( movingObject );
 			setDead();
 
+		} else {
+			worldObj.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, posX, posY, posZ, 0, 0, 0 );
+			worldObj.playSound( posX, posY, posZ, "random.explode", 2.0F, 2.5F, true );
+			setDead();
 		}
-		else setDead();
 	}
 
 	/**

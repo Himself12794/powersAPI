@@ -10,26 +10,28 @@ import com.himself12794.powersapi.util.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 
-public class Get implements ISubCommand {
+public class GetPowers implements ICommand {
 
 	private final List aliases = Lists.newArrayList( "get", "g" );
 	
 	@Override
-	public String getUsage() {
-		return "g(et) <power> ";
+	public String getCommandUsage(ICommandSender sender) {
+		return "get <power> ";
 	}
 
 	@Override
-	public List getNames() {
-		return aliases;
+	public String getName() {
+		return "get";
 	}
 
 	@Override
@@ -66,6 +68,27 @@ public class Get implements ISubCommand {
 	@Override
 	public boolean isUsernameIndex(String[] args, int index) {
 		return false;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		return 0;
+	}
+
+	@Override
+	public List getAliases() {
+		return null;
+	}
+
+	@Override
+	public boolean canCommandSenderUse(ICommandSender sender) {
+		return false;
+	}
+
+	@Override
+	public List addTabCompletionOptions(ICommandSender sender, String[] args,
+			BlockPos pos) {
+		return null;
 	}
 
 }

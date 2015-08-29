@@ -455,18 +455,20 @@ public class UsefulMethods {
 	
 	public static List<EntityLivingBase> getEntitiesWithEffect(final World  world, final PowerEffect effect) {
 		
-		return world.getEntities(EntityLivingBase.class, new Predicate(){
-
+		List<EntityLivingBase> entities = world.getEntities(EntityLivingBase.class, new Predicate(){
+			
 			@Override
 			public boolean apply(Object input) {
 				
 				if (input instanceof EntityLivingBase) {
-					return effect.isEffecting((EntityLivingBase)input);
+					return DataWrapper.get( (EntityLivingBase)input).isAffectedBy( effect );
 				}
 				return false;
 			}
 			
 		});
+		
+		return entities;
 		
 	}
 	
@@ -491,5 +493,9 @@ public class UsefulMethods {
 		
 		return entity == null ? true : (entity instanceof EntityPlayer ? ((EntityPlayer)entity).capabilities.isCreativeMode : true);
 		
+	}
+	
+	public static boolean nullOrEmptyString(String value) {
+		return value.equals( "" ) || value == null;
 	}
 }

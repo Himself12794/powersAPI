@@ -36,6 +36,8 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 	// TODO add optional onFinishedCasting
 	public final boolean onFinishedCasting(World world,
 			EntityPlayer caster, MovingObjectPosition target) {
+		
+		System.out.println(target);
 
 		if (getPowerEffect() == null) return false;
 
@@ -44,7 +46,6 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 
 		for (EntityLivingBase entity : UsefulMethods.getEntitiesWithEffect(
 				world, getPowerEffect() )) {
-			
 			DataWrapper wrapper = DataWrapper.get( entity );
 
 			PowerEffectContainer container = wrapper
@@ -57,7 +58,9 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 			}
 
 		}
-
+		
+		System.out.println(target);
+		
 		if (!alreadyAffectingEntity
 				&& target.entityHit instanceof EntityLivingBase) {
 			if (getPowerEffect().shouldApplyEffect(
@@ -65,13 +68,11 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 				getPowerEffect().addTo( (EntityLivingBase) target.entityHit,
 						getEffectDuration(), caster, this );
 			}
-			
 		} else if (entityAlreadyAffected != null) {
+			
 			DataWrapper.get( entityAlreadyAffected ).addPowerEffect(
 					getPowerEffect(), 0, caster, this );
-		} else {
-			
-		}
+		} 
 
 		return alreadyAffectingEntity;
 	}

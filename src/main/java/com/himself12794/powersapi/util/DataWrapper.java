@@ -443,8 +443,8 @@ public class DataWrapper {
 
 				if (spfx != null) {
 
-					boolean shouldNegate = (PowerEffect.negated
-							.isEffecting( theEntity ) && spfx.isNegateable());
+					boolean shouldNegate = isAffectedBy(PowerEffect.negated)
+							 && spfx.isNegateable();
 
 					if (timeRemaining > 0 && !shouldNegate) {
 
@@ -491,7 +491,7 @@ public class DataWrapper {
 
 	}
 
-	public boolean onAttacked(DamageSource ds, float amount) {
+	/*public boolean onAttacked(DamageSource ds, float amount) {
 
 		if (!getActiveEffects().hasNoTags()) {
 
@@ -512,7 +512,7 @@ public class DataWrapper {
 				if (spfx != null) {
 
 					boolean shouldNegate = (PowerEffect.negated
-							.isEffecting( theEntity ) && spfx.isNegateable());
+							.isAffecting( theEntity ) && spfx.isNegateable());
 
 					if (!shouldNegate) {
 
@@ -524,7 +524,7 @@ public class DataWrapper {
 		}
 		return true;
 	}
-
+	
 	public float onAttack(EntityLivingBase target, DamageSource ds, float amount) {
 
 		if (!getActiveEffects().hasNoTags()) {
@@ -545,7 +545,7 @@ public class DataWrapper {
 				if (spfx != null) {
 
 					boolean shouldNegate = (PowerEffect.negated
-							.isEffecting( theEntity ) && spfx.isNegateable());
+							.isAffecting( theEntity ) && spfx.isNegateable());
 
 					if (!shouldNegate) {
 						return spfx.onAttack( target, ds, amount, caster );
@@ -554,9 +554,9 @@ public class DataWrapper {
 			}
 		}
 		return amount;
-	}
+	}*/
 
-	public float onHurt(DamageSource ds, float amount) {
+	/*public float onHurt(DamageSource ds, float amount) {
 
 		if (!getActiveEffects().hasNoTags()) {
 
@@ -576,7 +576,7 @@ public class DataWrapper {
 				if (spfx != null) {
 
 					boolean shouldNegate = (PowerEffect.negated
-							.isEffecting( theEntity ) && spfx.isNegateable());
+							.isAffecting( theEntity ) && spfx.isNegateable());
 
 					if (!shouldNegate) {
 
@@ -588,7 +588,7 @@ public class DataWrapper {
 		}
 
 		return amount;
-	}
+	}*/
 
 	public void addPowerEffect(PowerEffect effect, int duration,
 			EntityLivingBase caster, Power power) {
@@ -775,9 +775,26 @@ public class DataWrapper {
 		
 	}
 	
-	public boolean hasPowerEffect(PowerEffect effect) {
-		return effect != null ? effect.isEffecting( theEntity ) : false;
+	public boolean isAffectedBy(PowerEffect effect) {
+		
+		NBTTagList effects = getActiveEffects();
+		if (effect == null) return false;
+		
+		for (int i = 0; i < effects.tagCount(); i++) {
+			short id = effects.getCompoundTagAt( i ).getShort( "id" );
+			if (id == effect.getId()) {
+				System.out.println(effect);
+				return true;
+			}
+		}
+		
+		return false;
+		
 	}
+	
+	/*public boolean hasPowerEffect(PowerEffect effect) {
+		return effect != null ? effect.isAffecting( theEntity ) : false;
+	}*/
 	
 	/**
 	 * All effects afflicting this entity that have a remaining time of < 0

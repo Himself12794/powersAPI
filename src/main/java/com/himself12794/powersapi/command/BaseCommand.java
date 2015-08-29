@@ -38,10 +38,12 @@ public abstract class BaseCommand implements ICommand {
 		
 		int i = 1;
 		
-		for (ISubCommand com : getSubCommands()) {
+		for (ICommand com : getSubCommands()) {
 			value.append( prefix );
-			value.append( com.getUsage() );
-			if (i != getSubCommands().size()) value.append( "\n" );
+			value.append( com.getCommandUsage(sender) );
+			if (i != getSubCommands().size() && !UsefulMethods.nullOrEmptyString(com.getCommandUsage( sender )) ) {
+				value.append( "\n" );
+			}
 			i++;
 		}
 
@@ -57,7 +59,7 @@ public abstract class BaseCommand implements ICommand {
 					StatCollector.translateToLocal( "command.invalid" ) );
 		} else if (args.length > 0) {
 			
-			ISubCommand theCommand = getSubCommandByArgs(args);
+			ICommand theCommand = getSubCommandByArgs(args);
 			
 			if (theCommand != null) theCommand.execute( sender, dropFirstString(args) );
 			else throw new CommandException("command.invalid");
@@ -65,34 +67,6 @@ public abstract class BaseCommand implements ICommand {
 		}
 
 	}
-	
-    /**
-     * creates a new array and sets elements 0..n-2 to be 0..n-1 of the input (n elements)
-     */
-    private static String[] dropFirstString(String[] input) {
-    	
-        String[] astring1 = new String[input.length - 1];
-        System.arraycopy(input, 1, astring1, 0, input.length - 1);
-        return astring1;
-    }
-    
-    private ISubCommand getSubCommandByArgs(String[] args) {
-		ISubCommand theCommand = null;
-		
-		for (ISubCommand command : getSubCommands()) {
-			if (command.getNames() == null) continue;
-			for (Object name : command.getNames()) {
-				if (name.equals( args[0] )) { 
-					theCommand = command;
-				}
-			}
-			
-			if (theCommand != null) break;
-			
-		}
-		
-		return theCommand;
-    }
 
 	@Override
 	public boolean canCommandSenderUse(ICommandSender sender) {
@@ -112,7 +86,7 @@ public abstract class BaseCommand implements ICommand {
 		
 		boolean is = args.length > 0;
 		if (!is) return false;
-		ISubCommand command = getSubCommandByArgs(args);
+		ICommand command = getSubCommandByArgs(args);
 		
 		is &= command != null ? command.isUsernameIndex( dropFirstString(args), index - 1 ) : false;
 		
@@ -120,7 +94,38 @@ public abstract class BaseCommand implements ICommand {
 		return is;
 	}
 	
-	public abstract List<ISubCommand> getSubCommands();
+    /**
+     * creates a new array and sets elements 0..n-2 to be 0..n-1 of the input (n elements)
+     */
+    private static String[] dropFirstString(String[] input) {
+    	
+        String[] astring1 = new String[input.length - 1];
+        System.arraycopy(input, 1, astring1, 0, input.length - 1);
+        return astring1;
+    }
+    
+    private ICommand getSubCommandByArgs(String[] args) {
+		ICommand theCommand = null;
+		
+		labelTop:
+		
+		for (ICommand command : getSubCommands()) {
+			
+			if (command.getAliases() == null) continue;
+			
+			for (Object name : command.getAliases()) {
+				if (name.equals( args[0] )) { 
+					theCommand = command;
+					break labelTop;
+				}
+			}
+			
+		}
+		
+		return theCommand;
+    }
+	
+	public abstract List<ICommand> getSubCommands();
 	
 	
 

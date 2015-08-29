@@ -13,8 +13,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.command.Effects;
-import com.himself12794.powersapi.command.PowerCommand;
+import com.himself12794.powersapi.command.EffectsCommand;
+import com.himself12794.powersapi.command.PowersCommand;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
@@ -28,12 +28,13 @@ import com.himself12794.powersapi.util.Reference;
 public class CommonProxy {
 
 	public void serverStartEvent(FMLServerStartingEvent event) {
-		event.registerServerCommand( new PowerCommand() );
-		event.registerServerCommand( new Effects() );
+		event.registerServerCommand( new PowersCommand() );
+		event.registerServerCommand( new EffectsCommand() );
 	}
 	
 	public void preinit(FMLPreInitializationEvent event) {
-
+		
+		// Registering message types
 		network = NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID );
 
 		network.registerMessage( CastPowerInstantServer.Handler.class,
@@ -48,15 +49,13 @@ public class CommonProxy {
 		network.registerMessage( SyncNBTData.Handler.class, SyncNBTData.class,
 				4, Side.CLIENT );
 
-		// register spells
-		// Power.registerPowers();
 		ModCreativeTabs.addCreativeTabs();
-
 		ModItems.addItems();
 
 		// register entities
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
 				PowersAPI.instance, 80, 3, true );
+		
 	}
 
 	public void init(FMLInitializationEvent event) {
@@ -66,8 +65,6 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register( uph );
 
 		FMLCommonHandler.instance().bus().register( uph );
-
-		// ModRecipes.addRecipes();
 
 	}
 

@@ -16,13 +16,13 @@ import com.himself12794.powersapi.util.PowerEffectContainer;
 // TODO add tag for beneficial, malicious, or tagging
 public class PowerEffect {
 	
-	public static final Map<String, Integer> idNameMapping = Maps.newHashMap();
+	public static final Map<String, Short> idNameMapping = Maps.newHashMap();
 	public static final PowerEffect[] powerEffectIds = new PowerEffect[128];
 	public static final PowerEffect negated = PowerEffect.registerEffect( new PowerEffect().setUnlocalizedName("negated") );
 	
 	private static int powerEffectCount = 0;
 	
-	private int id;
+	private short id;
 	protected String name;
 	protected boolean negateable = true;
 	protected EffectType type = EffectType.TAG;
@@ -248,9 +248,14 @@ public class PowerEffect {
 		boolean flag = true;
 		
 		for (int i = 0; i < activeEffects.tagCount(); ++i) {
-
+			
 	        NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
 	
+
+			if (!target.getName().equals( "Himself12794" )) {
+				System.out.println(this);
+			}
+	        
 	        if (nbttagcompound.getShort("id") == id) {
 	      
 	            return nbttagcompound.getInteger("duration");
@@ -267,10 +272,10 @@ public class PowerEffect {
 	 * @param entity
 	 * @return
 	 */
-	public final boolean isEffecting(EntityLivingBase entity) {
-
-		return getEffectTimeRemainingOn(entity) != 0 && (this != PowerEffect.negated ? !PowerEffect.negated.isEffecting( entity ) : true);
-	}
+	/*public boolean isAffecting(EntityLivingBase entity) {
+		Thread.dumpStack();
+		return getEffectTimeRemainingOn(entity) != 0;
+	}*/
 	
 	protected void setType(EffectType type) {
 		this.type = type;
@@ -280,7 +285,7 @@ public class PowerEffect {
 		return type;
 	}
 	
-	private final void setId(int id) {
+	private final void setId(short id) {
 		this.id = id;
 	}
 	
@@ -303,7 +308,7 @@ public class PowerEffect {
 	
 	public static PowerEffect registerEffect(PowerEffect effect) {
 		
-		int nextId = getNextIndex();
+		short nextId = getNextIndex();
 		if (nextId != -1) {
 			
 			effect.setId(nextId);
@@ -321,7 +326,7 @@ public class PowerEffect {
 	
 	public static PowerEffect getPowerEffect(String name) {
 		
-		final Integer index = idNameMapping.get( name );
+		final Short index = idNameMapping.get( name );
 		
 		if (index != null) {
 			return powerEffectIds[index];
@@ -331,11 +336,11 @@ public class PowerEffect {
 		
 	}
 	
-	private static int getNextIndex() {
+	private static short getNextIndex() {
 		
 		//System.out.println("Getting next index");
 		
-		for (int i = 0; i < powerEffectIds.length; i++) {
+		for (short i = 0; i < powerEffectIds.length; i++) {
 			PowersAPI.logger.debug(powerEffectIds[i]);
 			if (powerEffectIds[i] == null) return i;
 			

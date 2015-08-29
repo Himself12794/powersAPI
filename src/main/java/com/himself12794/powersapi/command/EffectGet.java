@@ -7,38 +7,21 @@ import java.util.UUID;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class ListPowers implements ICommand {
 
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-
-		return "l(ist) [user]";
-	}
-	
-	public String getName() {
-		return "list";
-	}
-
-	@Override
-	public List getAliases() {
-
-		return Lists.newArrayList( "list", "l" );
-	}
+public  class EffectGet implements ICommand {
 
 	@Override
 	public void execute(ICommandSender sender, String[] args)
@@ -51,14 +34,14 @@ public class ListPowers implements ICommand {
 				EntityPlayer player = (EntityPlayer) sender
 						.getCommandSenderEntity();
 				DataWrapperP wrapper = DataWrapperP.get( player );
-				Set<Power> powers = wrapper.getPowersAsSet();
+				Set<PowerEffect> powers = wrapper.getNonTagEffects();
 
-				StringBuilder value = new StringBuilder( "You know: " );
+				StringBuilder value = new StringBuilder( "You have: " );
 				int iterCount = 1;
 
-				for (Power power : powers) {
+				for (PowerEffect power : powers) {
 
-					value.append( power.getSimpleName() );
+					value.append( power.getUnlocalizedName() );
 					if (iterCount != powers.size()) value.append( ", " );
 					iterCount++;
 
@@ -68,7 +51,7 @@ public class ListPowers implements ICommand {
 
 			}
 
-		} else if (args.length == 1) {
+		} else if (args.length >= 1) {
 
 			World world = sender.getEntityWorld();
 			EntityPlayer targetPlayer = null;
@@ -85,7 +68,7 @@ public class ListPowers implements ICommand {
 						|| UsefulMethods.canTeachPower( sender
 								.getCommandSenderEntity() )) {
 					sender.addChatMessage( new ChatComponentText(
-							getPowersAsString( targetPlayer ) ) );
+							getPowerEffectsAsString( targetPlayer ) ) );
 				}
 			} else {
 				throw new CommandException(StatCollector.translateToLocal( "commands.generic.player.notFound" ));
@@ -93,28 +76,27 @@ public class ListPowers implements ICommand {
 		}
 	}
 
-	private String getPowersAsString(EntityPlayer player) {
+	@Override
+	public boolean isUsernameIndex(String[] args, int index) {
+		return args.length >= 1 && index == 0;
+	}
+	
+	private String getPowerEffectsAsString(EntityLivingBase entity) {
+		DataWrapper wrapper = DataWrapper.get( entity );
+		Set<PowerEffect> powers = wrapper.getNonTagEffects();
 
-		DataWrapperP wrapper = DataWrapperP.get( player );
-		Set<Power> powers = wrapper.getPowersAsSet();
-
-		StringBuilder value = new StringBuilder( player.getName() + ": " );
+		StringBuilder value = new StringBuilder(entity.getName() + ": ");
 		int iterCount = 1;
 
-		for (Power power : powers) {
+		for (PowerEffect power : powers) {
 
-			value.append( power.getSimpleName() );
+			value.append( power.getUnlocalizedName() );
 			if (iterCount != powers.size()) value.append( ", " );
 			iterCount++;
 
 		}
-
+		
 		return value.toString();
-	}
-
-	@Override
-	public boolean isUsernameIndex(String[] args, int index) {
-		return args.length >= 1 && index == 0;
 	}
 
 	@Override
@@ -125,18 +107,31 @@ public class ListPowers implements ICommand {
 	}
 
 	@Override
-	public boolean canCommandSenderUse(ICommandSender sender) {
+	public String getName() {
 
 		// TODO Auto-generated method stub
+		return "add";
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return null;
+	}
+
+	@Override
+	public List getAliases() {
+		return Lists.newArrayList("get", "g");
+	}
+
+	@Override
+	public boolean canCommandSenderUse(ICommandSender sender) {
 		return false;
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args,
-			BlockPos pos) {
-
-		// TODO Auto-generated method stub
+	public List addTabCompletionOptions(ICommandSender sender,
+			String[] args, BlockPos pos) {
 		return null;
 	}
-
+	
 }
