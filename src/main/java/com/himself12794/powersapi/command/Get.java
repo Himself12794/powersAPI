@@ -20,6 +20,8 @@ import net.minecraft.world.World;
 
 public class Get implements ISubCommand {
 
+	private final List aliases = Lists.newArrayList( "get", "g" );
+	
 	@Override
 	public String getUsage() {
 		return "g(et) <power> ";
@@ -27,16 +29,15 @@ public class Get implements ISubCommand {
 
 	@Override
 	public List getNames() {
-		return Lists.newArrayList( "get", "g" );
+		return aliases;
 	}
 
 	@Override
 	public void execute(ICommandSender sender, String[] args) throws CommandException {
 		
-		System.out.println(Arrays.toString( args ));
 		if (args.length == 0) {
 
-			StringBuilder powers = new StringBuilder();
+			StringBuilder powers = new StringBuilder("Available powers: ");
 
 			int powerCount = Power.getPowerCount();
 			int count = 1;
@@ -44,6 +45,7 @@ public class Get implements ISubCommand {
 			for (Power power : Power.getPowers().values()) {
 				powers.append( power.getSimpleName() );
 				if (powerCount != count) powers.append( ", " );
+				count++;
 			}
 
 			sender.addChatMessage( new ChatComponentText( powers.toString() ) );
@@ -59,6 +61,11 @@ public class Get implements ISubCommand {
 			}
 			
 		}
+	}
+
+	@Override
+	public boolean isUsernameIndex(String[] args, int index) {
+		return false;
 	}
 
 }

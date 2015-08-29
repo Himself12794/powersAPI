@@ -13,6 +13,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.google.common.collect.Sets;
+import com.himself12794.powersapi.power.EffectType;
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
@@ -233,10 +234,10 @@ public class DataWrapper {
 		if (theEntity instanceof EntityPlayer) {
 			if (power != null && power.canUsePower( theEntity )) {
 
-				theEntity.swingItem();
-
 				if (power.onPreparePower( theEntity.worldObj,
 						(EntityPlayer) theEntity )) {
+
+					theEntity.swingItem();
 
 					if (power.isConcentrationPower()) {
 
@@ -771,6 +772,35 @@ public class DataWrapper {
 		}
 		
 		return powers;
+		
+	}
+	
+	public boolean hasPowerEffect(PowerEffect effect) {
+		return effect != null ? effect.isEffecting( theEntity ) : false;
+	}
+	
+	/**
+	 * All effects afflicting this entity that have a remaining time of < 0
+	 * 
+	 * @return
+	 */
+	public Set<PowerEffect> getNonTagEffects() {
+		
+		Set<PowerEffect> effects = Sets.newHashSet();
+		
+		for (int i = 0; i < getActiveEffects().tagCount(); i++) {
+			
+			int id = getActiveEffects().getCompoundTagAt( i ).getInteger( "id" );
+			int remaining = getActiveEffects().getCompoundTagAt( i ).getInteger( "duration" );
+			PowerEffect effect = PowerEffect.getEffectById( id );
+			
+			if (effect != null && effect.getType() != EffectType.TAG ) {
+				effects.add( effect );
+			}
+			
+		}
+		
+		return effects;
 		
 	}
 	

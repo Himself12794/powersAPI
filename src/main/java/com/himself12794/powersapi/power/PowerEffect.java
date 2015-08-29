@@ -13,6 +13,7 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.PowerEffectContainer;
 
+// TODO add tag for beneficial, malicious, or tagging
 public class PowerEffect {
 	
 	public static final Map<String, Integer> idNameMapping = Maps.newHashMap();
@@ -24,6 +25,7 @@ public class PowerEffect {
 	private int id;
 	protected String name;
 	protected boolean negateable = true;
+	protected EffectType type = EffectType.TAG;
 	
 	public String getUnlocalizedName() {
 		return name;
@@ -267,7 +269,15 @@ public class PowerEffect {
 	 */
 	public final boolean isEffecting(EntityLivingBase entity) {
 
-		return getEffectTimeRemainingOn(entity) != 0;
+		return getEffectTimeRemainingOn(entity) != 0 && (this != PowerEffect.negated ? !PowerEffect.negated.isEffecting( entity ) : true);
+	}
+	
+	protected void setType(EffectType type) {
+		this.type = type;
+	}
+	
+	public EffectType getType() {
+		return type;
 	}
 	
 	private final void setId(int id) {
@@ -280,6 +290,11 @@ public class PowerEffect {
 	
 	protected void setNegateable(boolean state) {negateable = state;}
 	
+	/**
+	 * Whether or not the effect still works if the player has the negated power effect
+	 * 
+	 * @return
+	 */
 	public boolean isNegateable() {return negateable;}
 	
 	public String toString() {

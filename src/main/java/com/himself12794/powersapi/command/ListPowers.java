@@ -106,4 +106,9 @@ public class ListPowers implements ISubCommand {
 		return value.toString();
 	}
 
+	@Override
+	public boolean isUsernameIndex(String[] args, int index) {
+		return args.length >= 1 && index == 0;
+	}
+
 }

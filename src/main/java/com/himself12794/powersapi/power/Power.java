@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
  * This class is used to add powers to Minecraft. This is manifested as a power on
@@ -391,7 +392,7 @@ public abstract class Power {
 	}
 	
 	public final boolean canUsePower( EntityLivingBase player ) {
-		return DataWrapper.get( player ).getCooldownRemaining( this ) <= 0;
+		return (DataWrapper.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
 	}
 	
 	public final void setCoolDown(EntityLivingBase player, int amount) {

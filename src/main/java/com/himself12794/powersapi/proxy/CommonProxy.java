@@ -1,6 +1,6 @@
 package com.himself12794.powersapi.proxy;
 
-import net.minecraft.client.Minecraft;
+import static com.himself12794.powersapi.PowersAPI.network;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -8,12 +8,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.command.Effects;
 import com.himself12794.powersapi.command.PowerCommand;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
@@ -25,12 +25,11 @@ import com.himself12794.powersapi.network.SendUsePower;
 import com.himself12794.powersapi.network.SyncNBTData;
 import com.himself12794.powersapi.util.Reference;
 
-import static com.himself12794.powersapi.PowersAPI.network;
-
 public class CommonProxy {
 
 	public void serverStartEvent(FMLServerStartingEvent event) {
 		event.registerServerCommand( new PowerCommand() );
+		event.registerServerCommand( new Effects() );
 	}
 	
 	public void preinit(FMLPreInitializationEvent event) {
@@ -56,7 +55,7 @@ public class CommonProxy {
 		ModItems.addItems();
 
 		// register entities
-		EntityRegistry.registerModEntity( EntityPower.class, "spell", 1,
+		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
 				PowersAPI.instance, 80, 3, true );
 	}
 

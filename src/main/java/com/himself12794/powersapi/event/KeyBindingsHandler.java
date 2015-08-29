@@ -42,9 +42,10 @@ public final class KeyBindingsHandler {
 	    if (binding.isKeyDown() && !wrapper.isUsingPower()) {
         	
         	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
-        	
         	if (power != null) {
 	        	wrapper.usePower( power );
+
+				System.out.println("Using power " + power);
 	        	PowersAPI.network.sendToServer( new SendUsePower(power) );
         	}
 	    }

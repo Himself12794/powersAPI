@@ -14,4 +14,6 @@ public interface ISubCommand {
 	
 	void execute(ICommandSender sender, String[] args) throws CommandException;
 	
+	boolean isUsernameIndex(String[] args, int index);
+	
 }

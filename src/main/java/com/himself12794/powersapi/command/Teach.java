@@ -99,4 +99,9 @@ public class Teach implements ISubCommand {
 		}
 	}
 
+	@Override
+	public boolean isUsernameIndex(String[] args, int index) {
+		return args.length >= 2 && index == 1;
+	}
+
 }

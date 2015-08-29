@@ -470,7 +470,22 @@ public class UsefulMethods {
 		
 	}
 	
-
+	public static boolean isCreativeModePlayerOrNull(Entity player) {
+		return player instanceof EntityPlayer ? ((EntityPlayer)player).capabilities.isCreativeMode : player == null;
+	}
+	
+	public static boolean selfOrCreative(Entity affected, Entity effector) {
+		
+		if (affected == null && effector == null) return false;
+		
+		if (affected == effector) {
+			return true;
+		} else if (effector instanceof EntityPlayer) {
+			return UsefulMethods.isCreativeModePlayerOrNull( (EntityLivingBase) effector );
+		}
+		
+		return false;
+	}
 	
 	public static boolean canTeachPower(Entity entity) {
 		

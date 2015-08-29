@@ -23,11 +23,11 @@ public abstract class PowerEffectActivatorBuff extends PowerBuff implements
 		setDuration( getEffectDuration() );
 	}
 	
-	public boolean onFinishedCastingEarly(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { 
-		return this.onFinishedCasting( stack, world, playerIn, target ); 
+	public boolean onFinishedCastingEarly(World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { 
+		return this.onFinishedCasting( world, playerIn, target ); 
 	}
 	
-	public boolean onFinishedCasting(ItemStack stack, World world, EntityPlayer caster, MovingObjectPosition target) { 
+	public boolean onFinishedCasting(World world, EntityPlayer caster, MovingObjectPosition target) { 
 		
 		boolean alreadyAffectingEntity = false;
 		DataWrapper wrapper = DataWrapper.get( caster );
@@ -42,7 +42,7 @@ public abstract class PowerEffectActivatorBuff extends PowerBuff implements
 
 		if (!alreadyAffectingEntity) {
 			getPowerEffect().addTo( caster, getEffectDuration(), caster, this );
-		} else {
+		} else if (isRemoveableByCaster(caster, caster, container.getTimeRemaining())){
 			wrapper.addPowerEffect( getPowerEffect(), 0, caster, this );
 		}
 		

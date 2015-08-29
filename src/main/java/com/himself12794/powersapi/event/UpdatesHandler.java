@@ -69,7 +69,6 @@ public class UpdatesHandler {
 
 	@SubscribeEvent
 	public void saveToFile(SaveToFile event) {
-		System.out.println("Saving data");
 		DataWrapperP.get( event.entityPlayer ).saveHandler.writePlayerData( event.entityPlayer );
 	}
 
