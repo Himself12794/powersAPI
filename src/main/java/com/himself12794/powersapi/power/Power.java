@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -97,7 +98,16 @@ public abstract class Power {
 	 * @return success
 	 */
 	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
-		return true;
+		
+		if (target.entityHit instanceof EntityLivingBase) {
+			((EntityLivingBase)target.entityHit).attackEntityFrom( DamageSource.magic, getPower() );
+			return true;
+		}
+		
+
+		if (this instanceof PowerInstant) return false;
+		else return true;
+		
 	}
 	
 	/**
@@ -141,7 +151,7 @@ public abstract class Power {
 	 * 
 	 * @return
 	 */
-	public String getInfo(ItemStack stack, EntityPlayer player) {
+	public String getInfo(EntityPlayer player) {
 		String info = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".description")).trim();
 		
 		if (info.equals(getUnlocalizedName() + ".description")) info = "";

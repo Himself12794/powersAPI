@@ -1,5 +1,16 @@
+key.powersapi.powers=Powers API
+key.primary.desc=Use Primary Power
+key.secondary.desc=Use Secondary Power
+
 itemGroup.powersAPI=Powers API
 
 item.powersAPI_powerActivator.name=Power Activator
-chat.setPrimaryPower=Set primary power as %1$s
-chat.setSecondaryPower=Set secondary power as %1$s
+
+command.invalid=Invalid arguments
+command.setPrimaryPower=Set primary power as %1$s
+command.setSecondaryPower=Set secondary power as %1$s
+command.power.notfound=Power %1$s not found
+command.power.learned=You now know the power %1$s!
+command.power.notknown=You must first learn the power %1$s before you can assign it
+command.power.primary.notset=Primary power not set
+command.power.secondary.notset=Secondary power not set

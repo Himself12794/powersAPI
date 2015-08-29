@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.util;
 
+import java.util.Set;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +12,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 
+import com.google.common.collect.Sets;
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
@@ -92,11 +95,12 @@ public class DataWrapper {
 		
 		if (power == null || getPrimaryPower() == power) return;
 		
-		teachPower( power );
+		if (!knowsPower(power)) teachPower( power );
+		
 		getPowerData().setString( POWER_PRIMARY, power.getUnlocalizedName() );
 
 		ChatComponentTranslation message = new ChatComponentTranslation(
-				"chat.setPrimaryPower", power.getDisplayName() );
+				"command.setPrimaryPower", power.getDisplayName() );
 
 		if (theEntity instanceof EntityPlayer && !theEntity.worldObj.isRemote) theEntity
 				.addChatMessage( message );
@@ -116,7 +120,7 @@ public class DataWrapper {
 		getPowerData().setString( POWER_SECONDARY, power.getUnlocalizedName() );
 
 		ChatComponentTranslation message = new ChatComponentTranslation(
-				"chat.setSecondaryPower", power.getDisplayName() );
+				"command.setSecondaryPower", power.getDisplayName() );
 
 		if (theEntity instanceof EntityPlayer) theEntity
 				.addChatMessage( message );
@@ -176,6 +180,8 @@ public class DataWrapper {
         
         learnedPowers.appendTag( new NBTTagString(power.getUnlocalizedName()) );
         getPowerData().setTag(POWER_SET, learnedPowers);
+        
+        theEntity.addChatMessage( new ChatComponentTranslation("command.power.learned", power.getDisplayName()) );
 	}
 
 	/**
@@ -750,6 +756,22 @@ public class DataWrapper {
 	
 	public int getLastUpdate() {
 		return getModEntityData().getInteger( LAST_UPDATE );
+	}
+	
+	public Set<Power> getPowersAsSet() {
+		
+		Set<Power> powers = Sets.newHashSet();
+		
+		NBTTagList list = getLearnedPowers();
+		
+		for (int i = 0; i < list.tagCount(); i++) {
+			String powerName = list.getStringTagAt( i );
+			Power power = Power.lookupPower( powerName );
+			if (power != null) powers.add( power );
+		}
+		
+		return powers;
+		
 	}
 	
 	@Override

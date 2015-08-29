@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import org.apache.logging.log4j.Logger;
@@ -21,6 +22,8 @@ import com.himself12794.powersapi.util.Reference;
  * @author Himself12794
  *
  */
+// TODO add power profiles to track power usage
+// TODO add central registry for power profiles
 @Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME)
 public class PowersAPI {    
 
@@ -40,6 +43,11 @@ public class PowersAPI {
 	public static CommonProxy proxy;
 	
 	public int currId = 0;
+	
+	@EventHandler
+	public void serverStart(FMLServerStartingEvent event) {
+		proxy.serverStartEvent( event );
+	}
 	
     @EventHandler
     public void preinit(FMLPreInitializationEvent event) {

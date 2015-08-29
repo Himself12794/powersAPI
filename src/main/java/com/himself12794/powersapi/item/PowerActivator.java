@@ -116,13 +116,13 @@ public class PowerActivator extends Item {
 		float modifier = 1.0F;
     	if (power != null) {
     		
-    		String description = power.getInfo(stack, player);
+    		String description = power.getInfo( player );
     		String[] lines = description.split( "\\n" );
     		for (final String line : lines) {
 				list.add(line);
     		}
     		
-			if (!power.getInfo(stack, player).equals("")) list.add("");
+			if (!power.getInfo( player ).equals("")) list.add("");
 			
 			if (power.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + power.getTypeDescriptor(stack, player));
 			list.add(EnumChatFormatting.RED + "Power: " + power.getPower());

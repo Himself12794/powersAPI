@@ -469,4 +469,12 @@ public class UsefulMethods {
 		});
 		
 	}
+	
+
+	
+	public static boolean canTeachPower(Entity entity) {
+		
+		return entity == null ? true : (entity instanceof EntityPlayer ? ((EntityPlayer)entity).capabilities.isCreativeMode : true);
+		
+	}
 }

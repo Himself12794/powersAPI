@@ -6,6 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.command.PowerCommand;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
@@ -27,6 +29,10 @@ import static com.himself12794.powersapi.PowersAPI.network;
 
 public class CommonProxy {
 
+	public void serverStartEvent(FMLServerStartingEvent event) {
+		event.registerServerCommand( new PowerCommand() );
+	}
+	
 	public void preinit(FMLPreInitializationEvent event) {
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID );
