@@ -20,8 +20,7 @@ import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-
-public  class EffectGet implements ICommand {
+public class EffectGet implements ICommand {
 
 	@Override
 	public void execute(ICommandSender sender, String[] args)
@@ -34,7 +33,8 @@ public  class EffectGet implements ICommand {
 				EntityPlayer player = (EntityPlayer) sender
 						.getCommandSenderEntity();
 				DataWrapperP wrapper = DataWrapperP.get( player );
-				Set<PowerEffect> powers = wrapper.getNonTagEffects();
+				Set<PowerEffect> powers = wrapper.powerEffectsData
+						.getNonHiddenEffects();
 
 				StringBuilder value = new StringBuilder( "You have: " );
 				int iterCount = 1;
@@ -71,21 +71,26 @@ public  class EffectGet implements ICommand {
 							getPowerEffectsAsString( targetPlayer ) ) );
 				}
 			} else {
-				throw new CommandException(StatCollector.translateToLocal( "commands.generic.player.notFound" ));
+				throw new CommandException(
+						StatCollector
+								.translateToLocal( "commands.generic.player.notFound" ) );
 			}
 		}
 	}
 
 	@Override
 	public boolean isUsernameIndex(String[] args, int index) {
+
 		return args.length >= 1 && index == 0;
 	}
-	
-	private String getPowerEffectsAsString(EntityLivingBase entity) {
-		DataWrapper wrapper = DataWrapper.get( entity );
-		Set<PowerEffect> powers = wrapper.getNonTagEffects();
 
-		StringBuilder value = new StringBuilder(entity.getName() + ": ");
+	private String getPowerEffectsAsString(EntityLivingBase entity) {
+
+		DataWrapper wrapper = DataWrapper.get( entity );
+		Set<PowerEffect> powers = wrapper.powerEffectsData
+				.getNonHiddenEffects();
+
+		StringBuilder value = new StringBuilder( entity.getName() + ": " );
 		int iterCount = 1;
 
 		for (PowerEffect power : powers) {
@@ -95,7 +100,7 @@ public  class EffectGet implements ICommand {
 			iterCount++;
 
 		}
-		
+
 		return value.toString();
 	}
 
@@ -115,23 +120,27 @@ public  class EffectGet implements ICommand {
 
 	@Override
 	public String getCommandUsage(ICommandSender sender) {
+
 		return null;
 	}
 
 	@Override
 	public List getAliases() {
-		return Lists.newArrayList("get", "g");
+
+		return Lists.newArrayList( "get", "g" );
 	}
 
 	@Override
 	public boolean canCommandSenderUse(ICommandSender sender) {
+
 		return false;
 	}
 
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender,
 			String[] args, BlockPos pos) {
+
 		return null;
 	}
-	
+
 }

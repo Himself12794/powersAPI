@@ -346,6 +346,28 @@ public class UsefulMethods {
 
 	}
 
+	public static BlockPos getBlockFromSideSwap(BlockPos pos, EnumFacing side) {
+
+		switch (side) {
+
+			case DOWN:
+				return pos.down();
+			case UP:
+				return pos.up();
+			case NORTH:
+				return pos.north();
+			case SOUTH:
+				return pos.south();
+			case EAST:
+				return pos.east();
+			case WEST:
+				return pos.west();
+		}
+
+		return pos;
+
+	}
+
 	public static double distanceAboveGround(EntityLivingBase entity) {
 
 		BlockPos currentLocation = entity.getPosition();
@@ -461,7 +483,7 @@ public class UsefulMethods {
 			public boolean apply(Object input) {
 				
 				if (input instanceof EntityLivingBase) {
-					return DataWrapper.get( (EntityLivingBase)input).isAffectedBy( effect );
+					return DataWrapper.get( (EntityLivingBase)input).powerEffectsData.isAffectedBy( effect );
 				}
 				return false;
 			}
@@ -496,6 +518,10 @@ public class UsefulMethods {
 	}
 	
 	public static boolean nullOrEmptyString(String value) {
-		return value.equals( "" ) || value == null;
+		return value == null ? false : !value.equals( "" );
 	}
+	
+	/*public static BlockPos getLookBlockPos(EntityPlayer player) {
+		
+	}*/
 }

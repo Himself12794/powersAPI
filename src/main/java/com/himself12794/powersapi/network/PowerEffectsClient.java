@@ -83,7 +83,7 @@ public class PowerEffectsClient implements IMessage {
 						.getPlayer().worldObj
 						.getEntityByID( message.casterEntityId );
 
-				if (message.isDone) DataWrapper.get( target )
+				if (message.isDone) DataWrapper.get( target ).powerEffectsData
 						.removePowerEffectSparingly( message.effect );
 				else message.effect.onUpdate( target, message.timeLeft, caster,
 						message.power );

@@ -77,7 +77,7 @@ public class GetPowers implements ICommand {
 
 	@Override
 	public List getAliases() {
-		return null;
+		return aliases;
 	}
 
 	@Override

@@ -43,6 +43,7 @@ public final class KeyBindingsHandler {
         	
         	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
         	if (power != null) {
+        		
 	        	wrapper.usePower( power );
 	        	PowersAPI.network.sendToServer( new SendUsePower(power) );
         	}

@@ -250,14 +250,8 @@ public class PowerEffect {
 		for (int i = 0; i < activeEffects.tagCount(); ++i) {
 			
 	        NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
-	
 
-			if (!target.getName().equals( "Himself12794" )) {
-				System.out.println(this);
-			}
-	        
 	        if (nbttagcompound.getShort("id") == id) {
-	      
 	            return nbttagcompound.getInteger("duration");
 	            
 	        }
@@ -272,10 +266,9 @@ public class PowerEffect {
 	 * @param entity
 	 * @return
 	 */
-	/*public boolean isAffecting(EntityLivingBase entity) {
-		Thread.dumpStack();
+	public boolean isAffecting(EntityLivingBase entity) {
 		return getEffectTimeRemainingOn(entity) != 0;
-	}*/
+	}
 	
 	protected void setType(EffectType type) {
 		this.type = type;
@@ -363,8 +356,8 @@ public class PowerEffect {
 		return PowerEffect.powerEffectCount;
 	}
 	
-	public static NBTTagList getActiveEffects(EntityLivingBase target) {
-		return DataWrapper.get( target ).getActiveEffects();
+	private static NBTTagList getActiveEffects(EntityLivingBase target) {
+		return DataWrapper.get( target ).powerEffectsData.getActiveEffects();
 	}
 
 }

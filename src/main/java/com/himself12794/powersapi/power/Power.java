@@ -47,6 +47,8 @@ public abstract class Power {
 	/**How long the power can be used until a cooldown is forced*/
 	private int maxConcentrationTime = 0;
 	private boolean visibility = true;
+	private int preparationTime;
+	private float maxLevel;
 	
 	/**
 	 * This determines how the power is cast, then casts it.
@@ -100,14 +102,15 @@ public abstract class Power {
 	 */
 	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
 		
-		if (target.entityHit instanceof EntityLivingBase) {
+		/*if (target.entityHit instanceof EntityLivingBase) {
 			((EntityLivingBase)target.entityHit).attackEntityFrom( DamageSource.magic, getPower() );
 			return true;
 		}
 		
 
 		if (this instanceof PowerInstant) return false;
-		else return true;
+		else return true;*/
+		return true;
 		
 	}
 	

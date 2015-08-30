@@ -28,16 +28,15 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 	public final boolean onFinishedCastingEarly(World world,
 			EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) {
 
-		return this.onFinishedCasting(  world, playerIn, target );
+		return this.onFinishedCasting( world, playerIn, target );
 	}
+
 	/**
 	 * Made final to preserve logic.
 	 */
 	// TODO add optional onFinishedCasting
 	public final boolean onFinishedCasting(World world,
 			EntityPlayer caster, MovingObjectPosition target) {
-		
-		System.out.println(target);
 
 		if (getPowerEffect() == null) return false;
 
@@ -49,32 +48,65 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 			DataWrapper wrapper = DataWrapper.get( entity );
 
 			PowerEffectContainer container = wrapper
-					.getEffectContainer( getPowerEffect() );
-			if (container.getCasterEntity() == caster
-					&& container.getTheEffect() == getPowerEffect()) {
-				alreadyAffectingEntity = true;
-				entityAlreadyAffected = entity;
-				break;
+					.powerEffectsData.getEffectContainer( getPowerEffect() );
+			if (!affectCaster()) {
+				if (container.getCasterEntity() == caster
+						&& container.getTheEffect() == getPowerEffect()
+						&& container.getInitiatedPower() == this) {
+					alreadyAffectingEntity = true;
+					entityAlreadyAffected = entity;
+					break;
+				}
+			} else {
+				if (container.getAffectedEntity() == caster
+						&& container.getTheEffect() == getPowerEffect()
+						&& container.getInitiatedPower() == this) {
+					alreadyAffectingEntity = true;
+					entityAlreadyAffected = caster;
+				}
+			}
+		}
+
+		if (!affectCaster()) {
+
+			if (!alreadyAffectingEntity
+					&& target.entityHit instanceof EntityLivingBase) {
+				if (getPowerEffect().shouldApplyEffect(
+						(EntityLivingBase) target.entityHit, caster, this )) {
+					getPowerEffect().addTo(
+							(EntityLivingBase) target.entityHit,
+							getEffectDuration(), caster, this );
+				}
+			} else if (entityAlreadyAffected != null) {
+
+				DataWrapper.get( entityAlreadyAffected ).powerEffectsData
+						.addPowerEffect(
+								getPowerEffect(), 0, caster, this );
+			}
+		} else {
+
+			if (!alreadyAffectingEntity
+					&& caster instanceof EntityLivingBase) {
+				if (getPowerEffect().shouldApplyEffect(
+						caster, caster, this )) {
+					getPowerEffect().addTo( caster,
+							getEffectDuration(), caster, this );
+				}
+			} else if (entityAlreadyAffected != null) {
+
+				DataWrapper.get( entityAlreadyAffected ).powerEffectsData
+						.addPowerEffect(
+								getPowerEffect(), 0, caster, this );
 			}
 
 		}
-		
-		System.out.println(target);
-		
-		if (!alreadyAffectingEntity
-				&& target.entityHit instanceof EntityLivingBase) {
-			if (getPowerEffect().shouldApplyEffect(
-					(EntityLivingBase) target.entityHit, caster, this )) {
-				getPowerEffect().addTo( (EntityLivingBase) target.entityHit,
-						getEffectDuration(), caster, this );
-			}
-		} else if (entityAlreadyAffected != null) {
-			
-			DataWrapper.get( entityAlreadyAffected ).addPowerEffect(
-					getPowerEffect(), 0, caster, this );
-		} 
 
 		return alreadyAffectingEntity;
+	}
+
+	public boolean affectCaster() {
+
+		return false;
 	}
 
 }
