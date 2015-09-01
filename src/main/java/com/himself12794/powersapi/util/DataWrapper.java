@@ -5,6 +5,7 @@ import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -12,6 +13,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.google.common.collect.Sets;
+import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.power.IPersistantEffect;
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
@@ -133,21 +135,6 @@ public class DataWrapper {
 
 		return powerData;
 	}
-
-	/*public NBTTagCompound getPowerEffectData() {
-
-		final NBTTagCompound modData = getModEntityData();
-		NBTTagCompound powerData = null;
-
-		if (!modData.hasKey( POWER_EFFECTS_GROUP, 10 )) {
-			powerData = new NBTTagCompound();
-			modData.setTag( POWER_EFFECTS_GROUP, powerData );
-		} else {
-			powerData = modData.getCompoundTag( POWER_EFFECTS_GROUP );
-		}
-
-		return powerData;
-	}*/
 	
 	public PowerEffectsWrapper getPowerEffectsData() {
 		return powerEffectsData;
@@ -484,7 +471,7 @@ public class DataWrapper {
 			final int useTime = getPowerUseTimeLeft();
 
 			if (power != null) {
-
+				
 				if (theEntity.isSwingInProgress) {
 					theEntity.swingProgressInt = 1;
 				}

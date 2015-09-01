@@ -67,6 +67,7 @@ public class PowerEffectsWrapper {
 
 		EntityLivingBase caster = null;
 		int timeRemaining = 0;
+		Power power = null;
 
 		if (!getActiveEffects().hasNoTags()) {
 
@@ -87,12 +88,16 @@ public class PowerEffectsWrapper {
 				caster = (EntityLivingBase) (tempEntity != null
 						&& tempEntity instanceof EntityLivingBase ? tempEntity
 						: null);
+				
+				power = Power.lookupPower( nbttagcompound.getString( "initiatedPower" ) );
+				
+				
 
 			}
 		}
 
 		return new PowerEffectContainer( theEntity, caster, timeRemaining,
-				effect );
+				effect, power );
 
 	}
 
@@ -219,5 +224,25 @@ public class PowerEffectsWrapper {
 
 		return effects;
 
+	}
+	
+	public Set<PowerEffect> getActiveEffectsSet() {
+
+		final Set<PowerEffect> effects = Sets.newHashSet();
+
+		for (int i = 0; i < getActiveEffects().tagCount(); i++) {
+
+			final int id = getActiveEffects().getCompoundTagAt( i ).getInteger( "id" );
+			final int remaining = getActiveEffects().getCompoundTagAt( i )
+					.getInteger( "duration" );
+			final PowerEffect effect = PowerEffect.getEffectById( id );
+
+			if (effect != null) {
+				effects.add( effect );
+			}
+
+		}
+
+		return effects;
 	}
 }

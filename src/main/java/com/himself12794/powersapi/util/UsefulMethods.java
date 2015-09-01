@@ -329,17 +329,17 @@ public class UsefulMethods {
 		switch (side) {
 
 			case DOWN:
-				pos.up();
+				return pos.up();
 			case UP:
-				pos.down();
+				return pos.down();
 			case NORTH:
-				pos.south();
+				return pos.south();
 			case SOUTH:
-				pos.north();
+				return pos.north();
 			case EAST:
-				pos.west();
+				return pos.west();
 			case WEST:
-				pos.east();
+				return pos.east();
 		}
 
 		return pos;

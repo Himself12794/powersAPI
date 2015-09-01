@@ -22,6 +22,14 @@ public class PowerEffect {
 	
 	private static int powerEffectCount = 0;
 	
+	public PowerEffect() {
+		
+	}
+	
+	public PowerEffect(String name) {
+		setUnlocalizedName(name);
+	}
+	
 	private short id;
 	protected String name;
 	protected boolean negateable = true;

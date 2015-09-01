@@ -60,13 +60,13 @@ public class EffectSet implements ICommand {
 				
 				try {
 					if (args.length >= 3) {
-						affected = sender.getEntityWorld().getPlayerEntityByUUID( UUID.fromString( args[3] ) );
+						affected = sender.getEntityWorld().getPlayerEntityByUUID( UUID.fromString( args[2] ) );
 					} else if (args.length == 2 ) {
 						affected = affector;
 					}
 					
 				} catch (IllegalArgumentException iae) {
-					affected = sender.getEntityWorld().getPlayerEntityByName( args[3] );
+					affected = sender.getEntityWorld().getPlayerEntityByName( args[2] );
 				}
 				
 				PowerEffect effect = usesId ? PowerEffect.getEffectById( id ) : PowerEffect.getPowerEffect( name );

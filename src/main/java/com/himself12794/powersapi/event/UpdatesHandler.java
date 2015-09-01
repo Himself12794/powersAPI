@@ -22,6 +22,8 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.LoadFromFile;
 import net.minecraftforge.event.entity.player.PlayerEvent.SaveToFile;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
@@ -72,72 +74,44 @@ public class UpdatesHandler {
 		DataWrapperP.get( event.entityPlayer ).saveHandler.writePlayerData( event.entityPlayer );
 	}
 
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void loadFromFile(LoadFromFile event) {
 		if (event.entityPlayer instanceof EntityPlayerMP) {
 			NBTTagCompound data = DataWrapperP.get( event.entityPlayer ).saveHandler.readPlayerData( event.entityPlayer );
-			PowersAPI.network.sendTo( new SyncNBTData(data), (EntityPlayerMP) event.entityPlayer );
+			//PowersAPI.network.sendTo( new SyncNBTData(data), (EntityPlayerMP) event.entityPlayer );
 		}
-	}*/
+	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void saveOnDeath(LivingDeathEvent event) {
+		DataWrapper.get( event.entityLiving ).resetForRespawn();
+	}
+	
+	@SubscribeEvent
+	public void cancelUseWhenUsingPower(PlayerInteractEvent event) {
 		
-		if (event.entityLiving instanceof EntityPlayerMP) {
-			
-			System.out.println("Saving important player information for respawn");
-			
-			EntityPlayerMP player = (EntityPlayerMP)event.entityLiving;
-			DataWrapperP.get( player ).resetForRespawn().saveHandler.writePlayerData( player );
-			
+		if (DataWrapper.get( event.entityPlayer ).isUsingPower()) {
+			event.setCanceled( true );
 		}
 		
-	}*/
-
+	}
+	
 	@SubscribeEvent
+	public void cancelWhenUsingPower2(PlayerUseItemEvent.Start event) {
+		
+		if (DataWrapper.get( event.entityPlayer ).isUsingPower()) {
+			event.duration = 0;
+		}
+		
+	}
+
+	/*@SubscribeEvent
 	public void getPlayerData(EntityJoinWorldEvent event) {
 		if (event.entity instanceof EntityPlayerMP) {
 			EntityPlayerMP player = (EntityPlayerMP)event.entity;
 			NBTTagCompound data = DataWrapperP.get( player ).saveHandler.readPlayerData( player );
 			PowersAPI.network.sendTo( new SyncNBTData(data), player );
 		}
-	}
-
-	/*@SubscribeEvent
-	public void onAttacked(LivingAttackEvent event) {
-
-		if (!PowerEffect.getActiveEffects( event.entityLiving ).hasNoTags()) {
-			if (!DataWrapper.get( event.entityLiving ).onAttacked(
-					event.source, event.ammount )) event.setCanceled( true );
-		}
-
-	}
-
-	@SubscribeEvent
-	public void onHurt(LivingHurtEvent event) {
-
-		if (!PowerEffect.getActiveEffects( event.entityLiving ).hasNoTags()) {
-
-			float amount = DataWrapper.get( event.entityLiving ).onHurt(
-					event.source, event.ammount );
-
-			event.ammount = amount;
-		}
-
-		if (event.source.getEntity() instanceof EntityLivingBase) {
-
-			EntityLivingBase attacker = (EntityLivingBase) event.source
-					.getEntity();
-
-			if (!PowerEffect.getActiveEffects( attacker ).hasNoTags()) {
-
-				float amount = DataWrapper.get( attacker ).onAttack(
-						event.entityLiving, event.source, event.ammount );
-
-			}
-
-		}
-
 	}*/
 
 }

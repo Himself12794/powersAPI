@@ -49,64 +49,33 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 
 			PowerEffectContainer container = wrapper
 					.powerEffectsData.getEffectContainer( getPowerEffect() );
-			if (!affectCaster()) {
-				if (container.getCasterEntity() == caster
-						&& container.getTheEffect() == getPowerEffect()
-						&& container.getInitiatedPower() == this) {
-					alreadyAffectingEntity = true;
-					entityAlreadyAffected = entity;
-					break;
-				}
-			} else {
-				if (container.getAffectedEntity() == caster
-						&& container.getTheEffect() == getPowerEffect()
-						&& container.getInitiatedPower() == this) {
-					alreadyAffectingEntity = true;
-					entityAlreadyAffected = caster;
-				}
+			if (container.getCasterEntity() == caster
+					&& container.getTheEffect() == getPowerEffect()
+					&& container.getInitiatedPower() == this) {
+				alreadyAffectingEntity = true;
+				entityAlreadyAffected = entity;
+				break;
 			}
+
 		}
 
-		if (!affectCaster()) {
-
-			if (!alreadyAffectingEntity
-					&& target.entityHit instanceof EntityLivingBase) {
-				if (getPowerEffect().shouldApplyEffect(
-						(EntityLivingBase) target.entityHit, caster, this )) {
-					getPowerEffect().addTo(
-							(EntityLivingBase) target.entityHit,
-							getEffectDuration(), caster, this );
-				}
-			} else if (entityAlreadyAffected != null) {
-
-				DataWrapper.get( entityAlreadyAffected ).powerEffectsData
-						.addPowerEffect(
-								getPowerEffect(), 0, caster, this );
+		if (!alreadyAffectingEntity
+				&& target.entityHit instanceof EntityLivingBase) {
+			if (getPowerEffect().shouldApplyEffect(
+					(EntityLivingBase) target.entityHit, caster, this )) {
+				getPowerEffect().addTo(
+						(EntityLivingBase) target.entityHit,
+						getEffectDuration(), caster, this );
 			}
-		} else {
+			
+		} else if (entityAlreadyAffected != null) {
 
-			if (!alreadyAffectingEntity
-					&& caster instanceof EntityLivingBase) {
-				if (getPowerEffect().shouldApplyEffect(
-						caster, caster, this )) {
-					getPowerEffect().addTo( caster,
-							getEffectDuration(), caster, this );
-				}
-			} else if (entityAlreadyAffected != null) {
-
-				DataWrapper.get( entityAlreadyAffected ).powerEffectsData
-						.addPowerEffect(
-								getPowerEffect(), 0, caster, this );
-			}
-
+			DataWrapper.get( entityAlreadyAffected ).powerEffectsData
+					.addPowerEffect(
+							getPowerEffect(), 0, caster, this );
 		}
 
 		return alreadyAffectingEntity;
-	}
-
-	public boolean affectCaster() {
-
-		return false;
 	}
 
 }

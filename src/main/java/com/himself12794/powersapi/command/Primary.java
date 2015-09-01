@@ -79,7 +79,7 @@ public class Primary implements ICommand {
 				} else {
 					throw new CommandException(
 							StatCollector.translateToLocalFormatted(
-									"command.power.notfound", args[1] ) );
+									"command.power.notfound", args[0] ) );
 
 				}
 				
