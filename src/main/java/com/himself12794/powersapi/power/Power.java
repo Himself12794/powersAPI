@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.util.PowerProfile;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -149,13 +150,13 @@ public abstract class Power {
 	public boolean showDuration(ItemStack stack, EntityPlayer caster, boolean par3) { return true; }
 	
 	
-	/**Gets the power description. This value is localized.
-	 * @param player 
-	 * @param stack 
+	/**
+	 * Gets the power description. This value is localized.
 	 * 
+	 * @param profile unique object for each power, for every EntityPlayer
 	 * @return
 	 */
-	public String getInfo(EntityPlayer player) {
+	public String getInfo(PowerProfile profile) {
 		String info = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".description")).trim();
 		
 		if (info.equals(getUnlocalizedName() + ".description")) info = "";

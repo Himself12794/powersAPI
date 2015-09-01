@@ -136,8 +136,6 @@ public class DataWrapper {
 		
 		if (!(theEntity instanceof EntityPlayer) || power == null) return null;
 		
-		System.out.println(getPowerProfiles());
-		
 		NBTTagCompound profile = null;
 		
 		for (int i = 0; i < getPowerProfiles().tagCount(); ++i) {

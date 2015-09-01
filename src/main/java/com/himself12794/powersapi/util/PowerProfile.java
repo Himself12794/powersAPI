@@ -1,5 +1,8 @@
 package com.himself12794.powersapi.util;
 
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 import com.himself12794.powersapi.power.Power;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,7 +40,9 @@ public class PowerProfile {
 	
 	public void resetPowerData() {
 		
-		for (Object tag : powerData.getKeySet()) {
+		Set removeableKeys = Sets.newConcurrentHashSet( powerData.getKeySet() );
+		
+		for (Object tag : removeableKeys) {
 			powerData.removeTag( (String) tag );
 		}
 		
@@ -45,6 +50,26 @@ public class PowerProfile {
 	
 	public NBTTagCompound getPowerData() {
 		return powerData;
+	}
+	
+	/**
+	 * Convenience shortcut for getPowerData().getBoolean()
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public boolean getBoolean( String key ) {
+		return powerData.getBoolean( key );
+	}
+	
+	/**
+	 * Convenience shortcut for getPowerData().setBoolean()
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public void setBoolean( String key, boolean value ) {
+		powerData.setBoolean( key, value );
 	}
 	
 	public static PowerProfile getFromNBT(EntityPlayer player, NBTTagCompound data) {
