@@ -1,6 +1,6 @@
 package com.himself12794.powersapi.power;
 
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.entity.Entity;
 
 import com.himself12794.powersapi.entity.EntityPower;
 
@@ -19,6 +19,6 @@ public interface IHomingPower {
 	 * 
 	 * @param caster
 	 */
-	MovingObjectPosition getTarget(EntityPower spell, MovingObjectPosition target);
+	boolean isTargetValid(EntityPower spell, Entity target);
 	
 }

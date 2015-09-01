@@ -201,9 +201,9 @@ public class EntityPower extends Entity implements IProjectile
 
 		if (power != null) {
 
-			if (power instanceof IHomingPower) {
+			/*if (power instanceof IHomingPower) {
 
-				target = ((IHomingPower) power).getTarget( this, target );
+				target = ((IHomingPower) power).isTargetValid( this, target );
 
 				if (target != null) {
 
@@ -219,7 +219,7 @@ public class EntityPower extends Entity implements IProjectile
 
 					}
 				}
-			}
+			}*/
 
 			power.onUpdate( this );
 

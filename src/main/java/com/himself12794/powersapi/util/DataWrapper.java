@@ -2,10 +2,8 @@ package com.himself12794.powersapi.util;
 
 import java.util.Set;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -13,9 +11,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.google.common.collect.Sets;
-import com.himself12794.powersapi.item.ModItems;
-import com.himself12794.powersapi.power.IPersistantEffect;
-import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 
@@ -36,6 +31,7 @@ public class DataWrapper {
 	private static final String POWER_PRIMARY = "primaryPower";
 	private static final String POWER_SECONDARY = "secondaryPower";
 	private static final String POWER_PREVIOUS_TARGET = "previousTarget";
+	private static final String POWER_PROFILES = "powerProfiles";
 
 	private static final String POWER_EFFECTS_GROUP = "powerEffects";
 	private static final String POWER_EFFECTS = "activeEffects";
@@ -119,6 +115,52 @@ public class DataWrapper {
 		}
 
 		return cooldowns;
+	}
+	
+	private NBTTagList getPowerProfiles() {
+		
+		NBTTagList tag;
+		
+		if (!getPowerData().hasKey( POWER_PROFILES, 9 )) {
+			tag = new NBTTagList();
+			getPowerData().setTag( POWER_PROFILES, tag );
+		} else {
+			tag = (NBTTagList) getPowerData().getTag( POWER_PROFILES );
+		}
+		
+		return tag;
+		
+	}
+	
+	public PowerProfile getPowerProfile(Power power) {
+		
+		if (!(theEntity instanceof EntityPlayer) || power == null) return null;
+		
+		System.out.println(getPowerProfiles());
+		
+		NBTTagCompound profile = null;
+		
+		for (int i = 0; i < getPowerProfiles().tagCount(); ++i) {
+			
+			profile = (NBTTagCompound) getPowerProfiles().get( i );
+			
+			if (Power.lookupPower( profile.getString( PowerProfile.POWER_NAME ) ) == power) {
+				break;
+			}
+			
+		}
+		
+		if (profile != null) {
+			return PowerProfile.getFromNBT( (EntityPlayer) theEntity, profile );
+		} else {
+			profile = new NBTTagCompound();
+			profile.setString( PowerProfile.POWER_NAME, power.getUnlocalizedName() );
+			getPowerProfiles().appendTag( profile );
+			
+			return PowerProfile.getFromNBT( (EntityPlayer) theEntity, profile );
+			
+		}
+		
 	}
 
 	public NBTTagCompound getPowerData() {
@@ -269,7 +311,7 @@ public class DataWrapper {
 		for (int i = 0; i < powerEffectsData.getActiveEffects().tagCount(); i++) {
 			final PowerEffect effect = PowerEffect.getEffectById( powerEffectsData.getActiveEffects()
 					.getCompoundTagAt( i ).getInteger( "id" ) );
-			if (!(effect instanceof IPersistantEffect)) {
+			if (!effect.isPersistant()) {
 				toRemove.add( effect );
 			}
 		}

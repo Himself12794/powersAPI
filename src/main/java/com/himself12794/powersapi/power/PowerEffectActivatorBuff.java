@@ -1,5 +1,6 @@
 package com.himself12794.powersapi.power;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
@@ -16,11 +17,19 @@ import com.himself12794.powersapi.util.PowerEffectContainer;
  * @author Himself12794
  *
  */
-public abstract class PowerEffectActivatorBuff extends PowerBuff implements
+public class PowerEffectActivatorBuff extends PowerBuff implements
 		IEffectActivator {
-
-	{
-		setDuration( getEffectDuration() );
+	
+	private final PowerEffect linkedEffect;
+	private final int effectDuration;
+	
+	public PowerEffectActivatorBuff(String name, int cooldown, int maxConcentrationTime, PowerEffect effect, int duration) {
+		this.setUnlocalizedName(name);
+		this.setCoolDown(cooldown);
+		this.setMaxConcentrationTime(maxConcentrationTime);
+		this.linkedEffect = effect;
+		this.effectDuration = duration;
+		setDuration(effectDuration);
 	}
 
 	public boolean onFinishedCastingEarly(World world, EntityPlayer playerIn,
@@ -51,6 +60,25 @@ public abstract class PowerEffectActivatorBuff extends PowerBuff implements
 		}
 
 		return alreadyAffectingEntity;
+	}
+
+	@Override
+	public PowerEffect getPowerEffect() {
+
+		// TODO Auto-generated method stub
+		return linkedEffect;
+	}
+
+	@Override
+	public int getEffectDuration() {
+		return effectDuration;
+	}
+
+	@Override
+	public boolean isRemoveableByCaster(EntityLivingBase affected,
+			EntityLivingBase caster, int timeRemaining) {
+
+		return true;
 	}
 
 }

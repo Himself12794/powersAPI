@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
 
+// TODO solve excessive syncs
 public class SyncNBTData implements IMessage {
 	
 	private NBTTagCompound nbttags;

@@ -18,8 +18,20 @@ import com.himself12794.powersapi.util.UsefulMethods;
  * @author Himself12794
  *
  */
-public abstract class PowerEffectActivatorInstant extends PowerInstant
+public class PowerEffectActivatorInstant extends PowerInstant
 		implements IEffectActivator {
+	
+	private final PowerEffect linkedEffect;
+	private final int effectDuration;
+	
+	public PowerEffectActivatorInstant(String name, int cooldown, int maxConcentrationTime, PowerEffect effect, int duration) {
+		this.setUnlocalizedName(name);
+		this.setCoolDown(cooldown);
+		this.setMaxConcentrationTime(maxConcentrationTime);
+		this.linkedEffect = effect;
+		this.effectDuration = duration;
+		setDuration(effectDuration);
+	}
 
 	/**
 	 * Made final to preserve logic.
@@ -76,6 +88,26 @@ public abstract class PowerEffectActivatorInstant extends PowerInstant
 		}
 
 		return alreadyAffectingEntity;
+	}
+
+	@Override
+	public PowerEffect getPowerEffect() {
+
+		// TODO Auto-generated method stub
+		return linkedEffect;
+	}
+
+	@Override
+	public int getEffectDuration() {
+
+		return effectDuration;
+	}
+
+	@Override
+	public boolean isRemoveableByCaster(EntityLivingBase affected,
+			EntityLivingBase caster, int timeRemaining) {
+
+		return true;
 	}
 
 }
