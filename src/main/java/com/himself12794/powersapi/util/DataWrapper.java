@@ -20,6 +20,7 @@ import com.himself12794.powersapi.power.PowerEffect;
  * @author Himself12794
  *
  */
+// TODO finish central data collection
 public class DataWrapper {
 
 	private static final String POWER_GROUP = "power";
@@ -42,12 +43,13 @@ public class DataWrapper {
 	private static final String SUB_MODS = "subModData";
 
 	protected final EntityLivingBase theEntity;
-	
+
 	public final PowerEffectsWrapper powerEffectsData;
 
 	protected DataWrapper(final EntityLivingBase entity) {
+
 		theEntity = entity;
-		powerEffectsData = new PowerEffectsWrapper(entity, getModEntityData());
+		powerEffectsData = new PowerEffectsWrapper( entity, getModEntityData() );
 	}
 
 	public int getButtonDelayRemaining() {
@@ -63,7 +65,6 @@ public class DataWrapper {
 		return coolDowns.getInteger( power.getUnlocalizedName() );
 	}
 
-	
 	public EntityLivingBase getEntity() {
 
 		return theEntity;
@@ -116,49 +117,51 @@ public class DataWrapper {
 
 		return cooldowns;
 	}
-	
+
 	private NBTTagList getPowerProfiles() {
-		
+
 		NBTTagList tag;
-		
+
 		if (!getPowerData().hasKey( POWER_PROFILES, 9 )) {
 			tag = new NBTTagList();
 			getPowerData().setTag( POWER_PROFILES, tag );
 		} else {
 			tag = (NBTTagList) getPowerData().getTag( POWER_PROFILES );
 		}
-		
+
 		return tag;
-		
+
 	}
-	
+
 	public PowerProfile getPowerProfile(Power power) {
-		
+
 		if (!(theEntity instanceof EntityPlayer) || power == null) return null;
-		
+
 		NBTTagCompound profile = null;
-		
+
 		for (int i = 0; i < getPowerProfiles().tagCount(); ++i) {
-			
+
 			profile = (NBTTagCompound) getPowerProfiles().get( i );
-			
-			if (Power.lookupPower( profile.getString( PowerProfile.POWER_NAME ) ) == power) {
+
+			if (Power
+					.lookupPower( profile.getString( PowerProfile.POWER_NAME ) ) == power) {
 				break;
 			}
-			
+
 		}
-		
+
 		if (profile != null) {
 			return PowerProfile.getFromNBT( (EntityPlayer) theEntity, profile );
 		} else {
 			profile = new NBTTagCompound();
-			profile.setString( PowerProfile.POWER_NAME, power.getUnlocalizedName() );
+			profile.setString( PowerProfile.POWER_NAME,
+					power.getUnlocalizedName() );
 			getPowerProfiles().appendTag( profile );
-			
+
 			return PowerProfile.getFromNBT( (EntityPlayer) theEntity, profile );
-			
+
 		}
-		
+
 	}
 
 	public NBTTagCompound getPowerData() {
@@ -175,8 +178,9 @@ public class DataWrapper {
 
 		return powerData;
 	}
-	
+
 	public PowerEffectsWrapper getPowerEffectsData() {
+
 		return powerEffectsData;
 	}
 
@@ -296,10 +300,17 @@ public class DataWrapper {
 
 	public void removePreviousPowerTarget() {
 
-		if (getPowerData().hasKey( POWER_PREVIOUS_TARGET )) getPowerData()
-				.removeTag( POWER_PREVIOUS_TARGET );
+		synchronized (getPowerData()) {
+			if (getPowerData().hasKey( POWER_PREVIOUS_TARGET )) getPowerData()
+					.removeTag( POWER_PREVIOUS_TARGET );
+		}
 	}
 
+	/**
+	 * Prepares the player to respawn, removing power effects that don't persist after death.
+	 * 
+	 * @return
+	 */
 	public DataWrapper resetForRespawn() {
 
 		if (getPowerData().hasKey( POWER_COOLDOWNS )) getPowerData().removeTag(
@@ -307,8 +318,9 @@ public class DataWrapper {
 
 		final Set<PowerEffect> toRemove = Sets.newHashSet();
 		for (int i = 0; i < powerEffectsData.getActiveEffects().tagCount(); i++) {
-			final PowerEffect effect = PowerEffect.getEffectById( powerEffectsData.getActiveEffects()
-					.getCompoundTagAt( i ).getInteger( "id" ) );
+			final PowerEffect effect = PowerEffect
+					.getEffectById( powerEffectsData.getActiveEffects()
+							.getCompoundTagAt( i ).getInteger( "id" ) );
 			if (!effect.isPersistant()) {
 				toRemove.add( effect );
 			}
@@ -379,8 +391,12 @@ public class DataWrapper {
 
 		if (!knowsPower( power )) teachPower( power );
 
+		System.out.println(getPowerData());
+		
 		getPowerData().setString( POWER_PRIMARY, power.getUnlocalizedName() );
 
+		System.out.println(getPowerData());
+		
 		final ChatComponentTranslation message = new ChatComponentTranslation(
 				"command.setPrimaryPower", power.getDisplayName() );
 
@@ -417,7 +433,8 @@ public class DataWrapper {
 
 		if (theEntity instanceof EntityPlayer && power != null) {
 
-			final boolean flag = power.onFinishedCastingEarly( theEntity.worldObj,
+			final boolean flag = power.onFinishedCastingEarly(
+					theEntity.worldObj,
 					(EntityPlayer) theEntity, getPowerUseTimeLeft(),
 					getPreviousPowerTarget() );
 
@@ -465,6 +482,8 @@ public class DataWrapper {
 
 	public void updateAll() {
 
+		if (theEntity instanceof EntityPlayer) System.out.println(getModEntityData());
+		
 		powerEffectsData.updatePowerEffects();
 		updateCooldowns();
 		updateUsingPowers();
@@ -490,8 +509,6 @@ public class DataWrapper {
 
 	}
 
-	
-
 	public void updateTimers() {
 
 		final int lastUpdate = getLastUpdate();
@@ -511,7 +528,7 @@ public class DataWrapper {
 			final int useTime = getPowerUseTimeLeft();
 
 			if (power != null) {
-				
+
 				if (theEntity.isSwingInProgress) {
 					theEntity.swingProgressInt = 1;
 				}
@@ -603,9 +620,8 @@ public class DataWrapper {
 
 	public static DataWrapper get(final EntityLivingBase entity) {
 
-		if (entity == null) {
-			throw new NullPointerException( "Entity is null" );
-		}
+		if (entity == null) return null;		
+		
 		return new DataWrapper( entity );
 	}
 
@@ -617,7 +633,8 @@ public class DataWrapper {
 	 * @param data
 	 * @return
 	 */
-	public static DataWrapper set(final EntityLivingBase entity, final NBTTagCompound data) {
+	public static DataWrapper set(final EntityLivingBase entity,
+			final NBTTagCompound data) {
 
 		final NBTTagCompound nbt = entity.getEntityData();
 

@@ -26,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.SyncNBTData;
@@ -40,27 +41,52 @@ public class UpdatesHandler {
 		DataWrapper wrapper = DataWrapper.get( event.entityLiving );
 		wrapper.updateAll();
 		if (event.entityLiving instanceof EntityPlayerMP && wrapper.getLastUpdate() == 15 ) {
-			//if (!wrapper.getModEntityData().getBoolean( "stopUpdates" )) {
 				PowersAPI.network.sendTo( new SyncNBTData( wrapper.getModEntityData() ),
 						(EntityPlayerMP) event.entityLiving );
-			//}
+
 		}
 	}
 
 	@SubscribeEvent
+	public void playerLoggedIn(EntityJoinWorldEvent event) {
+		
+		if (event.entity instanceof EntityPlayer) {
+			
+			System.out.println("joined world, updating");
+		
+			if (!event.entity.worldObj.isRemote) {		
+				NBTTagCompound nbttagcompound = DataWrapper.get( (EntityLivingBase) event.entity )
+						.getModEntityData();
+				PowersAPI.network.sendTo( new SyncNBTData( nbttagcompound ),
+						(EntityPlayerMP) event.entity );
+			}
+		}
+	}
+		
+
+	@SubscribeEvent
 	public void playerLoggedIn(PlayerLoggedInEvent event) {
 
-		if (!event.player.worldObj.isRemote) {
+		System.out.println("logged in, updating");
+		
+		if (!event.player.worldObj.isRemote) {		
 			NBTTagCompound nbttagcompound = DataWrapper.get( event.player )
 					.getModEntityData();
 			PowersAPI.network.sendTo( new SyncNBTData( nbttagcompound ),
 					(EntityPlayerMP) event.player );
 		}
 	}
+	
+	@SubscribeEvent
+	public void respawnSync(PlayerRespawnEvent event) {
+		
+		PowersAPI.network.sendTo( new SyncNBTData( DataWrapper.get( event.player ).getModEntityData() ), (EntityPlayerMP) event.player );
+		
+	}
 
 	@SubscribeEvent
 	public void getPlayerData(PlayerEvent.Clone event) {
-		if (event.entity instanceof EntityPlayerMP && event.wasDeath) {
+		if (event.wasDeath) {
 			
 			EntityPlayer player = event.entityPlayer;
 			NBTTagCompound tags = DataWrapperP.get( event.original ).getModEntityData();
@@ -85,7 +111,7 @@ public class UpdatesHandler {
 	
 	@SubscribeEvent
 	public void saveOnDeath(LivingDeathEvent event) {
-		DataWrapper.get( event.entityLiving ).resetForRespawn().getModEntityData().setBoolean( "stopUpdate", false );
+		//DataWrapper.get( event.entityLiving ).resetForRespawn().getModEntityData().setBoolean( "stopUpdate", false );
 	}
 	
 	@SubscribeEvent

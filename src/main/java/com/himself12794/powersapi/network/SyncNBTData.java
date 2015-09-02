@@ -38,12 +38,13 @@ public class SyncNBTData implements IMessage {
         @Override
         public IMessage onMessage(SyncNBTData message, MessageContext ctx) {
         	if (ctx.side.isClient()) {
-        		System.out.println("le messagé");
+        		System.out.println(message.nbttags);
+        		
         		if (PowersAPI.proxy.getPlayer() != null) {
         			NBTTagCompound nbt = DataWrapper.set( PowersAPI.proxy.getPlayer(), message.nbttags ).getModEntityData();
 
     				//nbt.setBoolean( "stopUpdates", true );
-    				//return new StopSyncNBTData();
+    				return new StopSyncNBTData( nbt );
 
         		}
         	}

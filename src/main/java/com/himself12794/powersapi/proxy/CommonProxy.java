@@ -27,6 +27,9 @@ import com.himself12794.powersapi.network.SyncNBTData;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
+	
+	private boolean needsUpdate = true;
+	private int ticksUntilNextUpdateCheck;
 
 	public void serverStartEvent(FMLServerStartingEvent event) {
 		event.registerServerCommand( new PowersCommand() );
@@ -68,6 +71,28 @@ public class CommonProxy {
 
 		FMLCommonHandler.instance().bus().register( uph );
 
+	}
+	
+	public int getTicks() {
+		return ticksUntilNextUpdateCheck;
+	}
+	
+	public void setTicks(int value) {
+		System.out.println(value);
+		if (value >= 0) ticksUntilNextUpdateCheck = value;
+		System.out.println(ticksUntilNextUpdateCheck);
+	}
+	
+	public boolean needsUpdate() {
+		System.out.println("checking if needs update");
+		return ticksUntilNextUpdateCheck <= 0;
+	}
+	
+	public void setNeedsUpdate(boolean value) {
+		System.out.println(value);
+		needsUpdate = value;
+		if (value) setTicks(20);
+		else setTicks(0);
 	}
 
 	public Side getSide() {

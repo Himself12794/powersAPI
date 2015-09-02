@@ -15,14 +15,24 @@ import com.himself12794.powersapi.util.DataWrapper;
 // TODO solve excessive syncs
 public class StopSyncNBTData implements IMessage {
 	
+	private NBTTagCompound tags;
+	
     public StopSyncNBTData() {  }
 
+    public StopSyncNBTData(NBTTagCompound tags) {
+    	this.tags = tags;
+    }
+    
 	@Override
 	public void toBytes(ByteBuf buf) {	
+		
+		ByteBufUtils.writeTag( buf, tags );
+		
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) { 
+		tags = ByteBufUtils.readTag( buf );
 	}
 	
 	public static class Handler implements IMessageHandler<StopSyncNBTData, IMessage> {
@@ -31,10 +41,13 @@ public class StopSyncNBTData implements IMessage {
         public IMessage onMessage(StopSyncNBTData message, MessageContext ctx) {
         	if (ctx.side.isServer()) {
         		
-        		//System.out.println("le messág dua");
+        		//PowersAPI.logger.info( DataWrapper.get( ctx.getServerHandler().playerEntity ).getModEntityData() );
+        		//PowersAPI.logger.info( message.tags );
         		
-        		//NBTTagCompound nbt = DataWrapper.get( ctx.getServerHandler().playerEntity ).getModEntityData();
-        		//nbt.setBoolean( "stopUpdates", true );
+        		if ( DataWrapper.get( ctx.getServerHandler().playerEntity ).getModEntityData().equals( message.tags )) {
+        			PowersAPI.logger.info( "le equals" );
+        			PowersAPI.proxy.setNeedsUpdate( false );
+        		}
         			
 
         	}

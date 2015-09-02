@@ -42,8 +42,10 @@ public class PowerProfile {
 		
 		Set removeableKeys = Sets.newConcurrentHashSet( powerData.getKeySet() );
 		
-		for (Object tag : removeableKeys) {
-			powerData.removeTag( (String) tag );
+		synchronized(powerData) {
+			for (Object tag : removeableKeys) {
+				powerData.removeTag( (String) tag );
+			}
 		}
 		
 	}
