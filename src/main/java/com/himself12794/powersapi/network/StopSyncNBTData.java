@@ -13,39 +13,30 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
 
 // TODO solve excessive syncs
-public class SyncNBTData implements IMessage {
+public class StopSyncNBTData implements IMessage {
 	
-	private NBTTagCompound nbttags;
-	
-    public SyncNBTData() {  }
-    
-    public SyncNBTData(NBTTagCompound nbttags) { 
-    	this.nbttags = nbttags;
-    }
+    public StopSyncNBTData() {  }
 
 	@Override
 	public void toBytes(ByteBuf buf) {	
-		ByteBufUtils.writeTag( buf, nbttags );
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) { 
-		nbttags = ByteBufUtils.readTag( buf );
 	}
 	
-	public static class Handler implements IMessageHandler<SyncNBTData, IMessage> {
+	public static class Handler implements IMessageHandler<StopSyncNBTData, IMessage> {
        
         @Override
-        public IMessage onMessage(SyncNBTData message, MessageContext ctx) {
-        	if (ctx.side.isClient()) {
-        		System.out.println("le messagé");
-        		if (PowersAPI.proxy.getPlayer() != null) {
-        			NBTTagCompound nbt = DataWrapper.set( PowersAPI.proxy.getPlayer(), message.nbttags ).getModEntityData();
+        public IMessage onMessage(StopSyncNBTData message, MessageContext ctx) {
+        	if (ctx.side.isServer()) {
+        		
+        		//System.out.println("le messág dua");
+        		
+        		//NBTTagCompound nbt = DataWrapper.get( ctx.getServerHandler().playerEntity ).getModEntityData();
+        		//nbt.setBoolean( "stopUpdates", true );
+        			
 
-    				//nbt.setBoolean( "stopUpdates", true );
-    				//return new StopSyncNBTData();
-
-        		}
         	}
         	
         	return null;

@@ -22,6 +22,7 @@ import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SendStopUsePower;
 import com.himself12794.powersapi.network.SendUsePower;
+import com.himself12794.powersapi.network.StopSyncNBTData;
 import com.himself12794.powersapi.network.SyncNBTData;
 import com.himself12794.powersapi.util.Reference;
 
@@ -48,6 +49,7 @@ public class CommonProxy {
 				PowerEffectsClient.class, 3, Side.CLIENT );
 		network.registerMessage( SyncNBTData.Handler.class, SyncNBTData.class,
 				4, Side.CLIENT );
+		network.registerMessage( StopSyncNBTData.Handler.class, StopSyncNBTData.class, 5, Side.SERVER );
 
 		ModCreativeTabs.addCreativeTabs();
 		ModItems.addItems();

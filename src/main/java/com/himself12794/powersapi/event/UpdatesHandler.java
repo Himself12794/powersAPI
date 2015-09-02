@@ -40,9 +40,10 @@ public class UpdatesHandler {
 		DataWrapper wrapper = DataWrapper.get( event.entityLiving );
 		wrapper.updateAll();
 		if (event.entityLiving instanceof EntityPlayerMP && wrapper.getLastUpdate() == 15 ) {
-			wrapper.setHasSynced( true );
-			PowersAPI.network.sendTo( new SyncNBTData( wrapper.getModEntityData() ),
-					(EntityPlayerMP) event.entityLiving );
+			//if (!wrapper.getModEntityData().getBoolean( "stopUpdates" )) {
+				PowersAPI.network.sendTo( new SyncNBTData( wrapper.getModEntityData() ),
+						(EntityPlayerMP) event.entityLiving );
+			//}
 		}
 	}
 
@@ -84,7 +85,7 @@ public class UpdatesHandler {
 	
 	@SubscribeEvent
 	public void saveOnDeath(LivingDeathEvent event) {
-		DataWrapper.get( event.entityLiving ).resetForRespawn();
+		DataWrapper.get( event.entityLiving ).resetForRespawn().getModEntityData().setBoolean( "stopUpdate", false );
 	}
 	
 	@SubscribeEvent
