@@ -63,7 +63,7 @@ public class EntityPower extends Entity implements IProjectile
 		this.modifier = modifier;
 		this.thrower = throwerIn;
 		// this.setSize(0.25F, 0.25F);
-		this.setSize( 2.0F, 2.0F );
+		this.setSize( 10.0F, 10.0F );
 		this.setLocationAndAngles( throwerIn.posX, throwerIn.posY
 				+ (double) throwerIn.getEyeHeight(), throwerIn.posZ,
 				throwerIn.rotationYaw, throwerIn.rotationPitch );
@@ -507,10 +507,10 @@ public class EntityPower extends Entity implements IProjectile
 		}
 	}
 
-	public float getBrightness(float p_70013_1_) {
+	/*public float getBrightness(float p_70013_1_) {
 
 		return power.getBrightness();
-	}
+	}*/
 
 	public float getTicksInAir() {
 

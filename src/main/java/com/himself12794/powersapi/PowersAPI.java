@@ -1,5 +1,7 @@
 package com.himself12794.powersapi;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -13,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.proxy.CommonProxy;
+import com.himself12794.powersapi.util.DataHandler;
+import com.himself12794.powersapi.util.PlayerSaveHandler;
 import com.himself12794.powersapi.util.Reference;
 
 /**
@@ -33,9 +37,6 @@ public class PowersAPI {
 	public static SimpleNetworkWrapper network;
 	
 	public static Logger logger;
-	public static void print(Object msg) {
-		logger.info(msg);
-	}
 	
 	@SidedProxy(
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
@@ -61,5 +62,13 @@ public class PowersAPI {
     public void init(FMLInitializationEvent event) {
     	proxy.init(event);
         
+    }
+    
+    public static DataHandler getDataHandler() {
+    	return proxy.getDataHandler();
+    }
+    
+    public static PlayerSaveHandler getSaveHandler(EntityPlayer entity) {
+    	return new PlayerSaveHandler(entity);
     }
 }

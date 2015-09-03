@@ -14,42 +14,46 @@ import com.himself12794.powersapi.util.DataWrapper;
 
 // TODO solve excessive syncs
 public class SyncNBTData implements IMessage {
-	
+
 	private NBTTagCompound nbttags;
-	
-    public SyncNBTData() {  }
-    
-    public SyncNBTData(NBTTagCompound nbttags) { 
-    	this.nbttags = nbttags;
-    }
+
+	public SyncNBTData() {
+
+	}
+
+	public SyncNBTData(NBTTagCompound nbttags) {
+
+		this.nbttags = nbttags;
+	}
 
 	@Override
-	public void toBytes(ByteBuf buf) {	
+	public void toBytes(ByteBuf buf) {
+
 		ByteBufUtils.writeTag( buf, nbttags );
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf) { 
+	public void fromBytes(ByteBuf buf) {
+
 		nbttags = ByteBufUtils.readTag( buf );
 	}
-	
-	public static class Handler implements IMessageHandler<SyncNBTData, IMessage> {
-       
-        @Override
-        public IMessage onMessage(SyncNBTData message, MessageContext ctx) {
-        	if (ctx.side.isClient()) {
-        		System.out.println(message.nbttags);
-        		
-        		if (PowersAPI.proxy.getPlayer() != null) {
-        			NBTTagCompound nbt = DataWrapper.set( PowersAPI.proxy.getPlayer(), message.nbttags ).getModEntityData();
 
-    				//nbt.setBoolean( "stopUpdates", true );
-    				return new StopSyncNBTData( nbt );
+	public static class Handler implements
+			IMessageHandler<SyncNBTData, IMessage> {
 
-        		}
-        	}
-        	
-        	return null;
-        }
+		@Override
+		public IMessage onMessage(SyncNBTData message, MessageContext ctx) {
+
+			if (ctx.side.isClient()) {
+				System.out.println("updating");
+				if (PowersAPI.proxy.getPlayer() != null) {
+					PowersAPI.getDataHandler().updateEntity(
+							PowersAPI.proxy.getPlayer(), message.nbttags );
+
+				}
+			}
+
+			return null;
+		}
 	}
 }

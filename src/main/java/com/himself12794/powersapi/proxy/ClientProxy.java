@@ -16,9 +16,12 @@ import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SyncNBTData;
 import com.himself12794.powersapi.render.RenderPower;
+import com.himself12794.powersapi.util.DataHandler;
 
 public class ClientProxy extends CommonProxy {
 
+	private DataHandler clientDataHandler = new DataHandler();
+	
 	@Override
 	public void preinit(FMLPreInitializationEvent event) {
 		super.preinit( event );
@@ -35,6 +38,10 @@ public class ClientProxy extends CommonProxy {
 		ModItems.registerTextures( event );
 		KeyBindings.registerKeyBindings();
 		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler() );
+		
+		if (event.getSide().isClient()) {
+			clientDataHandler = new DataHandler();
+		}
 	}
 
 	public Side getSide() {
@@ -45,7 +52,9 @@ public class ClientProxy extends CommonProxy {
 	public EntityPlayer getPlayer() {
 		return Minecraft.getMinecraft().thePlayer;
 	}
-	
-	
+    
+    public DataHandler getDataHandler() {
+    	return clientDataHandler;
+    }
 
 }

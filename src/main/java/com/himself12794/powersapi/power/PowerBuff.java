@@ -21,6 +21,7 @@ public class PowerBuff extends Power {
 	@Override
 	public final boolean cast(World world, EntityLivingBase caster, float modifier) {
 		boolean result = onCast(world, caster, modifier);
+		System.out.println("casting");
 		if (result) DataWrapper.get( caster ).setPreviousPowerTarget( new MovingObjectPosition(caster) );
 		return result;
 		

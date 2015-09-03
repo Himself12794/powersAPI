@@ -11,6 +11,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.google.common.collect.Sets;
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 
@@ -44,17 +45,12 @@ public class DataWrapper {
 
 	protected final EntityLivingBase theEntity;
 
-	public final PowerEffectsWrapper powerEffectsData;
+	public final PowerEffectsWrapper powerEffectsData;	
 
 	protected DataWrapper(final EntityLivingBase entity) {
 
 		theEntity = entity;
 		powerEffectsData = new PowerEffectsWrapper( entity, getModEntityData() );
-	}
-
-	public int getButtonDelayRemaining() {
-
-		return theEntity.getEntityData().getInteger( BUTTON_DELAY );
 	}
 
 	public int getCooldownRemaining(final Power power) {
@@ -91,17 +87,21 @@ public class DataWrapper {
 	}
 
 	public NBTTagCompound getModEntityData() {
-
-		NBTTagCompound data = null;
-
-		if (!theEntity.getEntityData().hasKey( Reference.MODID, 10 )) {
-			data = new NBTTagCompound();
-			theEntity.getEntityData().setTag( Reference.MODID, data );
+		
+		if (theEntity instanceof EntityPlayer) {
+			return PowersAPI.getDataHandler().getData( (EntityPlayer) theEntity );
 		} else {
-			data = theEntity.getEntityData().getCompoundTag( Reference.MODID );
-		}
+			NBTTagCompound data = null;
+	
+			if (!theEntity.getEntityData().hasKey( Reference.MODID, 10 )) {
+				data = new NBTTagCompound();
+				theEntity.getEntityData().setTag( Reference.MODID, data );
+			} else {
+				data = theEntity.getEntityData().getCompoundTag( Reference.MODID );
+			}
 
-		return data;
+			return data;
+		}
 	}
 
 	public NBTTagCompound getPowerCooldowns() {
@@ -299,11 +299,10 @@ public class DataWrapper {
 	}
 
 	public void removePreviousPowerTarget() {
-
-		synchronized (getPowerData()) {
+ 
 			if (getPowerData().hasKey( POWER_PREVIOUS_TARGET )) getPowerData()
 					.removeTag( POWER_PREVIOUS_TARGET );
-		}
+
 	}
 
 	/**
@@ -336,11 +335,6 @@ public class DataWrapper {
 		setHasSynced( false );
 
 		return this;
-	}
-
-	public void setButtonDelay(final int delay) {
-
-		theEntity.getEntityData().setInteger( BUTTON_DELAY, delay );
 	}
 
 	public void setHasSynced(final boolean status) {
@@ -390,18 +384,13 @@ public class DataWrapper {
 		if (power == null || getPrimaryPower() == power) return;
 
 		if (!knowsPower( power )) teachPower( power );
-
-		System.out.println(getPowerData());
 		
 		getPowerData().setString( POWER_PRIMARY, power.getUnlocalizedName() );
-
-		System.out.println(getPowerData());
 		
 		final ChatComponentTranslation message = new ChatComponentTranslation(
 				"command.setPrimaryPower", power.getDisplayName() );
 
-		if (theEntity instanceof EntityPlayer && !theEntity.worldObj.isRemote) theEntity
-				.addChatMessage( message );
+		theEntity.addChatMessage( message );
 	}
 
 	/**
@@ -430,7 +419,9 @@ public class DataWrapper {
 	public void stopUsingPower() {
 
 		final Power power = getPowerInUse();
-
+		
+		setPowerUseTimeLeft(0);
+		
 		if (theEntity instanceof EntityPlayer && power != null) {
 
 			final boolean flag = power.onFinishedCastingEarly(
@@ -481,13 +472,10 @@ public class DataWrapper {
 	}
 
 	public void updateAll() {
-
-		if (theEntity instanceof EntityPlayer) System.out.println(getModEntityData());
 		
 		powerEffectsData.updatePowerEffects();
 		updateCooldowns();
 		updateUsingPowers();
-		updateTimers();
 
 	}
 
@@ -509,21 +497,9 @@ public class DataWrapper {
 
 	}
 
-	public void updateTimers() {
-
-		final int lastUpdate = getLastUpdate();
-
-		if (lastUpdate <= 0) {
-			getModEntityData().setInteger( LAST_UPDATE, 20 );
-		} else {
-			getModEntityData().setInteger( LAST_UPDATE, lastUpdate - 1 );
-		}
-	}
-
 	public void updateUsingPowers() {
 
 		if (theEntity instanceof EntityPlayer) {
-
 			final Power power = getPowerInUse();
 			final int useTime = getPowerUseTimeLeft();
 
@@ -534,8 +510,10 @@ public class DataWrapper {
 				}
 
 				if (useTime > 0) {
-
+					PowersAPI.logger.info( (theEntity.worldObj.isRemote ? "client" : "server") + " use tick " + useTime);
 					if (useTime % 4 == 0) {
+						
+						PowersAPI.logger.info((theEntity.worldObj.isRemote ? "client" : "server") + " cast tick " + useTime);
 						power.cast( theEntity.worldObj, theEntity, 1 );
 					}
 					setPowerUseTimeLeft( useTime - 1 );
@@ -565,11 +543,11 @@ public class DataWrapper {
 
 		if (theEntity instanceof EntityPlayer) {
 			if (power != null && power.canUsePower( theEntity )) {
-
 				if (power.onPreparePower( theEntity.worldObj,
 						(EntityPlayer) theEntity )) {
 
 					theEntity.swingItem();
+					System.out.println("power cast");
 
 					if (power.isConcentrationPower()) {
 
@@ -578,7 +556,6 @@ public class DataWrapper {
 						}
 
 					} else if (power.cast( theEntity.worldObj, theEntity, 1.0F )) {
-
 						if (power.onFinishedCasting( theEntity.worldObj,
 								(EntityPlayer) theEntity,
 								this.getPreviousPowerTarget() )) power
@@ -600,11 +577,6 @@ public class DataWrapper {
 		usePower( getPrimaryPower() );
 	}
 
-	/*
-	 * public boolean hasPowerEffect(PowerEffect effect) { return effect != null
-	 * ? effect.isAffecting( theEntity ) : false; }
-	 */
-
 	/**
 	 * Uses the power designated secondary.
 	 */
@@ -617,11 +589,12 @@ public class DataWrapper {
 
 		return getPowerData().getBoolean( POWER_SUCCESS );
 	}
+	
+	public int getButtonDelay() {
+		return getModEntityData().getInteger( BUTTON_DELAY );
+	}
 
 	public static DataWrapper get(final EntityLivingBase entity) {
-
-		if (entity == null) return null;		
-		
 		return new DataWrapper( entity );
 	}
 
@@ -636,13 +609,13 @@ public class DataWrapper {
 	public static DataWrapper set(final EntityLivingBase entity,
 			final NBTTagCompound data) {
 
+		if (entity instanceof EntityPlayer) return PowersAPI.getDataHandler().updateEntity( (EntityPlayer) entity, data );
+
 		final NBTTagCompound nbt = entity.getEntityData();
 
 		nbt.setTag( Reference.MODID, data );
-
-		// System.out.println(nbt);
-
-		return new DataWrapper( entity );
+		
+		return new DataWrapper(entity);
 
 	}
 

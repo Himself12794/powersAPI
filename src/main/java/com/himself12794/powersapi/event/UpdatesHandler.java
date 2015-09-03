@@ -40,23 +40,20 @@ public class UpdatesHandler {
 	public void updates(LivingUpdateEvent event) {
 		DataWrapper wrapper = DataWrapper.get( event.entityLiving );
 		wrapper.updateAll();
-		if (event.entityLiving instanceof EntityPlayerMP && wrapper.getLastUpdate() == 15 ) {
+		/*if (event.entityLiving instanceof EntityPlayerMP && wrapper.getLastUpdate() == 15 ) {
 				PowersAPI.network.sendTo( new SyncNBTData( wrapper.getModEntityData() ),
 						(EntityPlayerMP) event.entityLiving );
 
-		}
+		}*/
 	}
 
 	@SubscribeEvent
 	public void playerLoggedIn(EntityJoinWorldEvent event) {
 		
 		if (event.entity instanceof EntityPlayer) {
-			
-			System.out.println("joined world, updating");
 		
 			if (!event.entity.worldObj.isRemote) {		
-				NBTTagCompound nbttagcompound = DataWrapper.get( (EntityLivingBase) event.entity )
-						.getModEntityData();
+				NBTTagCompound nbttagcompound = PowersAPI.getDataHandler().getData( (EntityPlayer) event.entity );
 				PowersAPI.network.sendTo( new SyncNBTData( nbttagcompound ),
 						(EntityPlayerMP) event.entity );
 			}
@@ -66,8 +63,6 @@ public class UpdatesHandler {
 
 	@SubscribeEvent
 	public void playerLoggedIn(PlayerLoggedInEvent event) {
-
-		System.out.println("logged in, updating");
 		
 		if (!event.player.worldObj.isRemote) {		
 			NBTTagCompound nbttagcompound = DataWrapper.get( event.player )
@@ -77,12 +72,12 @@ public class UpdatesHandler {
 		}
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void respawnSync(PlayerRespawnEvent event) {
 		
 		PowersAPI.network.sendTo( new SyncNBTData( DataWrapper.get( event.player ).getModEntityData() ), (EntityPlayerMP) event.player );
 		
-	}
+	}*/
 
 	@SubscribeEvent
 	public void getPlayerData(PlayerEvent.Clone event) {
@@ -103,10 +98,10 @@ public class UpdatesHandler {
 
 	@SubscribeEvent
 	public void loadFromFile(LoadFromFile event) {
-		if (event.entityPlayer instanceof EntityPlayerMP) {
-			NBTTagCompound data = DataWrapperP.get( event.entityPlayer ).saveHandler.readPlayerData( event.entityPlayer );
-			//PowersAPI.network.sendTo( new SyncNBTData(data), (EntityPlayerMP) event.entityPlayer );
-		}
+		
+			NBTTagCompound data = PowersAPI.getSaveHandler( event.entityPlayer ).readPlayerData( event.entityPlayer );
+			PowersAPI.getDataHandler().updateEntity( event.entityPlayer, data );
+			
 	}
 	
 	@SubscribeEvent

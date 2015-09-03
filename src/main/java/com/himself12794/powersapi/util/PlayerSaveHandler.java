@@ -39,7 +39,7 @@ public class PlayerSaveHandler implements IPlayerFileData {
 		
 		try {
 
-			NBTTagCompound nbttagcompound = player.getEntityData().getCompoundTag( Reference.MODID );
+			NBTTagCompound nbttagcompound = DataWrapper.get( player ).getModEntityData();
 
 			File file1 = getPlayerSaveDirectory( player );
 			CompressedStreamTools.writeCompressed( nbttagcompound,

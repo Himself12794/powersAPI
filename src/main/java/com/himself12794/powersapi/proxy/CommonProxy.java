@@ -22,12 +22,13 @@ import com.himself12794.powersapi.network.CastPowerInstantServer;
 import com.himself12794.powersapi.network.PowerEffectsClient;
 import com.himself12794.powersapi.network.SendStopUsePower;
 import com.himself12794.powersapi.network.SendUsePower;
-import com.himself12794.powersapi.network.StopSyncNBTData;
 import com.himself12794.powersapi.network.SyncNBTData;
+import com.himself12794.powersapi.util.DataHandler;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
 	
+	private DataHandler serverDataHandler;
 	private boolean needsUpdate = true;
 	private int ticksUntilNextUpdateCheck;
 
@@ -52,7 +53,7 @@ public class CommonProxy {
 				PowerEffectsClient.class, 3, Side.CLIENT );
 		network.registerMessage( SyncNBTData.Handler.class, SyncNBTData.class,
 				4, Side.CLIENT );
-		network.registerMessage( StopSyncNBTData.Handler.class, StopSyncNBTData.class, 5, Side.SERVER );
+		//network.registerMessage( StopSyncNBTData.Handler.class, StopSyncNBTData.class, 5, Side.SERVER );
 
 		ModCreativeTabs.addCreativeTabs();
 		ModItems.addItems();
@@ -70,29 +71,11 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register( uph );
 
 		FMLCommonHandler.instance().bus().register( uph );
+		
+		if (event.getSide().isServer()) {
+			serverDataHandler = new DataHandler();
+		}
 
-	}
-	
-	public int getTicks() {
-		return ticksUntilNextUpdateCheck;
-	}
-	
-	public void setTicks(int value) {
-		System.out.println(value);
-		if (value >= 0) ticksUntilNextUpdateCheck = value;
-		System.out.println(ticksUntilNextUpdateCheck);
-	}
-	
-	public boolean needsUpdate() {
-		System.out.println("checking if needs update");
-		return ticksUntilNextUpdateCheck <= 0;
-	}
-	
-	public void setNeedsUpdate(boolean value) {
-		System.out.println(value);
-		needsUpdate = value;
-		if (value) setTicks(20);
-		else setTicks(0);
 	}
 
 	public Side getSide() {
@@ -103,5 +86,9 @@ public class CommonProxy {
 	public EntityPlayer getPlayer() {
 		return null;
 	}
+	
+    public DataHandler getDataHandler() {
+    	return serverDataHandler;
+    }
 
 }
