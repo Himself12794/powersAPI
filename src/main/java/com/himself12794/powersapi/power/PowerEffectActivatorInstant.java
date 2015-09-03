@@ -60,7 +60,7 @@ public class PowerEffectActivatorInstant extends PowerInstant
 			DataWrapper wrapper = DataWrapper.get( entity );
 
 			PowerEffectContainer container = wrapper
-					.powerEffectsData.getEffectContainer( getPowerEffect() );
+					.getPowerEffectsData().getEffectContainer( getPowerEffect() );
 			if (container.getCasterEntity() == caster
 					&& container.getTheEffect() == getPowerEffect()
 					&& container.getInitiatedPower() == this) {
@@ -82,7 +82,7 @@ public class PowerEffectActivatorInstant extends PowerInstant
 			
 		} else if (entityAlreadyAffected != null) {
 
-			DataWrapper.get( entityAlreadyAffected ).powerEffectsData
+			DataWrapper.get( entityAlreadyAffected ).getPowerEffectsData()
 					.addPowerEffect(
 							getPowerEffect(), 0, caster, this );
 		}

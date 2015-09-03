@@ -2,6 +2,7 @@ package com.himself12794.powersapi.util;
 
 import java.util.Set;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +12,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 
 import com.google.common.collect.Sets;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 
@@ -38,19 +38,16 @@ public class DataWrapper {
 	private static final String POWER_EFFECTS_GROUP = "powerEffects";
 	private static final String POWER_EFFECTS = "activeEffects";
 
-	private static final String BUTTON_DELAY = Reference.MODID + ".buttonDelay";
-	private static final String LAST_UPDATE = "lastUpdate";
-	private static final String HAS_SYNCED = "hasSynced";
 	private static final String SUB_MODS = "subModData";
 
 	protected final EntityLivingBase theEntity;
 
-	public final PowerEffectsWrapper powerEffectsData;	
+	//public final EffectsWrapper powerEffectsData;
 
 	protected DataWrapper(final EntityLivingBase entity) {
 
 		theEntity = entity;
-		powerEffectsData = new PowerEffectsWrapper( entity, getModEntityData() );
+		//powerEffectsData = new EffectsWrapper( entity, getModEntityData() );
 	}
 
 	public int getCooldownRemaining(final Power power) {
@@ -66,16 +63,6 @@ public class DataWrapper {
 		return theEntity;
 	}
 
-	public boolean getHasSynced() {
-
-		return getModEntityData().getBoolean( HAS_SYNCED );
-	}
-
-	public int getLastUpdate() {
-
-		return getModEntityData().getInteger( LAST_UPDATE );
-	}
-
 	public NBTTagList getLearnedPowers() {
 
 		final NBTTagList names = getPowerData().hasKey( POWER_SET, 9 ) ? (NBTTagList) getPowerData()
@@ -87,21 +74,32 @@ public class DataWrapper {
 	}
 
 	public NBTTagCompound getModEntityData() {
-		
-		if (theEntity instanceof EntityPlayer) {
-			return PowersAPI.getDataHandler().getData( (EntityPlayer) theEntity );
-		} else {
-			NBTTagCompound data = null;
-	
-			if (!theEntity.getEntityData().hasKey( Reference.MODID, 10 )) {
-				data = new NBTTagCompound();
-				theEntity.getEntityData().setTag( Reference.MODID, data );
-			} else {
-				data = theEntity.getEntityData().getCompoundTag( Reference.MODID );
-			}
 
-			return data;
+		NBTTagCompound data = null;
+
+		if (!getPersistentCompound(theEntity).hasKey( Reference.MODID, 10 )) {
+			data = new NBTTagCompound();
+			getPersistentCompound(theEntity).setTag( Reference.MODID, data );
+		} else {
+			data = getPersistentCompound(theEntity).getCompoundTag( Reference.MODID );
 		}
+
+		return data;
+	}
+	
+	private static NBTTagCompound getPersistentCompound(EntityLivingBase theEntity) {
+
+		NBTTagCompound data = null;
+
+		if (!theEntity.getEntityData().hasKey( EntityPlayer.PERSISTED_NBT_TAG, 10 )) {
+			data = new NBTTagCompound();
+			theEntity.getEntityData().setTag( EntityPlayer.PERSISTED_NBT_TAG, data );
+		} else {
+			data = theEntity.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG );
+		}
+
+		return data;
+		
 	}
 
 	public NBTTagCompound getPowerCooldowns() {
@@ -179,9 +177,9 @@ public class DataWrapper {
 		return powerData;
 	}
 
-	public PowerEffectsWrapper getPowerEffectsData() {
+	public EffectsWrapper getPowerEffectsData() {
 
-		return powerEffectsData;
+		return new EffectsWrapper(theEntity, getModEntityData());
 	}
 
 	public Power getPowerInUse() {
@@ -299,10 +297,11 @@ public class DataWrapper {
 	}
 
 	public void removePreviousPowerTarget() {
- 
+
+		synchronized (getPowerData()) {
 			if (getPowerData().hasKey( POWER_PREVIOUS_TARGET )) getPowerData()
 					.removeTag( POWER_PREVIOUS_TARGET );
-
+		}
 	}
 
 	/**
@@ -316,9 +315,9 @@ public class DataWrapper {
 				POWER_COOLDOWNS );
 
 		final Set<PowerEffect> toRemove = Sets.newHashSet();
-		for (int i = 0; i < powerEffectsData.getActiveEffects().tagCount(); i++) {
+		for (int i = 0; i < getPowerEffectsData().getActiveEffects().tagCount(); i++) {
 			final PowerEffect effect = PowerEffect
-					.getEffectById( powerEffectsData.getActiveEffects()
+					.getEffectById( getPowerEffectsData().getActiveEffects()
 							.getCompoundTagAt( i ).getInteger( "id" ) );
 			if (!effect.isPersistant()) {
 				toRemove.add( effect );
@@ -326,20 +325,14 @@ public class DataWrapper {
 		}
 
 		for (final PowerEffect effect : toRemove) {
-			powerEffectsData.removePowerEffectQuietly( effect );
+			getPowerEffectsData().removePowerEffectQuietly( effect );
 		}
 
 		getPowerData().setString( POWER_CURRENT, "" );
 		getPowerData().setInteger( POWER_CURRENT_USELEFT, 0 );
 		getPowerData().setTag( POWER_PREVIOUS_TARGET, new NBTTagCompound() );
-		setHasSynced( false );
 
 		return this;
-	}
-
-	public void setHasSynced(final boolean status) {
-
-		getModEntityData().setBoolean( HAS_SYNCED, status );
 	}
 
 	/**
@@ -384,13 +377,18 @@ public class DataWrapper {
 		if (power == null || getPrimaryPower() == power) return;
 
 		if (!knowsPower( power )) teachPower( power );
+
+		System.out.println(getPowerData());
 		
 		getPowerData().setString( POWER_PRIMARY, power.getUnlocalizedName() );
+
+		System.out.println(getPowerData());
 		
 		final ChatComponentTranslation message = new ChatComponentTranslation(
 				"command.setPrimaryPower", power.getDisplayName() );
 
-		theEntity.addChatMessage( message );
+		if (theEntity instanceof EntityPlayer && !theEntity.worldObj.isRemote) theEntity
+				.addChatMessage( message );
 	}
 
 	/**
@@ -419,11 +417,10 @@ public class DataWrapper {
 	public void stopUsingPower() {
 
 		final Power power = getPowerInUse();
-		
-		setPowerUseTimeLeft(0);
-		
+
 		if (theEntity instanceof EntityPlayer && power != null) {
 
+			setPowerUseTimeLeft( 0 );
 			final boolean flag = power.onFinishedCastingEarly(
 					theEntity.worldObj,
 					(EntityPlayer) theEntity, getPowerUseTimeLeft(),
@@ -434,6 +431,7 @@ public class DataWrapper {
 			}
 
 			removePreviousPowerTarget();
+			setMouseOver( null );
 			getPowerData().setString( POWER_CURRENT, "" );
 		}
 	}
@@ -473,9 +471,10 @@ public class DataWrapper {
 
 	public void updateAll() {
 		
-		powerEffectsData.updatePowerEffects();
+		getPowerEffectsData().updatePowerEffects();
 		updateCooldowns();
 		updateUsingPowers();
+		updateTimers();
 
 	}
 
@@ -497,9 +496,12 @@ public class DataWrapper {
 
 	}
 
+	public void updateTimers() {}
+
 	public void updateUsingPowers() {
 
 		if (theEntity instanceof EntityPlayer) {
+
 			final Power power = getPowerInUse();
 			final int useTime = getPowerUseTimeLeft();
 
@@ -510,11 +512,9 @@ public class DataWrapper {
 				}
 
 				if (useTime > 0) {
-					PowersAPI.logger.info( (theEntity.worldObj.isRemote ? "client" : "server") + " use tick " + useTime);
+
 					if (useTime % 4 == 0) {
-						
-						PowersAPI.logger.info((theEntity.worldObj.isRemote ? "client" : "server") + " cast tick " + useTime);
-						power.cast( theEntity.worldObj, theEntity, 1 );
+						power.cast( theEntity.worldObj, theEntity, getMouseOver(), 1 );
 					}
 					setPowerUseTimeLeft( useTime - 1 );
 
@@ -526,6 +526,7 @@ public class DataWrapper {
 					removePreviousPowerTarget();
 					setPowerUseTimeLeft( 0 );
 					setPowerInUse( null );
+					setMouseOver( null );
 				}
 
 			}
@@ -538,24 +539,26 @@ public class DataWrapper {
 	 * Causes the player to use the designated power.
 	 * 
 	 * @param power
+	 * @param lookVec TODO
 	 */
-	public void usePower(final Power power) {
+	public void usePower(final Power power, MovingObjectPosition lookVec) {
 
 		if (theEntity instanceof EntityPlayer) {
 			if (power != null && power.canUsePower( theEntity )) {
+
 				if (power.onPreparePower( theEntity.worldObj,
 						(EntityPlayer) theEntity )) {
 
 					theEntity.swingItem();
-					System.out.println("power cast");
 
 					if (power.isConcentrationPower()) {
 
-						if (power.cast( theEntity.worldObj, theEntity, 1.0F )) {
+						if (power.cast( theEntity.worldObj, theEntity, lookVec, 1.0F )) {
 							setPowerInUse( power );
 						}
 
-					} else if (power.cast( theEntity.worldObj, theEntity, 1.0F )) {
+					} else if (power.cast( theEntity.worldObj, theEntity, lookVec, 1.0F )) {
+
 						if (power.onFinishedCasting( theEntity.worldObj,
 								(EntityPlayer) theEntity,
 								this.getPreviousPowerTarget() )) power
@@ -572,29 +575,45 @@ public class DataWrapper {
 	/**
 	 * Uses the power designated as primary.
 	 */
-	public void usePrimaryPower() {
+	public void usePrimaryPower(MovingObjectPosition lookVec) {
 
-		usePower( getPrimaryPower() );
+		usePower( getPrimaryPower(), lookVec );
 	}
+
+	/*
+	 * public boolean hasPowerEffect(PowerEffect effect) { return effect != null
+	 * ? effect.isAffecting( theEntity ) : false; }
+	 */
 
 	/**
 	 * Uses the power designated secondary.
 	 */
-	public void useSecondaryPower() {
+	public void useSecondaryPower(MovingObjectPosition lookVec) {
 
-		usePower( getSecondaryPower() );
+		usePower( getSecondaryPower(), lookVec );
+	}
+	
+	public void setMouseOver(MovingObjectPosition pos) {
+		
+		getPowerData().setTag( "powerMouseOver", UsefulMethods.movingObjectPosToNBT( pos ) );
+	}
+	
+	public MovingObjectPosition getMouseOver() {
+		
+		MovingObjectPosition pos = UsefulMethods.movingObjectPositionFromNBT( getPowerData().getCompoundTag( "powerMouseOver"), theEntity.worldObj );
+		//System.out.println("Got mouse over as " + pos);
+		return pos;
 	}
 
 	public boolean wasPowerSuccess() {
 
 		return getPowerData().getBoolean( POWER_SUCCESS );
 	}
-	
-	public int getButtonDelay() {
-		return getModEntityData().getInteger( BUTTON_DELAY );
-	}
 
 	public static DataWrapper get(final EntityLivingBase entity) {
+
+		if (entity == null) return null;		
+		
 		return new DataWrapper( entity );
 	}
 
@@ -609,13 +628,13 @@ public class DataWrapper {
 	public static DataWrapper set(final EntityLivingBase entity,
 			final NBTTagCompound data) {
 
-		if (entity instanceof EntityPlayer) return PowersAPI.getDataHandler().updateEntity( (EntityPlayer) entity, data );
-
-		final NBTTagCompound nbt = entity.getEntityData();
+		final NBTTagCompound nbt = getPersistentCompound(entity);
 
 		nbt.setTag( Reference.MODID, data );
-		
-		return new DataWrapper(entity);
+
+		// System.out.println(nbt);
+
+		return new DataWrapper( entity );
 
 	}
 

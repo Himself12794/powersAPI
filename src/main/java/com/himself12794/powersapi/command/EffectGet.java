@@ -33,7 +33,7 @@ public class EffectGet implements ICommand {
 				EntityPlayer player = (EntityPlayer) sender
 						.getCommandSenderEntity();
 				DataWrapperP wrapper = DataWrapperP.get( player );
-				Set<PowerEffect> powers = wrapper.powerEffectsData
+				Set<PowerEffect> powers = wrapper.getPowerEffectsData()
 						.getNonHiddenEffects();
 
 				StringBuilder value = new StringBuilder( "You have: " );
@@ -87,7 +87,7 @@ public class EffectGet implements ICommand {
 	private String getPowerEffectsAsString(EntityLivingBase entity) {
 
 		DataWrapper wrapper = DataWrapper.get( entity );
-		Set<PowerEffect> powers = wrapper.powerEffectsData
+		Set<PowerEffect> powers = wrapper.getPowerEffectsData()
 				.getNonHiddenEffects();
 
 		StringBuilder value = new StringBuilder( entity.getName() + ": " );

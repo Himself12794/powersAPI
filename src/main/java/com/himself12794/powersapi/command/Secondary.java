@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.client.SyncNBTDataClient;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.DataWrapper;
 import com.himself12794.powersapi.util.DataWrapperP;
@@ -14,6 +16,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
@@ -70,8 +73,10 @@ public class Secondary implements ICommand {
 
 					if (entity.knowsPower( commandPower )) {
 						entity.setSecondaryPower( commandPower );
+						PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
 					} else if (entity.player.capabilities.isCreativeMode) {
 						entity.setSecondaryPower( commandPower );
+						PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}

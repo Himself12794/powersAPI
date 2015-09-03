@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.network;
+package com.himself12794.powersapi.network.client;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -83,7 +83,7 @@ public class PowerEffectsClient implements IMessage {
 						.getPlayer().worldObj
 						.getEntityByID( message.casterEntityId );
 
-				if (message.isDone) DataWrapper.get( target ).powerEffectsData
+				if (message.isDone) DataWrapper.get( target ).getPowerEffectsData()
 						.removePowerEffectSparingly( message.effect );
 				else message.effect.onUpdate( target, message.timeLeft, caster,
 						message.power );

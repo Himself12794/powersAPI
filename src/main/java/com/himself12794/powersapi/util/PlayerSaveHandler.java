@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.SyncNBTData;
+import com.himself12794.powersapi.network.client.SyncNBTDataClient;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

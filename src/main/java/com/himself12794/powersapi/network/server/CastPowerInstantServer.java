@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.network;
+package com.himself12794.powersapi.network.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,19 +58,28 @@ public class CastPowerInstantServer implements IMessage {
 	public static class Handler implements IMessageHandler<CastPowerInstantServer, IMessage> {
        
         @Override
-        public IMessage onMessage(CastPowerInstantServer message, MessageContext ctx) {
+        public IMessage onMessage(final CastPowerInstantServer message, final MessageContext ctx) {
         	
         	if (ctx.side.isServer()) {
         		
-        		Power spell = message.spell;
-        		EntityPlayer caster = ctx.getServerHandler().playerEntity;
-        		MovingObjectPosition targetPos = message.getMovingObjectPosition( caster.getEntityWorld() );
-        		DataWrapper wrapper = DataWrapper.get( caster );
-        		boolean success = spell.onStrike(ctx.getServerHandler().playerEntity.getEntityWorld(), targetPos, caster, message.modifier);
+        		Runnable task = new Runnable() {
+        			
+					@Override
+					public void run() {
+						Power spell = message.spell;
+		        		
+		        		EntityPlayer caster = ctx.getServerHandler().playerEntity;
+		        		MovingObjectPosition targetPos = message.getMovingObjectPosition( caster.getEntityWorld() );
+		        		DataWrapper wrapper = DataWrapper.get( caster );
+		        		boolean success = spell.onStrike(ctx.getServerHandler().playerEntity.getEntityWorld(), targetPos, caster, message.modifier);
+		        		if (success) wrapper.setPreviousPowerTarget( targetPos );
+		        		
+			        	wrapper.setPowerSuccess( success );
+						
+					}
+        		};
         		
-        		if (success) wrapper.setPreviousPowerTarget( targetPos );
-        		
-	        	wrapper.setPowerSuccess( success );
+        		ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
   
         	}
         	

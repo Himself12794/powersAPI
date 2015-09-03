@@ -19,7 +19,7 @@ public class PowerRanged extends Power {
 	protected boolean shouldRender = false;
 	
 	@Override
-	public boolean cast(World world, EntityLivingBase caster, float modifier) {
+	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier) {
 		
 		boolean flag1 = onCast(world, caster, modifier);
 		EntityPower casting = new EntityPower(world, caster, this, modifier );

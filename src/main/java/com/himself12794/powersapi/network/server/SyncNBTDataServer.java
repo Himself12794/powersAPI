@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.network;
+package com.himself12794.powersapi.network.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -13,15 +13,15 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.DataWrapper;
 
 // TODO solve excessive syncs
-public class SyncNBTData implements IMessage {
+public class SyncNBTDataServer implements IMessage {
 
 	private NBTTagCompound nbttags;
 
-	public SyncNBTData() {
+	public SyncNBTDataServer() {
 
 	}
 
-	public SyncNBTData(NBTTagCompound nbttags) {
+	public SyncNBTDataServer(NBTTagCompound nbttags) {
 
 		this.nbttags = nbttags;
 	}
@@ -39,18 +39,24 @@ public class SyncNBTData implements IMessage {
 	}
 
 	public static class Handler implements
-			IMessageHandler<SyncNBTData, IMessage> {
+			IMessageHandler<SyncNBTDataServer, IMessage> {
 
 		@Override
-		public IMessage onMessage(SyncNBTData message, MessageContext ctx) {
+		public IMessage onMessage(final SyncNBTDataServer message, final MessageContext ctx) {
 
-			if (ctx.side.isClient()) {
-				System.out.println("updating");
-				if (PowersAPI.proxy.getPlayer() != null) {
-					PowersAPI.getDataHandler().updateEntity(
-							PowersAPI.proxy.getPlayer(), message.nbttags );
+			if (ctx.side.isServer()) {
+				Runnable task = new Runnable() {
 
-				}
+					@Override
+					public void run() {
+						if (ctx.getServerHandler().playerEntity != null) {
+							DataWrapper.set( ctx.getServerHandler().playerEntity, message.nbttags );						
+						}
+					}
+				};
+				
+				ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
+				
 			}
 
 			return null;

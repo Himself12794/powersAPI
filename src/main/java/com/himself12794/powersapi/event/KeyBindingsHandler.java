@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -11,10 +13,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.KeyBindings;
-import com.himself12794.powersapi.network.SendStopUsePower;
-import com.himself12794.powersapi.network.SendUsePower;
+import com.himself12794.powersapi.network.server.StopUsePowerMessage;
+import com.himself12794.powersapi.network.server.SyncNBTDataServer;
+import com.himself12794.powersapi.network.server.UsePowerMessage;
 import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.power.PowerInstant;
 import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.util.UsefulMethods;
 
 public final class KeyBindingsHandler {
 	
@@ -38,7 +43,7 @@ public final class KeyBindingsHandler {
 			
 	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
 	        	wrapper.stopUsingPower();
-	        	PowersAPI.network.sendToServer( new SendStopUsePower() );
+	        	PowersAPI.network.sendToServer( new StopUsePowerMessage() );
 	        }
 	    }
 	
@@ -48,8 +53,10 @@ public final class KeyBindingsHandler {
         	if (power != null) {
 
         		buttonDelay = 4;
-	        	wrapper.usePower( power );
-	        	PowersAPI.network.sendToServer( new SendUsePower(power) );
+        		float range =  power instanceof PowerInstant ? ((PowerInstant)power).getRange() : 50.0F;
+        		MovingObjectPosition lookVec = UsefulMethods.getMouseOverExtended( range );
+	        	wrapper.usePower( power, lookVec );
+	        	PowersAPI.network.sendToServer( new UsePowerMessage(power, lookVec) );
         	}
 	    }
 		
@@ -57,12 +64,21 @@ public final class KeyBindingsHandler {
 	
 	@SubscribeEvent
 	public void ticker(TickEvent.ClientTickEvent event) {
+		
 		if (Minecraft.getMinecraft().thePlayer != null) {
 			
 			if (buttonDelay > 0) buttonDelay--;
-			//handleKeyBinding(KeyBindings.PRIMARY_POWER);
-			//handleKeyBinding(KeyBindings.SECONDARY_POWER);
-			//handleKeyBinds();
+			
+			DataWrapper dw = DataWrapper.get( Minecraft.getMinecraft().thePlayer );
+			
+			if (dw.isUsingPower()) {
+				if (dw.getPowerInUse() instanceof PowerInstant) {
+					dw.setMouseOver( UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  ));
+					PowersAPI.network.sendToServer( new SyncNBTDataServer(dw.getModEntityData() ));
+				}
+				
+			}
+			
 		}
 	}
 	
@@ -93,21 +109,21 @@ public final class KeyBindingsHandler {
 		
 	}*/
 	
-	private void handleKeyBinds() {
+	/*private void handleKeyBinds() {
 		
 		DataWrapper dw = DataWrapper.get( Minecraft.getMinecraft().thePlayer );
 		if (dw.isUsingPower()) {
 			if (!KeyBindings.SECONDARY_POWER.isKeyDown()) {
 				
 				dw.stopUsingPower();
-				PowersAPI.network.sendToServer( new SendStopUsePower() );
+				PowersAPI.network.sendToServer( new StopUsePowerMessage() );
                 
             }
 			
 			/*if (!KeyBindings.PRIMARY_POWER.isKeyDown() ) {
 				dw.stopUsingPower();
 	        	PowersAPI.network.sendToServer( new SendStopUsePower() );
-			}*/
+			}
 
 			label435:
 
@@ -128,7 +144,7 @@ public final class KeyBindingsHandler {
 		                	continue;
 		                } else if (Minecraft.getMinecraft().gameSettings.keyBindAttack.isPressed()) {
 		                	continue;
-		                }*/
+		                }
 		
 		                break label435;
 		            }
@@ -141,7 +157,7 @@ public final class KeyBindingsHandler {
             {
 
             	handleUsePrimaryPower(dw);
-            }*/
+            }
 
             while (KeyBindings.SECONDARY_POWER.isPressed())
             {
@@ -152,7 +168,7 @@ public final class KeyBindingsHandler {
         /*if (KeyBindings.PRIMARY_POWER.isKeyDown() && buttonDelay == 0 && !dw.isUsingPower())
         {
         	handleUsePrimaryPower(dw);
-        }*/
+        }
         
         if (KeyBindings.SECONDARY_POWER.isKeyDown() && buttonDelay == 0 && !dw.isUsingPower())
         {
@@ -160,22 +176,22 @@ public final class KeyBindingsHandler {
         	handleUseSecondaryPower(dw);
         }
  
-	}
+	}*/
 	
-	private void handleUsePrimaryPower(DataWrapper dw) {
+	/*private void handleUsePrimaryPower(DataWrapper dw) {
 		buttonDelay = 20;
     	if (dw.getPrimaryPower() != null) {
-        	dw.usePower( dw.getPrimaryPower() );
-        	PowersAPI.network.sendToServer( new SendUsePower(dw.getPrimaryPower()) );
+        	dw.usePower( dw.getPrimaryPower(), lookVec );
+        	PowersAPI.network.sendToServer( new UsePowerMessage(dw.getPrimaryPower()) );
         }
 	}
 	
 	private void handleUseSecondaryPower(DataWrapper dw) {
 		buttonDelay = 20;
     	if (dw.getSecondaryPower() != null) {
-        	dw.usePower( dw.getSecondaryPower() );
-        	PowersAPI.network.sendToServer( new SendUsePower(dw.getSecondaryPower()) );
+        	dw.usePower( dw.getSecondaryPower(), lookVec );
+        	PowersAPI.network.sendToServer( new UsePowerMessage(dw.getSecondaryPower()) );
         }
-	}
+	}*/
  
 }

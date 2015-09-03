@@ -19,9 +19,8 @@ import com.himself12794.powersapi.util.DataWrapper;
 public class PowerBuff extends Power {
 	
 	@Override
-	public final boolean cast(World world, EntityLivingBase caster, float modifier) {
+	public final boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier) {
 		boolean result = onCast(world, caster, modifier);
-		System.out.println("casting");
 		if (result) DataWrapper.get( caster ).setPreviousPowerTarget( new MovingObjectPosition(caster) );
 		return result;
 		

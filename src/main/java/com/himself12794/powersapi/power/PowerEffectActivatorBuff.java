@@ -45,7 +45,7 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 		DataWrapper wrapper = DataWrapper.get( caster );
 
 		PowerEffectContainer container = wrapper
-				.powerEffectsData.getEffectContainer( getPowerEffect() );
+				.getPowerEffectsData().getEffectContainer( getPowerEffect() );
 		if (container.getCasterEntity() == caster
 				&& container.getTheEffect() == getPowerEffect()) {
 			alreadyAffectingEntity = true;
@@ -56,7 +56,7 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 			getPowerEffect().addTo( caster, getEffectDuration(), caster, this );
 		} else if (isRemoveableByCaster( caster, caster,
 				container.getTimeRemaining() )) {
-			wrapper.powerEffectsData.addPowerEffect( getPowerEffect(), 0, caster, this );
+			wrapper.getPowerEffectsData().addPowerEffect( getPowerEffect(), 0, caster, this );
 		}
 
 		return alreadyAffectingEntity;

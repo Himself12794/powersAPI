@@ -76,9 +76,9 @@ public class EffectSet implements ICommand {
 						if (affected != null) {
 							DataWrapperP wrapper = DataWrapperP.get( affected );
 							if (duration == 0) {
-								wrapper.powerEffectsData.removePowerEffectQuietly( effect );
+								wrapper.getPowerEffectsData().removePowerEffectQuietly( effect );
 							} else {
-								wrapper.powerEffectsData.addPowerEffect( effect, duration, affector, null );
+								wrapper.getPowerEffectsData().addPowerEffect( effect, duration, affector, null );
 							}
 						} else {
 							throw new CommandException( StatCollector.translateToLocal( "commands.generic.player.notFound" ) );
@@ -103,7 +103,7 @@ public class EffectSet implements ICommand {
 	
 	private String getPowerEffectsAsString(EntityLivingBase entity) {
 		DataWrapper wrapper = DataWrapper.get( entity );
-		Set<PowerEffect> powers = wrapper.powerEffectsData.getNonHiddenEffects();
+		Set<PowerEffect> powers = wrapper.getPowerEffectsData().getNonHiddenEffects();
 
 		StringBuilder value = new StringBuilder(entity.getName() + ": ");
 		int iterCount = 1;

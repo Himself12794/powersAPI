@@ -57,11 +57,12 @@ public abstract class Power {
 	 * 
 	 * @param world
 	 * @param caster
-	 * @param stack
+	 * @param mouseOver TODO
 	 * @param modifier
+	 * @param stack
 	 * @return success
 	 */
-	public abstract boolean cast(World world, EntityLivingBase caster, float modifier);
+	public abstract boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier);
 	
 	/**
 	 * The action to be performed when the power is being prepared, before it is actually cast.

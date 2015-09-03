@@ -1,6 +1,7 @@
 package com.himself12794.powersapi.util;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -413,6 +414,8 @@ public class UsefulMethods {
 
 		NBTTagCompound nbtTagCompound = new NBTTagCompound();
 
+		if (pos == null) return nbtTagCompound;
+		
 		nbtTagCompound.setInteger( "entityId",
 				pos.entityHit != null ? pos.entityHit.getEntityId()
 						: Integer.MIN_VALUE );
@@ -443,6 +446,8 @@ public class UsefulMethods {
 	public static MovingObjectPosition movingObjectPositionFromNBT(
 			NBTTagCompound nbtTagCompound, World world) {
 
+		if (nbtTagCompound == null) return null;
+		
 		Vec3 vec = new Vec3(
 				nbtTagCompound.getDouble( "vecX" ),
 				nbtTagCompound.getDouble( "vecY" ),
@@ -462,8 +467,7 @@ public class UsefulMethods {
 		}
 
 		int entityId = nbtTagCompound.getInteger( "entityId" );
-		Entity entityHit = !(entityId == Integer.MIN_VALUE && entityId == 0 && world == null) ? world
-				.getEntityByID( entityId )
+		Entity entityHit = !(entityId == Integer.MIN_VALUE && world == null) ? world.getEntityByID( entityId )
 				: null;
 
 		MovingObjectPosition pos = new MovingObjectPosition( vec, sideHit,
@@ -483,7 +487,7 @@ public class UsefulMethods {
 			public boolean apply(Object input) {
 				
 				if (input instanceof EntityLivingBase) {
-					return DataWrapper.get( (EntityLivingBase)input).powerEffectsData.isAffectedBy( effect );
+					return DataWrapper.get( (EntityLivingBase)input).getPowerEffectsData().isAffectedBy( effect );
 				}
 				return false;
 			}
@@ -492,6 +496,31 @@ public class UsefulMethods {
 		
 		return entities;
 		
+	}
+	
+	public static Entity getEntityFromPersistentId(World world, String id) {
+		try {
+			final UUID uuid = UUID.fromString( id ); 
+			List entities = world.getEntities( Entity.class, new Predicate() {
+
+				@Override
+				public boolean apply(Object input) {
+					if (input instanceof Entity) {
+						return uuid.equals( ((Entity)input).getPersistentID() );
+					}
+					return false;
+				}
+				
+			});
+			
+			if (!entities.isEmpty()) {
+				return (Entity) entities.get( 0 );
+			}
+			
+		} catch (IllegalArgumentException e) {
+			// No action needed
+		}
+		return null;
 	}
 	
 	public static boolean isCreativeModePlayerOrNull(Entity player) {

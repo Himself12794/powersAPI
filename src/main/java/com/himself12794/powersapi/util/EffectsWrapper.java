@@ -7,21 +7,23 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
+import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.google.common.collect.Sets;
 import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 
-public class PowerEffectsWrapper {
+public class EffectsWrapper implements IExtendedEntityProperties {
 
 	private static final String POWER_EFFECTS_GROUP = "powerEffects";
 	private static final String POWER_EFFECTS = "activeEffects";
 
 	private final EntityLivingBase theEntity;
-	private final NBTTagCompound nbt;
+	private NBTTagCompound nbt;
 
-	PowerEffectsWrapper(EntityLivingBase entity, NBTTagCompound modEntityData) {
+	EffectsWrapper(EntityLivingBase entity, NBTTagCompound modEntityData) {
 
 		theEntity = entity;
 
@@ -244,5 +246,32 @@ public class PowerEffectsWrapper {
 		}
 
 		return effects;
+	}
+	
+	public static void register(EntityLivingBase entity) {
+		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, new EffectsWrapper( entity, null ) );
+	}
+	
+	public static EffectsWrapper get(EntityLivingBase entity) {
+		return (EffectsWrapper) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
+	}
+
+	@Override
+	public void saveNBTData(NBTTagCompound compound) {
+
+		nbt = compound;
+		
+	}
+
+	@Override
+	public void loadNBTData(NBTTagCompound compound) {
+
+		compound = nbt;
+		
+	}
+
+	@Override
+	public void init(Entity entity, World world) {
+		
 	}
 }

@@ -342,7 +342,7 @@ public class PowerEffect {
 	}
 	
 	private static NBTTagList getActiveEffects(final EntityLivingBase target) {
-		return DataWrapper.get( target ).powerEffectsData.getActiveEffects();
+		return DataWrapper.get( target ).getPowerEffectsData().getActiveEffects();
 	}
 	
 	public static PowerEffect getEffectById(final int id) {
