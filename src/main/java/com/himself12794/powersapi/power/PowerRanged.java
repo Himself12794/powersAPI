@@ -19,9 +19,9 @@ public class PowerRanged extends Power {
 	protected boolean shouldRender = false;
 	
 	@Override
-	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier) {
+	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
-		boolean flag1 = onCast(world, caster, modifier);
+		boolean flag1 = onCast(world, caster, modifier, state);
 		EntityPower casting = new EntityPower(world, caster, this, modifier );
 		boolean flag2 = world.spawnEntityInWorld(casting);
 		return flag1 && flag2;
@@ -30,7 +30,7 @@ public class PowerRanged extends Power {
 
 	public void onUpdate(EntityPower entitySpell) {}
 	
-	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier) {
+	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier, int state) {
 		return true;
 	}
 	

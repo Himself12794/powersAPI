@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.Network;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.proxy.Network;
 import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -66,7 +66,6 @@ public class Secondary implements ICommand {
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 
 				PowersWrapper entity = PowersWrapper.get( (EntityPlayer) sender.getCommandSenderEntity() );
-				PowersAPI.logger.info( entity );
 				Power commandPower = Power.lookupPower( "power." + args[0] );
 
 				if (commandPower != null) {

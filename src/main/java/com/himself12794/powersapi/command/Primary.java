@@ -15,9 +15,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
+import com.himself12794.powersapi.network.Network;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.proxy.Network;
 import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;

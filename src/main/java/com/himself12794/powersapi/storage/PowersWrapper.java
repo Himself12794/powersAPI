@@ -232,7 +232,7 @@ public class PowersWrapper extends PropertiesBase {
 				final boolean flag = powerInUse.onFinishedCastingEarly(
 						theEntity.worldObj,
 						(EntityPlayer) theEntity, getPowerUseTimeLeft(),
-						getPreviousPowerTarget() );
+						getPreviousPowerTarget(), getPowerProfile( powerInUse ).getState() );
 	
 				if (flag) {
 					getOrCreatePowerProfile( powerInUse ).triggerCooldown();
@@ -311,13 +311,13 @@ public class PowersWrapper extends PropertiesBase {
 				if (this.powerInUseTimeLeft > 0) {
 
 					if (this.powerInUseTimeLeft % 4 == 0) {
-						powerInUse.cast( theEntity.worldObj, theEntity, mouseOverPos, profile.useModifier );
+						powerInUse.cast( theEntity.worldObj, theEntity, mouseOverPos, profile.useModifier, profile.getState() );
 					}
 					this.powerInUseTimeLeft--;
 
 				} else if (this.powerInUseTimeLeft <= 0) {
 
-					if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos )) 
+					if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) 
 						profile.triggerCooldown();
 					
 					prevTargetPos = null;
@@ -349,21 +349,21 @@ public class PowersWrapper extends PropertiesBase {
 
 				PowerProfile profile = getOrCreatePowerProfile( power );
 
-				if (power.onPreparePower( theEntity.worldObj, (EntityPlayer) theEntity )) {
+				if (power.onPreparePower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
 
 					theEntity.swingItem();
 
 					if (power.isConcentrationPower()) {
 
-						if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier )) {
+						if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 							profile.addUse();
 							powerInUse = power;
 							powerInUseTimeLeft = power.getMaxConcentrationTime();
 						}
 
-					} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier )) {
+					} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 						profile.addUse();
-						if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos )) profile
+						if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) profile
 								.triggerCooldown();
 						prevTargetPos = null;
 

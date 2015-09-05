@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
-import com.himself12794.powersapi.proxy.Network;
+import com.himself12794.powersapi.network.Network;
 import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.storage.PropertiesBase;

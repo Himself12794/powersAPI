@@ -39,9 +39,9 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	 */
 	// TODO add optional onFinishedCastingEarly
 	public final boolean onFinishedCastingEarly(World world,
-			EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target) {
+			EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target, int state) {
 
-		return this.onFinishedCasting( world, entityIn, target );
+		return this.onFinishedCasting( world, entityIn, target, state );
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	 */
 	// TODO add optional onFinishedCasting
 	public final boolean onFinishedCasting(World world,
-			EntityLivingBase caster, MovingObjectPosition target) {
+			EntityLivingBase caster, MovingObjectPosition target, int state) {
 
 		if (getPowerEffect() == null) return false;
 

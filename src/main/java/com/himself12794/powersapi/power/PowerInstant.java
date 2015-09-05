@@ -12,10 +12,10 @@ public class PowerInstant extends Power {
 	
 	private int range = 40;
 	
-	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier) {
+	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
-		onCast(world, caster, modifier);
-		boolean successful = onStrike( world, mouseOver, caster, modifier );
+		onCast(world, caster, modifier, state);
+		boolean successful = onStrike( world, mouseOver, caster, modifier, state );
 		PowersWrapper wrapper = PowersWrapper.get( caster );
 		
 		if (mouseOver == null) return false;

@@ -46,6 +46,7 @@ public abstract class Power {
 	private int coolDown = 4;
 	/**How long the power can be used until a cooldown is forced*/
 	private int maxConcentrationTime = 0;
+	private int higestFunctionalState = 0;
 	private boolean visibility = true;
 	private int preparationTime;
 	private float maxLevel;
@@ -53,25 +54,32 @@ public abstract class Power {
 	
 	/**
 	 * This determines how the power is cast, then casts it.
+	 * Normally, this means that this method is responsible for gathering information
+	 * from the world and passing it to {@link Power#onCast(World, EntityLivingBase, float, int)} 
+	 * and {@link Power#onStrike(World, MovingObjectPosition, EntityLivingBase, float, int)}, then 
+	 * returning their responses.
+	 * <p>
 	 * Returning true will trigger the cool down.
 	 * 
 	 * @param world
 	 * @param caster
 	 * @param mouseOver TODO
 	 * @param modifier
+	 * @param state TODO
 	 * @param stack
 	 * @return success
 	 */
-	public abstract boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier);
+	public abstract boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state);
 	
 	/**
 	 * The action to be performed when the power is being prepared, before it is actually cast.
 	 * <p>
 	 * This is used primarily to check if the player should be allowed to cast the power or not.
+	 * @param state TODO
 	 * 
 	 * @return whether or not casting should continue.
 	 */
-	public boolean onPreparePower(World worldIn, EntityPlayer playerIn) {
+	public boolean onPreparePower(World worldIn, EntityPlayer playerIn, int state) {
 		return true;
 	}
 	
@@ -83,10 +91,11 @@ public abstract class Power {
 	 * @param world
 	 * @param caster
 	 * @param modifier
+	 * @param state TODO
 	 * @param stack
 	 * @return whether or not the power counts as successful, and should count as a use
 	 */
-	public boolean onCast(World world, EntityLivingBase caster, float modifier) {return true;}
+	public boolean onCast(World world, EntityLivingBase caster, float modifier, int state) {return true;}
 	
 	/**
 	 * Called when the power affects a target.
@@ -99,47 +108,48 @@ public abstract class Power {
 	 * @param target
 	 * @param caster
 	 * @param modifier
+	 * @param state TODO
 	 * @param stack
 	 * @return success
 	 */
-	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier ) {
-		
-		/*if (target.entityHit instanceof EntityLivingBase) {
-			((EntityLivingBase)target.entityHit).attackEntityFrom( DamageSource.magic, getPower() );
-			return true;
-		}
-		
-
-		if (this instanceof PowerInstant) return false;
-		else return true;*/
+	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier, int state ) {
 		return true;
-		
 	}
 	
 	/**
 	 * Called when power is aborted before concentration time is over.
 	 * Return false prevent the cooldown
-	 * 
-	 * @param stack
 	 * @param world
 	 * @param entityIn
 	 * @param timeLeft
+	 * @param state TODO
+	 * @param stack
+	 * 
 	 * @return whether or not to cancel the cooldown
 	 */
-	public boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target) { return true; }
+	public boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target, int state) { return true; }
 	
 	/**
 	 * Called when power is done being cast, before the cool down is triggered.
 	 * Return false to negate the cool down.
-	 * 
-	 * @param stack
 	 * @param world
 	 * @param caster
 	 * @param movingObjectPosition 
+	 * @param state TODO
+	 * @param stack
+	 * 
 	 * @return whether or not to negate the cool down
 	 */
-	public boolean onFinishedCasting(World world, EntityLivingBase caster, MovingObjectPosition movingObjectPosition) { return true; }
+	public boolean onFinishedCasting(World world, EntityLivingBase caster, MovingObjectPosition movingObjectPosition, int state) { return true; }
 	
+	/**
+	 * Called when the power state is changed, after the change. Useful for adding chat messages about the changed state.
+	 * @param world 
+	 * @param caster
+	 * @param prevState
+	 * @param currState
+	 */
+	public void onStateChanged(World world, EntityLivingBase caster, int prevState, int currState) {}
 	/**
 	 * Determines whether or not powers that have a duration should show this on the tooltip.
 	 * 
@@ -245,6 +255,10 @@ public abstract class Power {
 		
 	}
 	
+	protected void setMaxFunctionalState(int value) { higestFunctionalState = value; }
+	
+	public int getMaxFunctionalState() { return higestFunctionalState; }
+	
 	protected void setNegateble(boolean value) { isNegateable = value; }
 	
 	public boolean isNegateable() { return isNegateable; } 
@@ -257,7 +271,7 @@ public abstract class Power {
 
 	public float getPower(float modifier) { return power * modifier; }
 	
-	public Power setCoolDown(int amount) { coolDown = amount; return this; }
+	protected Power setCoolDown(int amount) { coolDown = amount; return this; }
 	
 	public int getCooldown() { return coolDown; }
 	

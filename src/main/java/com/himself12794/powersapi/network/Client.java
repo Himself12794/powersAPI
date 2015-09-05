@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.proxy;
+package com.himself12794.powersapi.network;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

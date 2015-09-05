@@ -408,9 +408,10 @@ public class EntityPower extends Entity implements IProjectile
 	protected void onImpact(MovingObjectPosition movingObject) {
 
 		if (power != null) {
-
-			power.onStrike( worldObj, movingObject, getThrower(), modifier );
-			PowersWrapper.get( getThrower() ).prevTargetPos = movingObject;
+			PowersWrapper wrapper = PowersWrapper.get( getThrower() );
+			
+			power.onStrike( worldObj, movingObject, getThrower(), modifier, wrapper.getPowerProfile( power ).getState() );
+			wrapper.prevTargetPos = movingObject;
 			setDead();
 
 		} else setDead();

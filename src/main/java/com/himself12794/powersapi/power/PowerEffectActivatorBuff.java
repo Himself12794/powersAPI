@@ -31,13 +31,13 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 	}
 
 	public boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn,
-			int timeLeft, MovingObjectPosition target) {
+			int timeLeft, MovingObjectPosition target, int state) {
 
-		return this.onFinishedCasting( world, entityIn, target );
+		return this.onFinishedCasting( world, entityIn, target, state );
 	}
 
 	public boolean onFinishedCasting(World world, EntityLivingBase caster,
-			MovingObjectPosition target) {
+			MovingObjectPosition target, int state) {
 
 		boolean alreadyAffectingEntity = false;
 		EffectsWrapper wrapper = EffectsWrapper.get( caster );

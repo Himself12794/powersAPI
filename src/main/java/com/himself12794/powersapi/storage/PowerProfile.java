@@ -12,8 +12,9 @@ import com.himself12794.powersapi.power.Power;
 /**
  * Contains statistics and information for a specific power a player has used. 
  * This allows specific powers to store information about their use to players.
- * This also holds the cooldown timers to allow convenient modification.
- * Additionally, this can be used to store custom information about power use.
+ * This also holds the cooldown timers to allow convenient modification. Each
+ * player has a power profile for any power they've used, even if they don't
+ * currently know a power.
  * 
  * @author Himself12794
  *
@@ -24,6 +25,7 @@ public class PowerProfile {
 	static final String POWER_NAME = "powerName";
 	static final String POWER_MODIFIER = "powerModifier";
 	static final String COOLDOWN_REMAINING = "cooldownRemaining";
+	static final String FUNCTIONAL_STATE = "functionalState";
 	static final String USES = "uses";
 	
 	public final EntityLivingBase theEntity;
@@ -32,6 +34,7 @@ public class PowerProfile {
 	public final NBTTagCompound powerData;
 	/**Modifier that is passed when the power is used*/
 	public float useModifier = 1.0F;
+	public int functionalState = 0;
 	public int cooldownRemaining = 0;
 	public int uses = 0;
 	
@@ -80,6 +83,35 @@ public class PowerProfile {
 	 */
 	public void setBoolean( String key, boolean value ) {
 		powerData.setBoolean( key, value );
+	}
+	
+	public int getState() {
+		return functionalState;
+	}
+	
+	public void setState(int value) {
+		if (value <= thePower.getMaxFunctionalState()) {
+			int prevState = functionalState;
+			functionalState = value;
+			thePower.onStateChanged( theEntity.worldObj, theEntity, prevState, functionalState );
+		} 
+	}
+	
+	/**
+	 * Cycles the power state. 
+	 * @param doOnStateChange whether to call {@link Power#onStateChanged(net.minecraft.world.World, EntityLivingBase, int, int)}
+	 */
+	public void cycleState(boolean doOnStateChange) {
+		int prevState = functionalState;
+		
+		if (functionalState < thePower.getMaxFunctionalState()) {
+			functionalState++;
+		} else {
+			functionalState = 0;
+		}
+		
+		if (doOnStateChange)
+			thePower.onStateChanged( theEntity.worldObj, theEntity, prevState, functionalState );
 	}
 	
 	public void triggerCooldown() {

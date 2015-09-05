@@ -17,6 +17,7 @@ import com.himself12794.powersapi.command.PowersCommand;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.EventsHandler;
 import com.himself12794.powersapi.item.ModItems;
+import com.himself12794.powersapi.network.Network;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {

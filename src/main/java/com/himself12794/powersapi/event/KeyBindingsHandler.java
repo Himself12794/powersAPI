@@ -11,10 +11,10 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.himself12794.powersapi.config.KeyBindings;
+import com.himself12794.powersapi.network.Network;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerInstant;
-import com.himself12794.powersapi.proxy.Network;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
@@ -35,6 +35,8 @@ public final class KeyBindingsHandler {
 		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
 		
 		PowersWrapper wrapper = PowersWrapper.get( player );
+    	
+    	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
 		
 		if (wrapper.isUsingPower()){
 			
@@ -42,11 +44,9 @@ public final class KeyBindingsHandler {
 	        	wrapper.stopUsingPower();
 	        	Network.server().powerUse( null, null, Action.STOP );
 	        }
-	    }
+	    } 
 	
-	    if (binding.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
-        	
-        	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
+	    if (binding.isKeyDown() && !gameSettings.keyBindUseItem.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
         	if (power != null) {
 
         		buttonDelay = 4;
@@ -55,6 +55,16 @@ public final class KeyBindingsHandler {
 	        	wrapper.usePower( power, lookVec );
 	        	Network.server().powerUse(power, lookVec, Action.START);
         	}
+	    } else if (!wrapper.isUsingPower() && gameSettings.keyBindUseItem.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
+	    	
+	    	if (power != null) {
+	    		
+	    		buttonDelay = 4;
+	    		wrapper.getPowerProfile( power ).cycleState(true);
+	    		Network.server().cyclePowerState( power );
+	    		
+	    	}
+	    	
 	    }
 		
 	}

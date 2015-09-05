@@ -11,6 +11,13 @@ import net.minecraft.world.storage.IPlayerFileData;
 
 import com.himself12794.powersapi.PowersAPI;
 
+/**
+ * Used to write mod data to file.
+ * 
+ * @author Himself12794
+ * @deprecated No longer used since implementation of IExtendedEntityProperties
+ */
+@Deprecated
 public class PlayerSaveHandler implements IPlayerFileData {
 
 	private final File playerDirectory;
