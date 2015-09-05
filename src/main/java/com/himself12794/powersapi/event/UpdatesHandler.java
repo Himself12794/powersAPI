@@ -32,22 +32,19 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.client.SyncNBTDataClient;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.DataWrapperP;
-import com.himself12794.powersapi.util.EffectsWrapper;
-import com.himself12794.powersapi.util.Reference;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.DataWrapperP;
+import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.Reference;
 
 public class UpdatesHandler {
 
 	@SubscribeEvent
 	public void updates(LivingUpdateEvent event) {
-		DataWrapper wrapper = DataWrapper.get( event.entityLiving );
+		
+		PowersWrapper wrapper = PowersWrapper.get( event.entityLiving );
 		if (wrapper != null) wrapper.updateAll();
-		/*if (event.entityLiving instanceof EntityPlayerMP && wrapper.getLastUpdate() == 15 ) {
-				PowersAPI.network.sendTo( new SyncNBTData( wrapper.getModEntityData() ),
-						(EntityPlayerMP) event.entityLiving );
-
-		}*/
+		
 	}
 
 	/*@SubscribeEvent
@@ -66,11 +63,13 @@ public class UpdatesHandler {
 	@SubscribeEvent
 	public void registerExtendedPropperties(EntityEvent.EntityConstructing event) {
 		
-		if (event.entity instanceof EntityLivingBase && DataWrapper.get( (EntityLivingBase) event.entity ) == null) {
+		if (event.entity instanceof EntityLivingBase) {
 			
-			System.out.println("Registered extended properties");
+			if (EffectsWrapper.get( (EntityLivingBase) event.entity ) == null)			
+				EffectsWrapper.register( (EntityLivingBase) event.entity );
 			
-			EffectsWrapper.register( (EntityLivingBase) event.entity );
+			if (PowersWrapper.get( (EntityLivingBase) event.entity ) == null) 
+				PowersWrapper.register( (EntityLivingBase) event.entity );
 			
 		}
 		
@@ -80,51 +79,50 @@ public class UpdatesHandler {
 	@SubscribeEvent
 	public void playerLoggedIn(PlayerLoggedInEvent event) {
 		
-		if (!event.player.worldObj.isRemote) {		
-			NBTTagCompound nbttagcompound = DataWrapper.get( event.player )
+		/*if (!event.player.worldObj.isRemote) {		
+			NBTTagCompound nbttagcompound = PowersWrapper.get( event.player )
 					.getModEntityData();
 			PowersAPI.network.sendTo( new SyncNBTDataClient( nbttagcompound ),
 					(EntityPlayerMP) event.player );
-		}
+		}*/
 	}
 	
 	@SubscribeEvent
 	public void respawnSync(PlayerRespawnEvent event) {
 		
 		EntityPlayer player = event.player;
-		DataWrapperP.get( player ).resetForRespawn();
+		EffectsWrapper.get( player ).resetForRespawn();
+		PowersWrapper.get( player ).resetForRespawn();
 		
 	}
 
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void getPlayerData(PlayerEvent.Clone event) {
 		if (event.wasDeath) {
 			
-			EntityPlayer player = event.entityPlayer;
-			NBTTagCompound tags = DataWrapperP.get( event.original ).getModEntityData();
-			NBTTagCompound tags2 = DataWrapperP.set( player, tags ).resetForRespawn().getModEntityData();
+			EffectsWrapper.get( event.original ).copyTo( event.entityPlayer );
+			PowersWrapper.get( event.original ).copyTo( event.entityPlayer );
 			
-			//PowersAPI.network.sendTo( new SyncNBTData(tags2), (EntityPlayerMP) player );
 		}
-	}*/
+	}
 
 	@SubscribeEvent
 	public void saveToFile(SaveToFile event) {
-		DataWrapperP.get( event.entityPlayer ).saveHandler.writePlayerData( event.entityPlayer );
+		//DataWrapperP.get( event.entityPlayer ).saveHandler.writePlayerData( event.entityPlayer );
 	}
 
 	@SubscribeEvent
 	public void loadFromFile(LoadFromFile event) {
 		
-			NBTTagCompound data = PowersAPI.getSaveHandler( event.entityPlayer ).readPlayerData( event.entityPlayer );
-			DataWrapper.set( event.entityPlayer, data );
+			//NBTTagCompound data = PowersAPI.getSaveHandler( event.entityPlayer ).readPlayerData( event.entityPlayer );
+			//PowersWrapper.set( event.entityPlayer, data );
 			
 	}
 	
 	@SubscribeEvent
 	public void cancelUseWhenUsingPower(PlayerInteractEvent event) {
 		
-		if (DataWrapper.get( event.entityPlayer ).isUsingPower()) {
+		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
 			event.setCanceled( true );
 		}
 		
@@ -133,7 +131,7 @@ public class UpdatesHandler {
 	@SubscribeEvent
 	public void cancelWhenUsingPower2(PlayerUseItemEvent.Start event) {
 		
-		if (DataWrapper.get( event.entityPlayer ).isUsingPower()) {
+		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
 			event.duration = 0;
 		}
 		

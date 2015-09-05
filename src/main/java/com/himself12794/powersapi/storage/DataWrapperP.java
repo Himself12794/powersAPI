@@ -1,9 +1,9 @@
-package com.himself12794.powersapi.util;
+package com.himself12794.powersapi.storage;
 
 import net.minecraft.entity.player.EntityPlayer;
 
 
-public class DataWrapperP extends DataWrapper {
+public class DataWrapperP extends PowersWrapper {
 	
 	public final EntityPlayer player;
 	public final PlayerSaveHandler saveHandler;

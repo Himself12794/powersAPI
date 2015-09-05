@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 
 public class PowerEffectsClient implements IMessage {
 
@@ -83,7 +83,7 @@ public class PowerEffectsClient implements IMessage {
 						.getPlayer().worldObj
 						.getEntityByID( message.casterEntityId );
 
-				if (message.isDone) DataWrapper.get( target ).getPowerEffectsData()
+				if (message.isDone) PowersWrapper.get( target ).getPowerEffectsData()
 						.removePowerEffectSparingly( message.effect );
 				else message.effect.onUpdate( target, message.timeLeft, caster,
 						message.power );

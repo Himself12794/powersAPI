@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.server.CastPowerInstantServer;
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class PowerInstant extends Power {
@@ -22,12 +22,12 @@ public class PowerInstant extends Power {
 		
 		onCast(world, caster, modifier);
 		boolean successful = onStrike( world, mouseOver, caster, modifier );
-		DataWrapper wrapper = DataWrapper.get( caster );
+		PowersWrapper wrapper = PowersWrapper.get( caster );
 		
 		if (mouseOver == null) return false;
 		
 		if (successful) {
-			wrapper.setPreviousPowerTarget( mouseOver );
+			wrapper.prevTargetPos = mouseOver;
 		}
 		
 		return successful;

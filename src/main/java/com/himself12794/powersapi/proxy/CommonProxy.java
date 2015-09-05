@@ -22,12 +22,13 @@ import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.UpdatesHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.client.PowerEffectsClient;
+import com.himself12794.powersapi.network.client.SetPowerClient;
 import com.himself12794.powersapi.network.client.SyncNBTDataClient;
 import com.himself12794.powersapi.network.server.CastPowerInstantServer;
 import com.himself12794.powersapi.network.server.StopUsePowerMessage;
-import com.himself12794.powersapi.network.server.SyncNBTDataServer;
+import com.himself12794.powersapi.network.server.SetMouseOverTarget;
 import com.himself12794.powersapi.network.server.UsePowerMessage;
-import com.himself12794.powersapi.util.Reference;
+import com.himself12794.powersapi.storage.Reference;
 
 public class CommonProxy {
 
@@ -56,8 +57,10 @@ public class CommonProxy {
 				PowerEffectsClient.class, 3, Side.CLIENT );
 		network.registerMessage( SyncNBTDataClient.Handler.class,
 				SyncNBTDataClient.class, 4, Side.CLIENT );
-		network.registerMessage( SyncNBTDataServer.Handler.class,
-				SyncNBTDataServer.class, 5, Side.SERVER );
+		network.registerMessage( SetMouseOverTarget.Handler.class,
+				SetMouseOverTarget.class, 5, Side.SERVER );
+		network.registerMessage( SetPowerClient.Handler.class,
+				SetPowerClient.class, 6, Side.CLIENT );
 
 		ModCreativeTabs.addCreativeTabs();
 		ModItems.addItems();

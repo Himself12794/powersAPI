@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.util.DataWrapperP;
+import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 import net.minecraft.command.CommandException;

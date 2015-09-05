@@ -1,21 +1,18 @@
 package com.himself12794.powersapi.command;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.DataWrapperP;
+import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 
@@ -99,24 +96,6 @@ public class EffectSet implements ICommand {
 	@Override
 	public boolean isUsernameIndex(String[] args, int index) {
 		return args.length >= 2 && index == 1;
-	}
-	
-	private String getPowerEffectsAsString(EntityLivingBase entity) {
-		DataWrapper wrapper = DataWrapper.get( entity );
-		Set<PowerEffect> powers = wrapper.getPowerEffectsData().getNonHiddenEffects();
-
-		StringBuilder value = new StringBuilder(entity.getName() + ": ");
-		int iterCount = 1;
-
-		for (PowerEffect power : powers) {
-
-			value.append( power.getUnlocalizedName() );
-			if (iterCount != powers.size()) value.append( ", " );
-			iterCount++;
-
-		}
-		
-		return value.toString();
 	}
 
 	@Override

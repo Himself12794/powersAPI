@@ -1,13 +1,13 @@
 package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.PowerEffectContainer;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.EffectContainer;
 
 /**
  * Can be used cast powers that effect the world and the caster only.
@@ -32,31 +32,29 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 		setDuration(effectDuration);
 	}
 
-	public boolean onFinishedCastingEarly(World world, EntityPlayer playerIn,
+	public boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn,
 			int timeLeft, MovingObjectPosition target) {
 
-		return this.onFinishedCasting( world, playerIn, target );
+		return this.onFinishedCasting( world, entityIn, target );
 	}
 
-	public boolean onFinishedCasting(World world, EntityPlayer caster,
+	public boolean onFinishedCasting(World world, EntityLivingBase caster,
 			MovingObjectPosition target) {
 
 		boolean alreadyAffectingEntity = false;
-		DataWrapper wrapper = DataWrapper.get( caster );
-
-		PowerEffectContainer container = wrapper
-				.getPowerEffectsData().getEffectContainer( getPowerEffect() );
-		if (container.getCasterEntity() == caster
-				&& container.getTheEffect() == getPowerEffect()) {
-			alreadyAffectingEntity = true;
-
+		EffectsWrapper wrapper = EffectsWrapper.get( caster );
+		if (wrapper.isAffectedBy( getPowerEffect() )) {
+			EffectContainer container = wrapper.getEffectContainer( getPowerEffect() );
+			
+			if (container.casterEntity == caster && container.theEffect == getPowerEffect()) {
+				alreadyAffectingEntity = true;
+			}
 		}
 
 		if (!alreadyAffectingEntity) {
-			getPowerEffect().addTo( caster, getEffectDuration(), caster, this );
-		} else if (isRemoveableByCaster( caster, caster,
-				container.getTimeRemaining() )) {
-			wrapper.getPowerEffectsData().addPowerEffect( getPowerEffect(), 0, caster, this );
+			wrapper.addPowerEffect( getPowerEffect(), getEffectDuration(), caster, this );
+		} else if (isRemoveableByCaster( caster, caster, wrapper.getTimeRemaining( getPowerEffect() ) )) {
+			wrapper.removePowerEffect( getPowerEffect() );
 		}
 
 		return alreadyAffectingEntity;

@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class CastPowerInstantServer implements IMessage {
@@ -70,11 +70,9 @@ public class CastPowerInstantServer implements IMessage {
 		        		
 		        		EntityPlayer caster = ctx.getServerHandler().playerEntity;
 		        		MovingObjectPosition targetPos = message.getMovingObjectPosition( caster.getEntityWorld() );
-		        		DataWrapper wrapper = DataWrapper.get( caster );
+		        		PowersWrapper wrapper = PowersWrapper.get( caster );
 		        		boolean success = spell.onStrike(ctx.getServerHandler().playerEntity.getEntityWorld(), targetPos, caster, message.modifier);
-		        		if (success) wrapper.setPreviousPowerTarget( targetPos );
-		        		
-			        	wrapper.setPowerSuccess( success );
+		        		if (success) wrapper.prevTargetPos = targetPos;
 						
 					}
         		};

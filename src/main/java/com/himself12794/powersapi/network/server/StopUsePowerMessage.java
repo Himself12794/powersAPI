@@ -7,7 +7,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 
 public class StopUsePowerMessage implements IMessage {
 
@@ -32,7 +32,7 @@ public class StopUsePowerMessage implements IMessage {
 					public void run() {
 		        		
 		        		EntityPlayer player = ctx.getServerHandler().playerEntity;
-		        		DataWrapper.get( player ).stopUsingPower();
+		        		PowersWrapper.get( player ).stopUsingPower();
 						
 					}
    

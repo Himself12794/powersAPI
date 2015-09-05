@@ -1,13 +1,12 @@
 package com.himself12794.powersapi.command;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
@@ -16,8 +15,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.DataWrapperP;
+import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class EffectGet implements ICommand {
@@ -32,22 +30,9 @@ public class EffectGet implements ICommand {
 
 				EntityPlayer player = (EntityPlayer) sender
 						.getCommandSenderEntity();
-				DataWrapperP wrapper = DataWrapperP.get( player );
-				Set<PowerEffect> powers = wrapper.getPowerEffectsData()
-						.getNonHiddenEffects();
 
-				StringBuilder value = new StringBuilder( "You have: " );
-				int iterCount = 1;
 
-				for (PowerEffect power : powers) {
-
-					value.append( power.getUnlocalizedName() );
-					if (iterCount != powers.size()) value.append( ", " );
-					iterCount++;
-
-				}
-
-				sender.addChatMessage( new ChatComponentText( value.toString() ) );
+				sender.addChatMessage( new ChatComponentText( getPowerEffectsAsString(player) ) );
 
 			}
 
@@ -84,18 +69,18 @@ public class EffectGet implements ICommand {
 		return args.length >= 1 && index == 0;
 	}
 
-	private String getPowerEffectsAsString(EntityLivingBase entity) {
+	private String getPowerEffectsAsString(EntityPlayer entity) {
 
-		DataWrapper wrapper = DataWrapper.get( entity );
-		Set<PowerEffect> powers = wrapper.getPowerEffectsData()
+		DataWrapperP wrapper = DataWrapperP.get( entity );
+		Collection powers = wrapper.getPowerEffectsData()
 				.getNonHiddenEffects();
 
-		StringBuilder value = new StringBuilder( entity.getName() + ": " );
+		StringBuilder value = new StringBuilder( "You have: " );
 		int iterCount = 1;
 
-		for (PowerEffect power : powers) {
+		for (Object power : powers) {
 
-			value.append( power.getUnlocalizedName() );
+			value.append( ((PowerEffect)power).getUnlocalizedName() );
 			if (iterCount != powers.size()) value.append( ", " );
 			iterCount++;
 

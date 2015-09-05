@@ -14,11 +14,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.KeyBindings;
 import com.himself12794.powersapi.network.server.StopUsePowerMessage;
-import com.himself12794.powersapi.network.server.SyncNBTDataServer;
+import com.himself12794.powersapi.network.server.SetMouseOverTarget;
 import com.himself12794.powersapi.network.server.UsePowerMessage;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerInstant;
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public final class KeyBindingsHandler {
@@ -37,7 +37,7 @@ public final class KeyBindingsHandler {
 		World world = Minecraft.getMinecraft().theWorld;
 		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
 		
-		DataWrapper wrapper = DataWrapper.get( player );
+		PowersWrapper wrapper = PowersWrapper.get( player );
 		
 		if (wrapper.isUsingPower()){
 			
@@ -69,12 +69,12 @@ public final class KeyBindingsHandler {
 			
 			if (buttonDelay > 0) buttonDelay--;
 			
-			DataWrapper dw = DataWrapper.get( Minecraft.getMinecraft().thePlayer );
+			PowersWrapper dw = PowersWrapper.get( Minecraft.getMinecraft().thePlayer );
 			
 			if (dw.isUsingPower()) {
 				if (dw.getPowerInUse() instanceof PowerInstant) {
-					dw.setMouseOver( UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  ));
-					PowersAPI.network.sendToServer( new SyncNBTDataServer(dw.getModEntityData() ));
+					dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  );
+					PowersAPI.network.sendToServer( new SetMouseOverTarget(  ));
 				}
 				
 			}
@@ -152,7 +152,7 @@ public final class KeyBindingsHandler {
              }
         } else
         {
-			System.out.println("power not in use");
+
             /*while (KeyBindings.PRIMARY_POWER.isPressed())
             {
 
@@ -172,7 +172,7 @@ public final class KeyBindingsHandler {
         
         if (KeyBindings.SECONDARY_POWER.isKeyDown() && buttonDelay == 0 && !dw.isUsingPower())
         {
-        	System.out.println("continuous use");
+
         	handleUseSecondaryPower(dw);
         }
  

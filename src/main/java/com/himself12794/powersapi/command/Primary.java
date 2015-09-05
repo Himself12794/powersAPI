@@ -5,10 +5,12 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.client.SetPowerClient;
 import com.himself12794.powersapi.network.client.SyncNBTDataClient;
+import com.himself12794.powersapi.power.EnumPowerSelection;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.DataWrapperP;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 import net.minecraft.command.CommandException;
@@ -52,7 +54,7 @@ public class Primary implements ICommand {
 			
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 				
-				Power power = DataWrapper.get( (EntityLivingBase) sender.getCommandSenderEntity() ).getPrimaryPower();
+				Power power = PowersWrapper.get( (EntityLivingBase) sender.getCommandSenderEntity() ).getPrimaryPower();
 				
 				if (power != null) {
 					String name = power.getDisplayName();
@@ -72,10 +74,12 @@ public class Primary implements ICommand {
 				if (commandPower != null) {
 					if (entity.knowsPower( commandPower )) {
 						entity.setPrimaryPower( commandPower );
-						PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
+						PowersAPI.network.sendTo( new SetPowerClient(commandPower, EnumPowerSelection.PRIMARY), (EntityPlayerMP) entity.theEntity );
+						//PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
 					} else if (entity.player.capabilities.isCreativeMode) {
 						entity.setPrimaryPower( commandPower );
-						PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
+						PowersAPI.network.sendTo( new SetPowerClient(commandPower, EnumPowerSelection.PRIMARY), (EntityPlayerMP) entity.theEntity );
+						//PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}

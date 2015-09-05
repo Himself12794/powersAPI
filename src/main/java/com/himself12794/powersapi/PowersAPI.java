@@ -14,8 +14,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.proxy.CommonProxy;
-import com.himself12794.powersapi.util.PlayerSaveHandler;
-import com.himself12794.powersapi.util.Reference;
+import com.himself12794.powersapi.storage.PlayerSaveHandler;
+import com.himself12794.powersapi.storage.Reference;
 
 /**
  * This is a mod to faciliate adding powers to minecraft. It's optimized to be used like spells,

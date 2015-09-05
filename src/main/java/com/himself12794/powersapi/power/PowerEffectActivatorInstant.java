@@ -1,12 +1,12 @@
 package com.himself12794.powersapi.power;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.PowerEffectContainer;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.EffectContainer;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -20,17 +20,19 @@ import com.himself12794.powersapi.util.UsefulMethods;
  */
 public class PowerEffectActivatorInstant extends PowerInstant
 		implements IEffectActivator {
-	
+
 	private final PowerEffect linkedEffect;
 	private final int effectDuration;
-	
-	public PowerEffectActivatorInstant(String name, int cooldown, int maxConcentrationTime, PowerEffect effect, int duration) {
-		this.setUnlocalizedName(name);
-		this.setCoolDown(cooldown);
-		this.setMaxConcentrationTime(maxConcentrationTime);
+
+	public PowerEffectActivatorInstant(String name, int cooldown,
+			int maxConcentrationTime, PowerEffect effect, int duration) {
+
+		this.setUnlocalizedName( name );
+		this.setCoolDown( cooldown );
+		this.setMaxConcentrationTime( maxConcentrationTime );
 		this.linkedEffect = effect;
 		this.effectDuration = duration;
-		setDuration(effectDuration);
+		setDuration( effectDuration );
 	}
 
 	/**
@@ -38,9 +40,9 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	 */
 	// TODO add optional onFinishedCastingEarly
 	public final boolean onFinishedCastingEarly(World world,
-			EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) {
+			EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target) {
 
-		return this.onFinishedCasting( world, playerIn, target );
+		return this.onFinishedCasting( world, entityIn, target );
 	}
 
 	/**
@@ -48,22 +50,21 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	 */
 	// TODO add optional onFinishedCasting
 	public final boolean onFinishedCasting(World world,
-			EntityPlayer caster, MovingObjectPosition target) {
+			EntityLivingBase caster, MovingObjectPosition target) {
 
 		if (getPowerEffect() == null) return false;
 
 		boolean alreadyAffectingEntity = false;
 		EntityLivingBase entityAlreadyAffected = null;
 
-		for (EntityLivingBase entity : UsefulMethods.getEntitiesWithEffect(
-				world, getPowerEffect() )) {
-			DataWrapper wrapper = DataWrapper.get( entity );
-
-			PowerEffectContainer container = wrapper
-					.getPowerEffectsData().getEffectContainer( getPowerEffect() );
-			if (container.getCasterEntity() == caster
-					&& container.getTheEffect() == getPowerEffect()
-					&& container.getInitiatedPower() == this) {
+		for (EntityLivingBase entity : UsefulMethods.getEntitiesWithEffect(	world, getPowerEffect() )) {
+			
+			EffectsWrapper wrapper = EffectsWrapper.get( entity );
+			EffectContainer container = wrapper.getEffectContainer( getPowerEffect() );
+			if (container.casterEntity == caster
+					&& container.theEffect == getPowerEffect()
+					&& container.initiatedPower == this) {
+				
 				alreadyAffectingEntity = true;
 				entityAlreadyAffected = entity;
 				break;
@@ -71,20 +72,15 @@ public class PowerEffectActivatorInstant extends PowerInstant
 
 		}
 
-		if (!alreadyAffectingEntity
-				&& target.entityHit instanceof EntityLivingBase) {
-			if (getPowerEffect().shouldApplyEffect(
-					(EntityLivingBase) target.entityHit, caster, this )) {
-				getPowerEffect().addTo(
-						(EntityLivingBase) target.entityHit,
-						getEffectDuration(), caster, this );
-			}
-			
+		if (!alreadyAffectingEntity	&& target.entityHit instanceof EntityLivingBase) {
+
+				EffectsWrapper.get( (EntityLivingBase) target.entityHit )
+						.addPowerEffect( getPowerEffect(), getEffectDuration(),
+								caster, this );
+
 		} else if (entityAlreadyAffected != null) {
 
-			DataWrapper.get( entityAlreadyAffected ).getPowerEffectsData()
-					.addPowerEffect(
-							getPowerEffect(), 0, caster, this );
+			EffectsWrapper.get( entityAlreadyAffected ).removePowerEffect( getPowerEffect() );
 		}
 
 		return alreadyAffectingEntity;

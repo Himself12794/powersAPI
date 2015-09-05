@@ -1,29 +1,29 @@
 package com.himself12794.powersapi.network.server;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.util.UsefulMethods;
 
 // TODO solve excessive syncs
-public class SyncNBTDataServer implements IMessage {
+public class SetMouseOverTarget implements IMessage {
 
 	private NBTTagCompound nbttags;
 
-	public SyncNBTDataServer() {
+	public SetMouseOverTarget() {
 
 	}
 
-	public SyncNBTDataServer(NBTTagCompound nbttags) {
+	public SetMouseOverTarget(MovingObjectPosition pos) {
 
-		this.nbttags = nbttags;
+		this.nbttags = UsefulMethods.movingObjectPosToNBT( pos );
 	}
 
 	@Override
@@ -39,18 +39,19 @@ public class SyncNBTDataServer implements IMessage {
 	}
 
 	public static class Handler implements
-			IMessageHandler<SyncNBTDataServer, IMessage> {
+			IMessageHandler<SetMouseOverTarget, IMessage> {
 
 		@Override
-		public IMessage onMessage(final SyncNBTDataServer message, final MessageContext ctx) {
+		public IMessage onMessage(final SetMouseOverTarget message, final MessageContext ctx) {
 
 			if (ctx.side.isServer()) {
 				Runnable task = new Runnable() {
 
 					@Override
 					public void run() {
-						if (ctx.getServerHandler().playerEntity != null) {
-							DataWrapper.set( ctx.getServerHandler().playerEntity, message.nbttags );						
+						EntityPlayer player =  ctx.getServerHandler().playerEntity;
+						if (player != null) {
+							PowersWrapper.get( player ).mouseOverPos = UsefulMethods.movingObjectPositionFromNBT( message.nbttags, player.worldObj );						
 						}
 					}
 				};

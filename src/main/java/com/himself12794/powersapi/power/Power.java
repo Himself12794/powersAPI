@@ -15,8 +15,8 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.PowerProfile;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -122,11 +122,11 @@ public abstract class Power {
 	 * 
 	 * @param stack
 	 * @param world
-	 * @param playerIn
+	 * @param entityIn
 	 * @param timeLeft
 	 * @return whether or not to cancel the cooldown
 	 */
-	public boolean onFinishedCastingEarly(World world, EntityPlayer playerIn, int timeLeft, MovingObjectPosition target) { return true; }
+	public boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target) { return true; }
 	
 	/**
 	 * Called when power is done being cast, before the cool down is triggered.
@@ -138,7 +138,7 @@ public abstract class Power {
 	 * @param movingObjectPosition 
 	 * @return whether or not to negate the cool down
 	 */
-	public boolean onFinishedCasting(World world, EntityPlayer caster, MovingObjectPosition movingObjectPosition) { return true; }
+	public boolean onFinishedCasting(World world, EntityLivingBase caster, MovingObjectPosition movingObjectPosition) { return true; }
 	
 	/**
 	 * Determines whether or not powers that have a duration should show this on the tooltip.
@@ -192,7 +192,7 @@ public abstract class Power {
 	 * @param caster
 	 */
     public final void teachPower(EntityLivingBase target) {
-    	DataWrapper.get(target).teachPower( this );
+    	PowersWrapper.get(target).teachPower( this );
     }
 	
 	public final ItemStack setPower(ItemStack stack) {
@@ -255,7 +255,7 @@ public abstract class Power {
 	
 	public Power setCoolDown(int amount) { coolDown = amount; return this; }
 	
-	public int getCoolDown() { return coolDown; }
+	public int getCooldown() { return coolDown; }
 	
 	public Power setUnlocalizedName( String name ) { displayName = name; return this; }
 	
@@ -280,11 +280,15 @@ public abstract class Power {
 	 */
 	public String getSimpleName() { return displayName; }
 	
+	public int getId() {
+		return getPowerId(this);
+	}
+	
 	/*================================= Begin Power Registration Section ===============================*/ 
 	
 	private static Map<Integer, String> powerIds = Maps.newHashMap();
 	private static Map<String, Power> powerRegistry = Maps.newHashMap();
-	private static int powers = 0;
+	private static int powers = 1;
 	
 	public static void registerPowers() {
 		
@@ -397,24 +401,7 @@ public abstract class Power {
 	}
 	
 	public final boolean canUsePower( EntityLivingBase player ) {
-		return (DataWrapper.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
-	}
-	
-	public final void setCoolDown(EntityLivingBase player, int amount) {
-		
-		DataWrapper data = DataWrapper.get( player );
-		
-		NBTTagCompound coolDowns = data.getPowerCooldowns();
-		
-		coolDowns.setInteger(getUnlocalizedName(), amount);
-	}
-	
-	public final void triggerCooldown( EntityLivingBase player ) {
-		
-		if (player instanceof EntityPlayer) {
-			if (((EntityPlayer)player).capabilities.isCreativeMode) return;
-		}
-		setCoolDown(player, getCoolDown());
+		return (PowersWrapper.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
 	}
 	
 	public static boolean hasPower(ItemStack stack) {

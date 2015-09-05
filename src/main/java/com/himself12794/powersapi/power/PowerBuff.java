@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 
 /**
  * Can be used cast powers that effect the world and the caster only.
@@ -21,7 +21,7 @@ public class PowerBuff extends Power {
 	@Override
 	public final boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier) {
 		boolean result = onCast(world, caster, modifier);
-		if (result) DataWrapper.get( caster ).setPreviousPowerTarget( new MovingObjectPosition(caster) );
+		if (result) PowersWrapper.get( caster ).prevTargetPos =  new MovingObjectPosition(caster);
 		return result;
 		
 	}

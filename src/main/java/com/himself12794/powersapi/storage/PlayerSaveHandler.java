@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.util;
+package com.himself12794.powersapi.storage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,11 +35,11 @@ public class PlayerSaveHandler implements IPlayerFileData {
 	@Override
 	public void writePlayerData(EntityPlayer player) {
 		
-		if (!(player instanceof EntityPlayerMP)) return;
+		/*if (!(player instanceof EntityPlayerMP)) return;
 		
 		try {
 
-			NBTTagCompound nbttagcompound = DataWrapper.get( player ).getModEntityData();
+			NBTTagCompound nbttagcompound = PowersWrapper.get( player ).getModEntityData();
 
 			File file1 = getPlayerSaveDirectory( player );
 			CompressedStreamTools.writeCompressed( nbttagcompound,
@@ -48,7 +48,7 @@ public class PlayerSaveHandler implements IPlayerFileData {
 		} catch (Exception exception) {
 			PowersAPI.logger.warn( "Failed to save player data for "
 					+ player.getName() );
-		}
+		}*/
 
 	}
 

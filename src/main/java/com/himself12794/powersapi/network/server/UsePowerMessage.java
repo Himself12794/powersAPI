@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.util.DataWrapper;
+import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class UsePowerMessage implements IMessage {
@@ -55,7 +55,7 @@ public class UsePowerMessage implements IMessage {
 		        		NBTTagCompound nbt = message.lookVec;
 		        		
 		        		if (power != null) {
-		        			DataWrapper.get( player ).usePower( power, UsefulMethods.movingObjectPositionFromNBT( nbt, player.worldObj ) );
+		        			PowersWrapper.get( player ).usePower( power, UsefulMethods.movingObjectPositionFromNBT( nbt, player.worldObj ) );
 		        		}
 						
 					}

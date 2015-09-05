@@ -10,8 +10,8 @@ import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.PowerEffectContainer;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.EffectContainer;
 
 // TODO add tag for beneficial, malicious, or tagging
 public class PowerEffect {
@@ -56,9 +56,9 @@ public class PowerEffect {
 		isPersistant = persistant;
 	}
 	
-	public final void addTo(final EntityLivingBase target, final int duration, final EntityLivingBase caster) {
+	/*public final void addTo(final EntityLivingBase target, final int duration, final EntityLivingBase caster) {
 		addTo(target, duration, caster, null);
-	}
+	}*/
 	
 	/**
 	 * Applies the power effect to the specific entity, for a specific time.
@@ -70,9 +70,9 @@ public class PowerEffect {
 	 * @param caster
 	 * @param power the power that applied this affect, if applicable
 	 */
-    public final void addTo(final EntityLivingBase target, final int duration, final EntityLivingBase caster, final Power power) {
+    /*public final void addTo(final EntityLivingBase target, final int duration, final EntityLivingBase caster, final Power power) {
     	
-        final NBTTagList activeEffects = getActiveEffects(target);
+        /*final NBTTagList activeEffects = getActiveEffects(target);
         boolean flag = true;
         final boolean remove = duration == 0;
         int location = -1;
@@ -130,14 +130,14 @@ public class PowerEffect {
             activeEffects.appendTag(nbttagcompound1);
             onApplied( target, duration, caster, power );
         }
-    }
+    }*/
 	
 	/**
 	 * Clears the effect from the entity without calling PowerEffect#onRemoval().
 	 * 
 	 * @param target
 	 */
-	public final void clear(final PowerEffectContainer target) {
+	/*public final void clear(final PowerEffectContainer target) {
 		
 		final NBTTagList effects = getActiveEffects(target.getAffectedEntity());
 		
@@ -151,14 +151,14 @@ public class PowerEffect {
 			}
 		}
 		
-	}
+	}*/
 	
 	/**
 	 * Clears the effect from the entity without side effects.
 	 * 
 	 * @param target
 	 */
-	public final void clearQuietly(final EntityLivingBase target) {
+	/*public final void clearQuietly(final EntityLivingBase target) {
 		
 		final NBTTagList effects = getActiveEffects(target);
 		
@@ -168,7 +168,7 @@ public class PowerEffect {
 			}
 		}
 		
-	};
+	};*/
 	
 	/**
 	 * Returns the time remaining for this effect on the target. If the target does not 
@@ -177,7 +177,7 @@ public class PowerEffect {
 	 * @param target
 	 * @return
 	 */
-	public final int getEffectTimeRemainingOn(final EntityLivingBase target){
+	/*public final int getEffectTimeRemainingOn(final EntityLivingBase target){
 		
 		final NBTTagList activeEffects = getActiveEffects(target);
 		final boolean flag = true;
@@ -193,7 +193,7 @@ public class PowerEffect {
 		}
 		
 		return 0;
-	}
+	}*/
 	
 	public final int getId() {
 		return id;
@@ -213,9 +213,9 @@ public class PowerEffect {
 	 * @param entity
 	 * @return
 	 */
-	public boolean isAffecting(final EntityLivingBase entity) {
+	/*public boolean isAffecting(final EntityLivingBase entity) {
 		return getEffectTimeRemainingOn(entity) != 0;
-	}
+	}*/
 	
 	/**
 	 * Whether or not the effect still works if the player has the negated power effect
@@ -299,11 +299,11 @@ public class PowerEffect {
 	 * 
 	 * @param entity The entity on which the power is effecting
 	 * @param timeLeft
-	 * @param caster The entity who cast the power
-	 * @param power the power that applied the effect, if applicable
-	 * @return
+	 * @param caster The entity who cast the power. May be null.
+	 * @param initiatedPower The power that applied the effect. May be null.
+	 * @return return false to remove effect prematurely
 	 */
-	public void onUpdate(final EntityLivingBase entity, final int timeLeft, final EntityLivingBase caster, final Power power){}
+	public boolean onUpdate(final EntityLivingBase entity, final int timeLeft, final EntityLivingBase caster, final Power initiatedPower){ return true; }
 	
 	private final void setId(final short id) {
 		this.id = id;
@@ -341,10 +341,6 @@ public class PowerEffect {
 		return name;
 	}
 	
-	private static NBTTagList getActiveEffects(final EntityLivingBase target) {
-		return DataWrapper.get( target ).getPowerEffectsData().getActiveEffects();
-	}
-	
 	public static PowerEffect getEffectById(final int id) {
 
 		return powerEffectIds[id];
@@ -355,8 +351,6 @@ public class PowerEffect {
 	}
 	
 	private static short getNextIndex() {
-		
-		//System.out.println("Getting next index");
 		
 		for (short i = 0; i < powerEffectIds.length; i++) {
 			PowersAPI.logger.debug(powerEffectIds[i]);

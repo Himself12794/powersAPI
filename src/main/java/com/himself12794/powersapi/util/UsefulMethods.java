@@ -27,6 +27,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 
 import com.google.common.base.Predicate;
 import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.storage.PowersWrapper;
 
 public class UsefulMethods {
 
@@ -110,8 +111,6 @@ public class UsefulMethods {
 	}
 
 	public static MovingObjectPosition getMouseOverExtended(float dist) {
-
-		// System.out.println("Getting the position");
 
 		Minecraft mc = FMLClientHandler.instance().getClient();
 		Entity theRenderViewEntity = mc.getRenderViewEntity();
@@ -487,7 +486,7 @@ public class UsefulMethods {
 			public boolean apply(Object input) {
 				
 				if (input instanceof EntityLivingBase) {
-					return DataWrapper.get( (EntityLivingBase)input).getPowerEffectsData().isAffectedBy( effect );
+					return PowersWrapper.get( (EntityLivingBase)input).getPowerEffectsData().isAffectedBy( effect );
 				}
 				return false;
 			}
@@ -498,14 +497,20 @@ public class UsefulMethods {
 		
 	}
 	
-	public static Entity getEntityFromPersistentId(World world, String id) {
+	public static Entity getEntityFromPersistentId(World world, String id, Class entity) {
 		try {
-			final UUID uuid = UUID.fromString( id ); 
-			List entities = world.getEntities( Entity.class, new Predicate() {
+			final UUID uuid = UUID.fromString( id );
+			
+			Entity found = world.getPlayerEntityByUUID( uuid );
+			
+			if (found != null) return found;
+			
+			List entities = world.getEntities( entity, new Predicate() {
 
 				@Override
 				public boolean apply(Object input) {
 					if (input instanceof Entity) {
+
 						return uuid.equals( ((Entity)input).getPersistentID() );
 					}
 					return false;
@@ -514,9 +519,10 @@ public class UsefulMethods {
 			});
 			
 			if (!entities.isEmpty()) {
-				return (Entity) entities.get( 0 );
+				found = (Entity) entities.get( 0 );
 			}
 			
+			return found;
 		} catch (IllegalArgumentException e) {
 			// No action needed
 		}
@@ -548,6 +554,21 @@ public class UsefulMethods {
 	
 	public static boolean nullOrEmptyString(String value) {
 		return value == null ? false : !value.equals( "" );
+	}
+	
+	public static NBTTagCompound getPutKeyCompound(String key, NBTTagCompound tag) {
+		
+		NBTTagCompound result = null;
+		
+		if (tag.hasKey( key, 10 )) {
+			result = tag.getCompoundTag( key );
+		} else {
+			result = new NBTTagCompound();
+			tag.setTag( key, result );
+		}
+		
+		return result;
+		
 	}
 	
 	/*public static BlockPos getLookBlockPos(EntityPlayer player) {

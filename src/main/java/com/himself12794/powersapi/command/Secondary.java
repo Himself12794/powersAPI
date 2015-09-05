@@ -5,10 +5,12 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.client.SetPowerClient;
 import com.himself12794.powersapi.network.client.SyncNBTDataClient;
+import com.himself12794.powersapi.power.EnumPowerSelection;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.util.DataWrapper;
-import com.himself12794.powersapi.util.DataWrapperP;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 import net.minecraft.command.CommandException;
@@ -52,7 +54,7 @@ public class Secondary implements ICommand {
 			
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 				
-				Power power = DataWrapper.get( (EntityLivingBase) sender.getCommandSenderEntity() ).getSecondaryPower();
+				Power power = PowersWrapper.get( (EntityLivingBase) sender.getCommandSenderEntity() ).getSecondaryPower();
 				
 				if (power != null) {
 					String name = power.getDisplayName();
@@ -64,19 +66,22 @@ public class Secondary implements ICommand {
 
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 
-				DataWrapperP entity = DataWrapperP
-						.get( (EntityPlayer) sender
-								.getCommandSenderEntity() );
+				PowersWrapper entity = PowersWrapper.get( (EntityPlayer) sender.getCommandSenderEntity() );
+				PowersAPI.logger.info( entity );
 				Power commandPower = Power.lookupPower( "power." + args[0] );
 
 				if (commandPower != null) {
 
 					if (entity.knowsPower( commandPower )) {
 						entity.setSecondaryPower( commandPower );
-						PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
-					} else if (entity.player.capabilities.isCreativeMode) {
+						PowersAPI.network.sendTo( new SetPowerClient(commandPower, EnumPowerSelection.SECONDARY), (EntityPlayerMP) entity.theEntity );
+						PowersAPI.logger.info( entity );
+						//PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
+					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.setSecondaryPower( commandPower );
-						PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
+						PowersAPI.network.sendTo( new SetPowerClient(commandPower, EnumPowerSelection.SECONDARY), (EntityPlayerMP) entity.theEntity );
+						PowersAPI.logger.info( entity );
+						//PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}
