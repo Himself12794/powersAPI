@@ -72,10 +72,10 @@ public class Primary implements ICommand {
 				if (commandPower != null) {
 					if (entity.knowsPower( commandPower )) {
 						entity.setPrimaryPower( commandPower );
-						Network.client().sendSetPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
+						Network.client().setPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
 					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.setPrimaryPower( commandPower );
-						Network.client().sendSetPower(commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
+						Network.client().setPower(commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}

@@ -185,25 +185,19 @@ public class EffectsWrapper extends PropertiesBase {
 
 		final Set toRemove = Sets.newHashSet();
 		
-		powerEffects.keySet().forEach( new Consumer<PowerEffect>() {
-
-			@Override
-			public void accept(PowerEffect t) {
-				
-				if (t.isPersistant()) toRemove.add( t );
-				
+		for (PowerEffect effect : powerEffects.keySet()) {
+			
+			if (!effect.isPersistant()) {
+				toRemove.add( effect );
 			}
 			
-		});
+		}
 		
-		toRemove.forEach( new Consumer<PowerEffect>() {
-
-			@Override
-			public void accept(PowerEffect t) {
-				removePowerEffect(t);
-			}
+		for (Object effect : toRemove) {
 			
-		});
+			powerEffects.remove( effect );
+			
+		}
 		
 		return this;
 
@@ -287,4 +281,6 @@ public class EffectsWrapper extends PropertiesBase {
 	public void init(Entity entity, World world) {
 		
 	}
+	
+	
 }

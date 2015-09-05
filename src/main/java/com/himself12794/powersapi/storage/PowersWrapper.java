@@ -194,8 +194,6 @@ public class PowersWrapper extends PropertiesBase {
 		if (!this.knowsPower( power )) teachPower(power);
 		primaryPower = power;
 		
-		//System.out.println(this);
-		
 		final ChatComponentTranslation message = new ChatComponentTranslation(
 				"command.setPrimaryPower", power.getDisplayName() );
 
@@ -261,8 +259,8 @@ public class PowersWrapper extends PropertiesBase {
 
 		if (!learnedPowers.contains( power )) {
 			learnedPowers.add( power );
-			theEntity.addChatMessage( new ChatComponentTranslation(
-					"command.power.learned", power.getDisplayName() ) );
+			//theEntity.addChatMessage( new ChatComponentTranslation(
+			//		"command.power.learned", power.getDisplayName() ) );
 		}
 	}
 

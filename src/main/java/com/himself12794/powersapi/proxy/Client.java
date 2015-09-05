@@ -22,7 +22,7 @@ public class Client {
 		network.sendTo( new S01SyncProperty( properties ), (EntityPlayerMP) player );
 	}
 
-	public void sendSetPower(Power power, S02SetPower.Selection selection, EntityPlayer player) {
+	public void setPower(Power power, S02SetPower.Selection selection, EntityPlayer player) {
 		network.sendTo( new S02SetPower(power, selection), (EntityPlayerMP) player);
 	}
 

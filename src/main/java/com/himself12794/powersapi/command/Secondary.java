@@ -73,10 +73,10 @@ public class Secondary implements ICommand {
 
 					if (entity.knowsPower( commandPower )) {
 						entity.setSecondaryPower( commandPower );
-						Network.client().sendSetPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
+						Network.client().setPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
 					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.setSecondaryPower( commandPower );
-						Network.client().sendSetPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
+						Network.client().setPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}
