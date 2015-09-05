@@ -4,9 +4,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.storage.PowersWrapper;
-import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.storage.EffectContainer;
+import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**

@@ -21,7 +21,7 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersWrapper;
-import com.himself12794.powersapi.storage.Reference;
+import com.himself12794.powersapi.util.Reference;
 
 @SuppressWarnings("unchecked")
 public class PowerActivator extends Item {
@@ -125,7 +125,7 @@ public class PowerActivator extends Item {
 			if (!power.getInfo( null ).equals("")) list.add("");
 			
 			if (power.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + power.getTypeDescriptor(stack, player));
-			list.add(EnumChatFormatting.RED + "Power: " + power.getPower());
+			list.add(EnumChatFormatting.RED + "Power: " + power.getPower(modifier));
 			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCooldown() / 20.0F) + "s");
 			
 			if (power.getDuration() > 0 && power.showDuration(stack, player, par4)) 

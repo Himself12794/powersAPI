@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.network.server;
+package com.himself12794.powersapi.network.client;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,15 +13,15 @@ import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 // TODO solve excessive syncs
-public class SetMouseOverTarget implements IMessage {
+public class C02SetMouseOverTarget implements IMessage {
 
 	private NBTTagCompound nbttags;
 
-	public SetMouseOverTarget() {
+	public C02SetMouseOverTarget() {
 
 	}
 
-	public SetMouseOverTarget(MovingObjectPosition pos) {
+	public C02SetMouseOverTarget(MovingObjectPosition pos) {
 
 		this.nbttags = UsefulMethods.movingObjectPosToNBT( pos );
 	}
@@ -39,10 +39,10 @@ public class SetMouseOverTarget implements IMessage {
 	}
 
 	public static class Handler implements
-			IMessageHandler<SetMouseOverTarget, IMessage> {
+			IMessageHandler<C02SetMouseOverTarget, IMessage> {
 
 		@Override
-		public IMessage onMessage(final SetMouseOverTarget message, final MessageContext ctx) {
+		public IMessage onMessage(final C02SetMouseOverTarget message, final MessageContext ctx) {
 
 			if (ctx.side.isServer()) {
 				Runnable task = new Runnable() {

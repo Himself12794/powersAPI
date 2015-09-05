@@ -8,19 +8,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -29,9 +26,9 @@ import com.himself12794.powersapi.util.UsefulMethods;
  * @author Himself12794
  *
  */
-public class PowersWrapper extends DataWrapper {
+public class PowersWrapper extends PropertiesBase {
 
-	private static final String POWER_GROUP = "power";
+	public static final String POWER_GROUP = Reference.MODID + ":power";
 	private static final String POWER_CURRENT = "currentPower";
 	private static final String POWER_CURRENT_USELEFT = "currentPower.useLeft";
 	private static final String POWER_SET = "powerSet";
@@ -57,7 +54,7 @@ public class PowersWrapper extends DataWrapper {
 
 	protected PowersWrapper(final EntityLivingBase entity) {
 
-		super( entity );
+		super(POWER_GROUP, entity );
 	}
 
 	public int getCooldownRemaining(final Power power) {
@@ -174,11 +171,13 @@ public class PowersWrapper extends DataWrapper {
 	 * @return
 	 */
 	@Override
-	public void resetForRespawn() {
+	public PropertiesBase resetForRespawn() {
 
 		for (PowerProfile profile : powerProfiles.values()) {
 			profile.cooldownRemaining = 0;
 		}
+		
+		return this;
 
 	}
 
@@ -195,7 +194,7 @@ public class PowersWrapper extends DataWrapper {
 		if (!this.knowsPower( power )) teachPower(power);
 		primaryPower = power;
 		
-		System.out.println(this);
+		//System.out.println(this);
 		
 		final ChatComponentTranslation message = new ChatComponentTranslation(
 				"command.setPrimaryPower", power.getDisplayName() );
@@ -231,12 +230,17 @@ public class PowersWrapper extends DataWrapper {
 
 		if (theEntity instanceof EntityPlayer && powerInUse != null) {
 
-			final boolean flag = powerInUse.onFinishedCastingEarly(
-					theEntity.worldObj,
-					(EntityPlayer) theEntity, getPowerUseTimeLeft(),
-					getPreviousPowerTarget() );
-
-			if (flag) {
+			if (!(EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && powerInUse.isNegateable())) {
+				final boolean flag = powerInUse.onFinishedCastingEarly(
+						theEntity.worldObj,
+						(EntityPlayer) theEntity, getPowerUseTimeLeft(),
+						getPreviousPowerTarget() );
+	
+				if (flag) {
+					getOrCreatePowerProfile( powerInUse ).triggerCooldown();
+				}
+				
+			} else {
 				getOrCreatePowerProfile( powerInUse ).triggerCooldown();
 			}
 
@@ -269,10 +273,9 @@ public class PowersWrapper extends DataWrapper {
 		}
 	}
 
-	public void updateAll() {
-
-		//if (theEntity instanceof EntityPlayer) PowersAPI.logger.info( this );
-		getPowerEffectsData().updatePowerEffects();
+	@Override
+	public void onUpdate() {
+		
 		updateCooldowns();
 		updateUsingPowers();
 
@@ -294,11 +297,14 @@ public class PowersWrapper extends DataWrapper {
 
 		if (theEntity instanceof EntityPlayer) {
 
-			final int useTime = getPowerUseTimeLeft();
-
 			if (powerInUse != null) {
 
 				PowerProfile profile = getOrCreatePowerProfile( powerInUse );
+				
+				if (powerInUse.isNegateable() && EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
+					stopUsingPower();
+					return;
+				}
 
 				if (theEntity.isSwingInProgress) {
 					theEntity.swingProgressInt = 1;
@@ -313,8 +319,9 @@ public class PowersWrapper extends DataWrapper {
 
 				} else if (this.powerInUseTimeLeft <= 0) {
 
-					if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos )) profile
-							.triggerCooldown();
+					if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos )) 
+						profile.triggerCooldown();
+					
 					prevTargetPos = null;
 					this.powerInUseTimeLeft = 0;
 					powerInUse = null;
@@ -339,6 +346,8 @@ public class PowersWrapper extends DataWrapper {
 
 		if (theEntity instanceof EntityPlayer) {
 			if (power != null && power.canUsePower( theEntity )) {
+				
+				if (EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
 
 				PowerProfile profile = getOrCreatePowerProfile( power );
 
@@ -351,6 +360,7 @@ public class PowersWrapper extends DataWrapper {
 						if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier )) {
 							profile.addUse();
 							powerInUse = power;
+							powerInUseTimeLeft = power.getMaxConcentrationTime();
 						}
 
 					} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier )) {
@@ -374,11 +384,6 @@ public class PowersWrapper extends DataWrapper {
 		usePower( primaryPower, lookVec );
 	}
 
-	/*
-	 * public boolean hasPowerEffect(PowerEffect effect) { return effect != null
-	 * ? effect.isAffecting( theEntity ) : false; }
-	 */
-
 	/**
 	 * Uses the power designated secondary.
 	 */
@@ -387,6 +392,12 @@ public class PowersWrapper extends DataWrapper {
 		usePower( secondaryPower, lookVec );
 	}
 
+	/**
+	 * Used when an instant power is in use to continuously track the position
+	 * of the cursor.
+	 * 
+	 * @param pos
+	 */
 	public void setMouseOver(MovingObjectPosition pos) {
 
 		mouseOverPos = pos;
@@ -425,18 +436,13 @@ public class PowersWrapper extends DataWrapper {
 		return (PowersWrapper) entity.getExtendedProperties( POWER_GROUP );
 	}
 
-	public static void register(EntityLivingBase entity) {
+	public static PowersWrapper register(EntityLivingBase entity) {
 		entity.registerExtendedProperties( POWER_GROUP, new PowersWrapper( entity ) );
-	}
-	
-	public void copyTo(EntityLivingBase entity) {
-		entity.registerExtendedProperties( POWER_GROUP, this );
+		return (PowersWrapper) entity.getExtendedProperties( POWER_GROUP );
 	}
 
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
-		
-		if (theEntity instanceof EntityPlayer) System.out.println(this);
 		
 		NBTTagCompound modData = UsefulMethods.getPutKeyCompound( Reference.MODID, compound );
 		NBTTagCompound powersData = UsefulMethods.getPutKeyCompound( POWER_GROUP, modData );
@@ -444,7 +450,7 @@ public class PowersWrapper extends DataWrapper {
 		powersData.setTag( POWER_PROFILES, getPowerProfilesAsNBTTagList() );
 		powersData.setIntArray( POWER_SET, getLearnedPowersAsIntArray() );
 		powersData.setInteger( POWER_PRIMARY, primaryPower != null ? primaryPower.getId() : 0 );
-		powersData.setInteger( POWER_SECONDARY, primaryPower != null ? secondaryPower.getId() : 0);
+		powersData.setInteger( POWER_SECONDARY, secondaryPower != null ? secondaryPower.getId() : 0);
 		
 		//System.out.println(powersData);
 		

@@ -3,15 +3,10 @@ package com.himself12794.powersapi.power;
 import java.util.Map;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.storage.PowersWrapper;
-import com.himself12794.powersapi.storage.EffectContainer;
 
 // TODO add tag for beneficial, malicious, or tagging
 public class PowerEffect {

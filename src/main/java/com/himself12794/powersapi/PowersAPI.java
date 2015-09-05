@@ -8,14 +8,13 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import org.apache.logging.log4j.Logger;
 
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.proxy.CommonProxy;
 import com.himself12794.powersapi.storage.PlayerSaveHandler;
-import com.himself12794.powersapi.storage.Reference;
+import com.himself12794.powersapi.util.Reference;
 
 /**
  * This is a mod to faciliate adding powers to minecraft. It's optimized to be used like spells,
@@ -31,8 +30,6 @@ public class PowersAPI {
 
 	@Instance(value = Reference.MODID)
 	public static PowersAPI instance;
-	
-	public static SimpleNetworkWrapper network;
 	
 	public static Logger logger;
 	

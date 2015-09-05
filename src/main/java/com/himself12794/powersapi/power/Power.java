@@ -8,15 +8,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.storage.PowerProfile;
+import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -50,6 +49,7 @@ public abstract class Power {
 	private boolean visibility = true;
 	private int preparationTime;
 	private float maxLevel;
+	private boolean isNegateable = true;
 	
 	/**
 	 * This determines how the power is cast, then casts it.
@@ -245,13 +245,17 @@ public abstract class Power {
 		
 	}
 	
+	protected void setNegateble(boolean value) { isNegateable = value; }
+	
+	public boolean isNegateable() { return isNegateable; } 
+	
 	public Power setVisibility(boolean value) {visibility = value; return this;}
 	
 	public boolean isVisible() { return visibility; }
 	
 	public Power setPower(float value) { power = value; return this; }
 
-	public float getPower() { return power; }
+	public float getPower(float modifier) { return power * modifier; }
 	
 	public Power setCoolDown(int amount) { coolDown = amount; return this; }
 	

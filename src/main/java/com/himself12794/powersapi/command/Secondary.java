@@ -3,16 +3,6 @@ package com.himself12794.powersapi.command;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.collect.Lists;
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.client.SetPowerClient;
-import com.himself12794.powersapi.network.client.SyncNBTDataClient;
-import com.himself12794.powersapi.power.EnumPowerSelection;
-import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
-import com.himself12794.powersapi.storage.DataWrapperP;
-import com.himself12794.powersapi.util.UsefulMethods;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -23,6 +13,15 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import com.google.common.collect.Lists;
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.network.server.S02SetPower.Selection;
+import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.proxy.Network;
+import com.himself12794.powersapi.storage.DataWrapperP;
+import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.util.UsefulMethods;
 
 
 public class Secondary implements ICommand {
@@ -74,14 +73,10 @@ public class Secondary implements ICommand {
 
 					if (entity.knowsPower( commandPower )) {
 						entity.setSecondaryPower( commandPower );
-						PowersAPI.network.sendTo( new SetPowerClient(commandPower, EnumPowerSelection.SECONDARY), (EntityPlayerMP) entity.theEntity );
-						PowersAPI.logger.info( entity );
-						//PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
+						Network.client().sendSetPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
 					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.setSecondaryPower( commandPower );
-						PowersAPI.network.sendTo( new SetPowerClient(commandPower, EnumPowerSelection.SECONDARY), (EntityPlayerMP) entity.theEntity );
-						PowersAPI.logger.info( entity );
-						//PowersAPI.network.sendTo( new SyncNBTDataClient( entity.getModEntityData() ), (EntityPlayerMP) entity.player );
+						Network.client().sendSetPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}

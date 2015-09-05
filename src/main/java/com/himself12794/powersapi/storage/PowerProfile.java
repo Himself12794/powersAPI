@@ -2,17 +2,18 @@ package com.himself12794.powersapi.storage;
 
 import java.util.Set;
 
-import com.google.common.collect.Sets;
-import com.himself12794.powersapi.power.Power;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.google.common.collect.Sets;
+import com.himself12794.powersapi.power.Power;
+
 /**
  * Contains statistics and information for a specific power a player has used. 
  * This allows specific powers to store information about their use to players.
- * Additionally, this can be used to store custom information about spell use.
+ * This also holds the cooldown timers to allow convenient modification.
+ * Additionally, this can be used to store custom information about power use.
  * 
  * @author Himself12794
  *
@@ -82,15 +83,32 @@ public class PowerProfile {
 	}
 	
 	public void triggerCooldown() {
-		cooldownRemaining = thePower.getCooldown();
+		
+		if (theEntity instanceof EntityPlayer) {
+			if (!((EntityPlayer)theEntity).capabilities.isCreativeMode) 
+				cooldownRemaining = thePower.getCooldown();
+		} else {
+			cooldownRemaining = thePower.getCooldown();
+		}
 	}
 	
 	public int getUses() {
 		return uses;
 	}
 	
+	/**
+	 * Only increments if 
+	 */
 	public void addUse() {
+		
+		if( theEntity instanceof EntityPlayer && ((EntityPlayer) theEntity).capabilities.isCreativeMode)
+			return;
+		
 		uses++;
+	}
+	
+	public void resetUses() {
+		uses = 0;
 	}
 	
 	public NBTTagCompound getAsNBTTagCompound() {

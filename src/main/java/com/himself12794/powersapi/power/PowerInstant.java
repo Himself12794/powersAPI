@@ -3,16 +3,10 @@ package com.himself12794.powersapi.power;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.server.CastPowerInstantServer;
 import com.himself12794.powersapi.storage.PowersWrapper;
-import com.himself12794.powersapi.util.UsefulMethods;
 
 public class PowerInstant extends Power {
 	

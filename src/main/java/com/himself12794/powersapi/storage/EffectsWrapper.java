@@ -11,26 +11,24 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.IEffectActivator;
-import com.himself12794.powersapi.power.IPlayerOnly;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class EffectsWrapper extends DataWrapper {
+public class EffectsWrapper extends PropertiesBase {
 
-	private static final String POWER_EFFECTS_GROUP = "powerEffects";
+	public static final String POWER_EFFECTS_GROUP = Reference.MODID + ":powerEffects";
 	private static final String POWER_EFFECTS = "activeEffects";
 
 	public Map<PowerEffect, EffectContainer> powerEffects = Maps.newHashMap();
 
 	EffectsWrapper(EntityLivingBase entity) {
-		super(entity);
+		super(POWER_EFFECTS_GROUP, entity);
 	}
 
 	public boolean addPowerEffect(final PowerEffect effect, final int duration,
@@ -118,7 +116,7 @@ public class EffectsWrapper extends DataWrapper {
 		}
 	}
 
-	public void updatePowerEffects() {
+	public void onUpdate() {
 		
 		boolean hasNegatedEffect = isAffectedBy(PowerEffect.negated);
 		Set toRemove = Sets.newHashSet();
@@ -183,7 +181,7 @@ public class EffectsWrapper extends DataWrapper {
 		return effects;
 	}
 	
-	public void resetForRespawn() {
+	public PropertiesBase resetForRespawn() {
 
 		final Set toRemove = Sets.newHashSet();
 		
@@ -206,6 +204,8 @@ public class EffectsWrapper extends DataWrapper {
 			}
 			
 		});
+		
+		return this;
 
 	}
 	
@@ -216,12 +216,9 @@ public class EffectsWrapper extends DataWrapper {
 		
 	}
 	
-	public void copyTo(EntityLivingBase entity) {
-		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, this );
-	}
-	
-	public static void register(EntityLivingBase entity) {
+	public static EffectsWrapper register(EntityLivingBase entity) {
 		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, new EffectsWrapper( entity ) );
+		return (EffectsWrapper) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
 	}
 	
 	public static void register(EntityLivingBase entity, EffectsWrapper other) {

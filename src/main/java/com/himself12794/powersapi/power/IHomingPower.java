@@ -9,16 +9,19 @@ import com.himself12794.powersapi.entity.EntityPower;
  * The moving target can be an entity or a position. If it is an entity, the projectile will track the
  * target, and if it is only a position, will home in on that location.
  *   
+ * @param T the type
  * @author Himself12794
  *
  */
-public interface IHomingPower {
+public interface IHomingPower<T extends Entity> {
 	
 	/**
 	 * Gets the target for the spell.
 	 * 
 	 * @param caster
 	 */
-	boolean isTargetValid(EntityPower spell, Entity target);
+	boolean isTargetValid(EntityPower powerEntity, T target);
+	
+	Class<T> getTargetType();
 	
 }

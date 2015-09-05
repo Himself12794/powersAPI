@@ -6,7 +6,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
-import com.himself12794.powersapi.storage.Reference;
+import com.himself12794.powersapi.util.Reference;
 
 public final class ModItems {
 	

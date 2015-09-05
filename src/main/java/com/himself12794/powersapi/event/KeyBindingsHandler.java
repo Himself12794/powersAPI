@@ -4,20 +4,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.KeyBindings;
-import com.himself12794.powersapi.network.server.StopUsePowerMessage;
-import com.himself12794.powersapi.network.server.SetMouseOverTarget;
-import com.himself12794.powersapi.network.server.UsePowerMessage;
+import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerInstant;
+import com.himself12794.powersapi.proxy.Network;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
@@ -43,7 +40,7 @@ public final class KeyBindingsHandler {
 			
 	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
 	        	wrapper.stopUsingPower();
-	        	PowersAPI.network.sendToServer( new StopUsePowerMessage() );
+	        	Network.server().powerUse( null, null, Action.STOP );
 	        }
 	    }
 	
@@ -56,7 +53,7 @@ public final class KeyBindingsHandler {
         		float range =  power instanceof PowerInstant ? ((PowerInstant)power).getRange() : 50.0F;
         		MovingObjectPosition lookVec = UsefulMethods.getMouseOverExtended( range );
 	        	wrapper.usePower( power, lookVec );
-	        	PowersAPI.network.sendToServer( new UsePowerMessage(power, lookVec) );
+	        	Network.server().powerUse(power, lookVec, Action.START);
         	}
 	    }
 		
@@ -71,14 +68,11 @@ public final class KeyBindingsHandler {
 			
 			PowersWrapper dw = PowersWrapper.get( Minecraft.getMinecraft().thePlayer );
 			
-			if (dw.isUsingPower()) {
-				if (dw.getPowerInUse() instanceof PowerInstant) {
-					dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  );
-					PowersAPI.network.sendToServer( new SetMouseOverTarget(  ));
-				}
-				
+			if (dw.getPowerInUse() instanceof PowerInstant) {
+				dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  );
+				Network.server().setMouseOver( dw.mouseOverPos );
 			}
-			
+
 		}
 	}
 	

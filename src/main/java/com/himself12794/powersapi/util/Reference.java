@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.storage;
+package com.himself12794.powersapi.util;
 
 public final class Reference {
 	

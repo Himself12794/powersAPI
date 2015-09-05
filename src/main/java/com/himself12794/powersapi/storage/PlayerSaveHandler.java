@@ -2,19 +2,14 @@ package com.himself12794.powersapi.storage;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.client.SyncNBTDataClient;
-
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.IPlayerFileData;
+
+import com.himself12794.powersapi.PowersAPI;
 
 public class PlayerSaveHandler implements IPlayerFileData {
 

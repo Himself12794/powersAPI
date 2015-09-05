@@ -3,8 +3,6 @@ package com.himself12794.powersapi.command;
 import java.util.List;
 
 import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
 
 import com.google.common.collect.Lists;
 
