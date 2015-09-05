@@ -3,7 +3,6 @@ package com.himself12794.powersapi.storage;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
