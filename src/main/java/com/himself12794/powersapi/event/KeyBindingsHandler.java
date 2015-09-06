@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.himself12794.powersapi.config.KeyBindings;
-import com.himself12794.powersapi.network.Network;
+import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerInstant;
@@ -42,18 +42,18 @@ public final class KeyBindingsHandler {
 			
 	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
 	        	wrapper.stopUsingPower();
-	        	Network.server().powerUse( null, null, Action.STOP );
+	        	PowersNetwork.server().powerUse( null, null, Action.STOP );
 	        }
 	    } 
 	
-	    if (binding.isKeyDown() && !gameSettings.keyBindUseItem.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
+	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !wrapper.isUsingPower() && buttonDelay == 0) {
         	if (power != null) {
 
         		buttonDelay = 4;
         		float range =  power instanceof PowerInstant ? ((PowerInstant)power).getRange() : 50.0F;
         		MovingObjectPosition lookVec = UsefulMethods.getMouseOverExtended( range );
 	        	wrapper.usePower( power, lookVec );
-	        	Network.server().powerUse(power, lookVec, Action.START);
+	        	PowersNetwork.server().powerUse(power, lookVec, Action.START);
         	}
 	    } else if (!wrapper.isUsingPower() && gameSettings.keyBindUseItem.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
 	    	
@@ -61,7 +61,7 @@ public final class KeyBindingsHandler {
 	    		
 	    		buttonDelay = 4;
 	    		wrapper.getPowerProfile( power ).cycleState(true);
-	    		Network.server().cyclePowerState( power );
+	    		PowersNetwork.server().cyclePowerState( power );
 	    		
 	    	}
 	    	
@@ -80,7 +80,7 @@ public final class KeyBindingsHandler {
 			
 			if (dw.getPowerInUse() instanceof PowerInstant) {
 				dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  );
-				Network.server().setMouseOver( dw.mouseOverPos );
+				PowersNetwork.server().setMouseOver( dw.mouseOverPos );
 			}
 
 		}

@@ -34,9 +34,10 @@ public class PowerProfile {
 	public final NBTTagCompound powerData;
 	/**Modifier that is passed when the power is used*/
 	public float useModifier = 1.0F;
-	public int functionalState = 0;
-	public int cooldownRemaining = 0;
-	public int uses = 0;
+	public int level = 1;
+	public int functionalState;
+	public int cooldownRemaining;
+	public int uses;
 	
 	PowerProfile(EntityLivingBase player, Power power, NBTTagCompound data) {
 		theEntity = player;
@@ -90,7 +91,7 @@ public class PowerProfile {
 	}
 	
 	public void setState(int value) {
-		if (value <= thePower.getMaxFunctionalState()) {
+		if (value <= thePower.getMaxFunctionalState(this)) {
 			int prevState = functionalState;
 			functionalState = value;
 			thePower.onStateChanged( theEntity.worldObj, theEntity, prevState, functionalState );
@@ -104,7 +105,7 @@ public class PowerProfile {
 	public void cycleState(boolean doOnStateChange) {
 		int prevState = functionalState;
 		
-		if (functionalState < thePower.getMaxFunctionalState()) {
+		if (functionalState < thePower.getMaxFunctionalState(this)) {
 			functionalState++;
 		} else {
 			functionalState = 0;
@@ -118,9 +119,9 @@ public class PowerProfile {
 		
 		if (theEntity instanceof EntityPlayer) {
 			if (!((EntityPlayer)theEntity).capabilities.isCreativeMode) 
-				cooldownRemaining = thePower.getCooldown();
+				cooldownRemaining = thePower.getCooldown(this);
 		} else {
-			cooldownRemaining = thePower.getCooldown();
+			cooldownRemaining = thePower.getCooldown(this);
 		}
 	}
 	
@@ -152,6 +153,7 @@ public class PowerProfile {
 		result.setInteger( USES, uses );
 		result.setInteger( COOLDOWN_REMAINING, cooldownRemaining );
 		result.setTag( ADDITIONAL_DATA, powerData );
+		result.setInteger( FUNCTIONAL_STATE, functionalState );
 		
 		return result;
 		
@@ -168,12 +170,14 @@ public class PowerProfile {
 			float useModifier = compound.getFloat( POWER_MODIFIER );
 			int uses = compound.getInteger( USES );
 			int cooldownRemaining = compound.getInteger( COOLDOWN_REMAINING );
+			int functionalState = compound.getInteger( FUNCTIONAL_STATE );
 			
 			if (thePower != null && theEntity != null) {
 				profile = new PowerProfile(theEntity, thePower, powerData);
 				profile.cooldownRemaining = cooldownRemaining;
 				profile.uses = uses;
 				profile.useModifier = useModifier;
+				profile.functionalState = functionalState;
 			}
 		}
 		

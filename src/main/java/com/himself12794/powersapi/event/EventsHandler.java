@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
-import com.himself12794.powersapi.network.Network;
+import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.storage.PropertiesBase;
@@ -41,10 +41,10 @@ public class EventsHandler {
 			PropertiesBase wrapper;
 			
 			wrapper = PowersWrapper.get( (EntityLivingBase) event.entity );
-			Network.client().syncProperties( wrapper, (EntityPlayer) event.entity );
+			PowersNetwork.client().syncProperties( wrapper, (EntityPlayer) event.entity );
 			
 			wrapper = EffectsWrapper.get( (EntityLivingBase) event.entity );
-			Network.client().syncProperties( wrapper, (EntityPlayer) event.entity );
+			PowersNetwork.client().syncProperties( wrapper, (EntityPlayer) event.entity );
 			
 		}
 	}
@@ -85,10 +85,10 @@ public class EventsHandler {
 		PropertiesBase wrapper;
 		
 		wrapper = EffectsWrapper.get( player ).resetForRespawn();
-		Network.client().syncProperties( wrapper, player );
+		PowersNetwork.client().syncProperties( wrapper, player );
 		
 		wrapper = PowersWrapper.get( player ).resetForRespawn();
-		Network.client().syncProperties( wrapper, player );
+		PowersNetwork.client().syncProperties( wrapper, player );
 		
 	}
 

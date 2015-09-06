@@ -126,7 +126,7 @@ public class PowerActivator extends Item {
 			
 			if (power.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + power.getTypeDescriptor(stack, player));
 			list.add(EnumChatFormatting.RED + "Power: " + power.getPower(modifier));
-			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCooldown() / 20.0F) + "s");
+			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCooldown(null) / 20.0F) + "s");
 			
 			if (power.getDuration() > 0 && power.showDuration(stack, player, par4)) 
 				list.add(EnumChatFormatting.GREEN + "Duration: " + String.format("%.2f",(float)power.getDuration() * modifier / 20.0F) + "s");
@@ -200,7 +200,7 @@ public class PowerActivator extends Item {
         	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         	Power power = Power.getPower(stack);
         	
-            return ((double)PowersWrapper.get( player ).getCooldownRemaining( power ) ) / (double)power.getCooldown();
+            return ((double)PowersWrapper.get( player ).getCooldownRemaining( power ) ) / (double)power.getCooldown(null);
     		
     	}
     	return 2.0D;

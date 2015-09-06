@@ -17,7 +17,7 @@ import com.himself12794.powersapi.command.PowersCommand;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.EventsHandler;
 import com.himself12794.powersapi.item.ModItems;
-import com.himself12794.powersapi.network.Network;
+import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
@@ -31,8 +31,8 @@ public class CommonProxy {
 	public void preinit(FMLPreInitializationEvent event) {
 		
 		// Registering message types
-		Network.init( NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID ) );
-		Network.registerMessages();
+		PowersNetwork.init( NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID ) );
+		PowersNetwork.registerMessages();
 
 		ModCreativeTabs.addCreativeTabs();
 		ModItems.addItems();

@@ -10,7 +10,7 @@ import com.himself12794.powersapi.network.server.S01SyncProperty;
 import com.himself12794.powersapi.network.server.S02SetPower;
 
 
-public final class Network {
+public final class PowersNetwork {
 	
 	private static boolean isInit = false;
 	private static boolean messagesRegistered = false;
@@ -44,7 +44,7 @@ public final class Network {
 	public static void init(SimpleNetworkWrapper wrapper) {
 		
 		if (!isInit) {
-			Network.wrapper = wrapper;
+			PowersNetwork.wrapper = wrapper;
 			CLIENT = new Client(wrapper);
 			SERVER = new Server(wrapper);
 			isInit = true;

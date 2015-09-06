@@ -67,16 +67,13 @@ public class C01PowerUse implements IMessage {
 		        		EntityPlayer player = ctx.getServerHandler().playerEntity;
 		        		Power power = message.power;
 		        		NBTTagCompound nbt = message.lookVec;
-		        		
-		        		if (power != null) {
-		        			
-		        			if (message.action.equals( Action.START )) {
-		        				PowersWrapper.get( player ).usePower( power, UsefulMethods.movingObjectPositionFromNBT( nbt, player.worldObj ) );
-		        			} else {
-				        		PowersWrapper.get( player ).stopUsingPower();
-							}
-		        		}
-						
+		        				
+	        			if (message.action.equals( Action.START ) && power != null) {
+	        				PowersWrapper.get( player ).usePower( power, UsefulMethods.movingObjectPositionFromNBT( nbt, player.worldObj ) );
+	        			} else {
+			        		PowersWrapper.get( player ).stopUsingPower();
+						}
+
 					}
    
         		};

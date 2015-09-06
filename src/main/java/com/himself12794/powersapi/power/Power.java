@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -38,19 +39,45 @@ import com.himself12794.powersapi.util.UsefulMethods;
  */
 public abstract class Power {
 	
+	
+	private static final ResourceLocation defaultTexture = new ResourceLocation("textures/blocks/beacon.png");
 	private String displayName;
+	private ResourceLocation texture;
 	private float power = 2.0F;
 	/**Duration in ticks*/
-	private int duration = 0;
+	private int duration;
 	/**Cool down time in ticks*/
-	private int coolDown = 4;
+	private int cooldown = 20;
 	/**How long the power can be used until a cooldown is forced*/
-	private int maxConcentrationTime = 0;
-	private int higestFunctionalState = 0;
+	private int maxConcentrationTime;
+	private int highestFunctionalState;
 	private boolean visibility = true;
 	private int preparationTime;
-	private float maxLevel;
+	private int maxLevel = 1;
 	private boolean isNegateable = true;
+	
+	/**
+	 * The action to be performed when the power is being prepared, before it is actually cast.
+	 * <p>
+	 * This is used primarily to check if the player should be allowed to cast the power or not.
+	 * @param state the power state
+	 * 
+	 * @return whether or not casting should continue.
+	 */
+	public boolean canCastPower(World worldIn, EntityPlayer playerIn, int state) {
+		return true;
+	}
+	
+	/**
+	 * Called every tick a power is being prepared. (Before it is cast)
+	 * 
+	 * @param player
+	 * @param world
+	 * @param profile
+	 * @param timeLeft TODO
+	 * @return
+	 */
+	public boolean onPrepareTick(EntityPlayer player, World world, PowerProfile profile, int timeLeft) { return true; }
 	
 	/**
 	 * This determines how the power is cast, then casts it.
@@ -70,18 +97,6 @@ public abstract class Power {
 	 * @return success
 	 */
 	public abstract boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state);
-	
-	/**
-	 * The action to be performed when the power is being prepared, before it is actually cast.
-	 * <p>
-	 * This is used primarily to check if the player should be allowed to cast the power or not.
-	 * @param state TODO
-	 * 
-	 * @return whether or not casting should continue.
-	 */
-	public boolean onPreparePower(World worldIn, EntityPlayer playerIn, int state) {
-		return true;
-	}
 	
 	/**
 	 * Called when the power is cast.
@@ -187,11 +202,14 @@ public abstract class Power {
 	/**
 	 * Location for model if the default one is not desired.
 	 * 
+	 * @deprecated Powers are no longer bound to PowerActivator, and models are no longer applicable.
+	 * Use {@link Power#getIcon(PowerProfile)}
 	 * @param stack
 	 * @param player
 	 * @param useRemaining
 	 * @return
 	 */
+	@Deprecated
 	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) { return null; }
 	
 	/**
@@ -248,16 +266,46 @@ public abstract class Power {
 		
 		if (!(obj instanceof Power)) return false;
 		else {
-			Power power = (Power)obj;
-			return this.getSimpleName().equals( power.getSimpleName() );
+			Power other = (Power)obj;
+			return this.getId() == other.getId();
 		}
 		
 		
 	}
 	
-	protected void setMaxFunctionalState(int value) { higestFunctionalState = value; }
+	protected void setTexture(String location) {
+		texture = new ResourceLocation( location );
+	}
 	
-	public int getMaxFunctionalState() { return higestFunctionalState; }
+	public ResourceLocation getIcon(PowerProfile profile) { 
+		
+		if (texture == null) {
+			return defaultTexture;
+		} else {
+			return texture;
+		}
+		
+	}
+	
+	protected void setPreparationTime(int value) { preparationTime = value; }
+	
+	public int getPreparationTime(PowerProfile profile) { return preparationTime; }
+	
+	protected void setMaxLevel(int value) { maxLevel = value; }
+	
+	public int getMaxLevel(PowerProfile profile) { return maxLevel; }
+	
+	protected void setMaxFunctionalState(int value) { highestFunctionalState = value; }
+	
+	public int getMaxFunctionalState(){ return highestFunctionalState; }
+	
+	/**
+	 * Power profile sensitive version of {@link Power#getMaxFunctionalState()}
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public int getMaxFunctionalState(PowerProfile profile) { return highestFunctionalState; }
 	
 	protected void setNegateble(boolean value) { isNegateable = value; }
 	
@@ -271,9 +319,11 @@ public abstract class Power {
 
 	public float getPower(float modifier) { return power * modifier; }
 	
-	protected Power setCoolDown(int amount) { coolDown = amount; return this; }
+	protected Power setCoolDown(int amount) { cooldown = amount; return this; }
 	
-	public int getCooldown() { return coolDown; }
+	public int getCooldown() { return cooldown; }
+	
+	public int getCooldown(PowerProfile profile) { return cooldown; }
 	
 	public Power setUnlocalizedName( String name ) { displayName = name; return this; }
 	
@@ -288,6 +338,8 @@ public abstract class Power {
 	public int getMaxConcentrationTime() { return maxConcentrationTime; }
 	
 	public boolean isConcentrationPower() { return maxConcentrationTime > 0; }
+	
+	public boolean hasPreparationTime() { return preparationTime > 0; }
 
 	public float getBrightness() { return 5.0F; }
 	

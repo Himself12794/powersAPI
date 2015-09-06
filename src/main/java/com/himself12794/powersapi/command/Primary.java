@@ -15,7 +15,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
-import com.himself12794.powersapi.network.Network;
+import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.DataWrapperP;
@@ -72,10 +72,10 @@ public class Primary implements ICommand {
 				if (commandPower != null) {
 					if (entity.knowsPower( commandPower )) {
 						entity.setPrimaryPower( commandPower );
-						Network.client().setPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
+						PowersNetwork.client().setPower( commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
 					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.setPrimaryPower( commandPower );
-						Network.client().setPower(commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
+						PowersNetwork.client().setPower(commandPower, Selection.PRIMARY, (EntityPlayerMP) entity.theEntity );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}

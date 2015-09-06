@@ -37,6 +37,8 @@ public class PowersWrapper extends PropertiesBase {
 	private static final String POWER_PREVIOUS_TARGET = "previousTarget";
 	private static final String POWER_PROFILES = "powerProfiles";
 
+	private int preparationTimeLeft;
+	private boolean isBeingPrepared;
 	private int powerInUseTimeLeft;
 	private Power powerInUse;
 	/**
@@ -91,11 +93,13 @@ public class PowersWrapper extends PropertiesBase {
 
 		if (powerProfiles.containsKey( power )) {
 			return powerProfiles.get( power );
-		} else {
+		} else if (power != null){
 
 			powerProfiles.put( power, new PowerProfile( theEntity, power, null ) );
 			return powerProfiles.get( power );
-		}
+		} 
+		
+		return null;
 	}
 
 	public EffectsWrapper getPowerEffectsData() {
@@ -225,23 +229,32 @@ public class PowersWrapper extends PropertiesBase {
 	 * Makes the player stop using the power.
 	 */
 	public void stopUsingPower() {
-
+		
 		if (theEntity instanceof EntityPlayer && powerInUse != null) {
-
-			if (!(EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && powerInUse.isNegateable())) {
-				final boolean flag = powerInUse.onFinishedCastingEarly(
-						theEntity.worldObj,
-						(EntityPlayer) theEntity, getPowerUseTimeLeft(),
-						getPreviousPowerTarget(), getPowerProfile( powerInUse ).getState() );
-	
-				if (flag) {
+			
+			theEntity.isSwingInProgress = false;
+			theEntity.swingProgressInt = 0;
+			
+			if (!isBeingPrepared) {
+				
+				if (!(EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && powerInUse.isNegateable())) {
+					final boolean flag = powerInUse.onFinishedCastingEarly(
+							theEntity.worldObj,
+							(EntityPlayer) theEntity, getPowerUseTimeLeft(),
+							getPreviousPowerTarget(), getPowerProfile( powerInUse ).getState() );
+		
+					if (flag) {
+						getOrCreatePowerProfile( powerInUse ).triggerCooldown();
+					}
+					
+				} else {
 					getOrCreatePowerProfile( powerInUse ).triggerCooldown();
 				}
 				
-			} else {
-				getOrCreatePowerProfile( powerInUse ).triggerCooldown();
 			}
-
+			
+			preparationTimeLeft = 0;
+			isBeingPrepared = false;
 			powerInUseTimeLeft = 0;
 			prevTargetPos = null;
 			mouseOverPos = null;
@@ -267,7 +280,7 @@ public class PowersWrapper extends PropertiesBase {
 	public void triggerCooldown(final Power power) {
 
 		if (power != null) {
-			getOrCreatePowerProfile( power ).cooldownRemaining = power.getCooldown();
+			getOrCreatePowerProfile( power ).cooldownRemaining = power.getCooldown(null);
 		}
 	}
 
@@ -299,33 +312,44 @@ public class PowersWrapper extends PropertiesBase {
 
 				PowerProfile profile = getOrCreatePowerProfile( powerInUse );
 				
-				if (powerInUse.isNegateable() && EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
-					stopUsingPower();
-					return;
-				}
-
-				if (theEntity.isSwingInProgress) {
-					theEntity.swingProgressInt = 1;
-				}
-
-				if (this.powerInUseTimeLeft > 0) {
-
-					if (this.powerInUseTimeLeft % 4 == 0) {
-						powerInUse.cast( theEntity.worldObj, theEntity, mouseOverPos, profile.useModifier, profile.getState() );
-					}
-					this.powerInUseTimeLeft--;
-
-				} else if (this.powerInUseTimeLeft <= 0) {
-
-					if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) 
-						profile.triggerCooldown();
+				if (!isBeingPrepared) {
 					
-					prevTargetPos = null;
-					this.powerInUseTimeLeft = 0;
-					powerInUse = null;
-					mouseOverPos = null;
-				}
+					if (powerInUse.isNegateable() && EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
+						stopUsingPower();
+						return;
+					}
+	
+					if (theEntity.isSwingInProgress) {
+						theEntity.swingProgressInt = 1;
+					}
+	
+					if (this.powerInUseTimeLeft > 0) {
+	
+						if (this.powerInUseTimeLeft % 4 == 0) {
+							powerInUse.cast( theEntity.worldObj, theEntity, mouseOverPos, profile.useModifier, profile.getState() );
+						}
+						this.powerInUseTimeLeft--;
+	
+					} else if (this.powerInUseTimeLeft <= 0) {
+	
+						if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) 
+							profile.triggerCooldown();
+						
+						prevTargetPos = null;
+						preparationTimeLeft = 0;
+						this.powerInUseTimeLeft = 0;
+						powerInUse = null;
+						mouseOverPos = null;
+					}
+	
+				} else {
+					powerInUse.onPrepareTick( (EntityPlayer) theEntity, theEntity.worldObj, profile, preparationTimeLeft );
+					theEntity.swingProgressInt = 0;
 
+					usePower(powerInUse, mouseOverPos, preparationTimeLeft);
+					preparationTimeLeft--;
+				}
+				
 			}
 
 		}
@@ -335,43 +359,60 @@ public class PowersWrapper extends PropertiesBase {
 	/**
 	 * Causes the player to use the designated power. Doesn't check whether or
 	 * not they actually know it.
-	 * 
+	 * c
 	 * @param power
 	 * @param lookVec
 	 *            TODO
 	 */
 	public void usePower(final Power power, MovingObjectPosition lookVec) {
-
 		if (theEntity instanceof EntityPlayer) {
+			
 			if (power != null && power.canUsePower( theEntity )) {
 				
-				if (EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
-
-				PowerProfile profile = getOrCreatePowerProfile( power );
-
-				if (power.onPreparePower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
-
-					theEntity.swingItem();
-
-					if (power.isConcentrationPower()) {
-
-						if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
-							profile.addUse();
-							powerInUse = power;
-							powerInUseTimeLeft = power.getMaxConcentrationTime();
-						}
-
-					} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
-						profile.addUse();
-						if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) profile
-								.triggerCooldown();
-						prevTargetPos = null;
-
-					}
+				if (!power.hasPreparationTime()) {
+					usePower(power, lookVec, 0);
+				} else {
+					theEntity.isSwingInProgress = true;
+					theEntity.swingProgressInt = 0;
+					preparationTimeLeft = power.getPreparationTime( getPowerProfile(power) );
+					isBeingPrepared = true;
+					powerInUse = power;
 				}
 			}
 		}
+	}
+	
+	private void usePower(final Power power, MovingObjectPosition lookVec, int preparationTimeLeft) {
+				
+		PowerProfile profile = getOrCreatePowerProfile( power );
+		
+		if (EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
+		
+		if (preparationTimeLeft > 0) {
+			return;
+		} else {
+			isBeingPrepared = false;
+		}
+		
+		if (power.canCastPower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
 
+			if (power.isConcentrationPower()) {
+
+				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+					profile.addUse();
+					powerInUse = power;
+					powerInUseTimeLeft = power.getMaxConcentrationTime();
+				}
+
+			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+				theEntity.swingItem();
+				profile.addUse();
+				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) profile
+						.triggerCooldown();
+				prevTargetPos = null;
+
+			}
+		}
 	}
 
 	/**

@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.Network;
+import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.DataWrapperP;
@@ -72,10 +72,10 @@ public class Secondary implements ICommand {
 
 					if (entity.knowsPower( commandPower )) {
 						entity.setSecondaryPower( commandPower );
-						Network.client().setPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
+						PowersNetwork.client().setPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
 					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.setSecondaryPower( commandPower );
-						Network.client().setPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
+						PowersNetwork.client().setPower( commandPower, Selection.SECONDARY, (EntityPlayerMP) entity.theEntity );
 					} else {
 						throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
 					}

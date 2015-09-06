@@ -60,35 +60,11 @@ public class S01SyncProperty implements IMessage {
 						
 						if (player != null) {
 							
-							
-							
-							/*if (message.identifier.equals( PowersWrapper.POWER_GROUP )) {
-								wrapper = PowersWrapper.get( player );
-								if (wrapper != null) {
-									wrapper.loadNBTData( message.compound );
-								} else {
-									wrapper = PowersWrapper.register( player );
-									wrapper.loadNBTData( message.compound );
-								}
-								
-							} else if (message.identifier.equals( EffectsWrapper.POWER_EFFECTS_GROUP )) {
-								wrapper = EffectsWrapper.get( player );
-								if (wrapper != null) {
-									wrapper.loadNBTData( message.compound );
-								} else {
-									wrapper = EffectsWrapper.register( player );
-									wrapper.loadNBTData( message.compound );
-								}
-							}*/
-							
 							PropertiesBase wrapper = (PropertiesBase) player.getExtendedProperties( message.identifier );
 							
 							if (wrapper != null) {
 								wrapper.loadNBTData( message.compound );
-							} else {
-								wrapper = PowersWrapper.register( player );
-								wrapper.loadNBTData( message.compound );
-							}
+							} 
 						}
 					}
 				};
