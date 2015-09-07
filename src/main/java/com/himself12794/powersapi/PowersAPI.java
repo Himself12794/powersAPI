@@ -23,8 +23,6 @@ import com.himself12794.powersapi.util.Reference;
  * @author Himself12794
  *
  */
-// TODO add power profiles to track power usage
-// TODO add central registry for power profiles
 @Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME)
 public class PowersAPI {    
 
@@ -37,8 +35,6 @@ public class PowersAPI {
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
 	public static CommonProxy proxy;
-	
-	public int currId = 0;
 	
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event) {

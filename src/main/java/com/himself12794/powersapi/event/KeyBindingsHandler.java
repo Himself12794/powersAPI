@@ -21,11 +21,28 @@ import com.himself12794.powersapi.util.UsefulMethods;
 public final class KeyBindingsHandler {
 	
 	private int buttonDelay = 0;
+	// To prevent the handling of a key binding event if the button state had not changed since last event
+	private boolean primaryHadBeenPressed = false;
+	private boolean secondaryHadBeenPressed = false;
 	
 	@SubscribeEvent
 	public void onKeyUsage(KeyInputEvent event) {
-		handleKeyBinding(KeyBindings.PRIMARY_POWER);
-		handleKeyBinding(KeyBindings.SECONDARY_POWER);
+		
+		if (KeyBindings.PRIMARY_POWER.isKeyDown() && !primaryHadBeenPressed) {
+			handleKeyBinding(KeyBindings.PRIMARY_POWER);
+			primaryHadBeenPressed = true;
+		} else if (!KeyBindings.PRIMARY_POWER.isKeyDown() && primaryHadBeenPressed) {
+			handleKeyBinding(KeyBindings.PRIMARY_POWER);
+			primaryHadBeenPressed = false;
+		}
+		
+		if (KeyBindings.SECONDARY_POWER.isKeyDown() && !secondaryHadBeenPressed) {
+			handleKeyBinding(KeyBindings.SECONDARY_POWER);
+			secondaryHadBeenPressed = true;
+		} else if (!KeyBindings.SECONDARY_POWER.isKeyDown() && secondaryHadBeenPressed) {
+			handleKeyBinding(KeyBindings.SECONDARY_POWER);
+			secondaryHadBeenPressed = false;
+		}
 	}
 	
 	private void handleKeyBinding(KeyBinding binding) {
@@ -85,33 +102,6 @@ public final class KeyBindingsHandler {
 
 		}
 	}
-	
-	/*private void handleKeyBinding(KeyBinding binding) {
-		
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		World world = Minecraft.getMinecraft().theWorld;
-		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
-		
-		DataWrapper wrapper = DataWrapper.get( player );
-		
-		if (wrapper.isUsingPower()){
-			
-	        if (!KeyBindings.PRIMARY_POWER.isPressed() && !KeyBindings.SECONDARY_POWER.isPressed()) {
-	        	wrapper.stopUsingPower();
-	        	PowersAPI.network.sendToServer( new SendStopUsePower() );
-	        }
-	    }
-
-	    if (binding.isPressed() && !wrapper.isUsingPower() && buttonDelay == 0) {
-
-        	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
-        	if (power != null) {
-	        	wrapper.usePower( power );
-	        	PowersAPI.network.sendToServer( new SendUsePower(power) );
-        	}
-	    }
-		
-	}*/
 	
 	/*private void handleKeyBinds() {
 		
