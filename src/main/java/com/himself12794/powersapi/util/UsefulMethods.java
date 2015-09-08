@@ -480,7 +480,7 @@ public class UsefulMethods {
 	
 	public static List<EntityLivingBase> getEntitiesWithEffect(final World  world, final PowerEffect effect) {
 		
-		List<EntityLivingBase> entities = world.getEntities(EntityLivingBase.class, new Predicate(){
+		Predicate filter = new Predicate(){
 			
 			@Override
 			public boolean apply(Object input) {
@@ -491,7 +491,11 @@ public class UsefulMethods {
 				return false;
 			}
 			
-		});
+		};
+		
+		List<EntityLivingBase> entities = world.getEntities(EntityLivingBase.class, filter );
+		
+		entities.addAll( world.getPlayers( EntityPlayer.class, filter ) );
 		
 		return entities;
 		

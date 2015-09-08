@@ -7,6 +7,7 @@ import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.storage.EffectContainer;
 
 // TODO add tag for beneficial, malicious, or tagging
 public class PowerEffect {
@@ -51,145 +52,6 @@ public class PowerEffect {
 		isPersistant = persistant;
 	}
 	
-	/*public final void addTo(final EntityLivingBase target, final int duration, final EntityLivingBase caster) {
-		addTo(target, duration, caster, null);
-	}*/
-	
-	/**
-	 * Applies the power effect to the specific entity, for a specific time.
-	 * <p>
-	 * Setting the duration to less than 0 makes it last until removed.
-	 * 
-	 * @param target 
-	 * @param duration
-	 * @param caster
-	 * @param power the power that applied this affect, if applicable
-	 */
-    /*public final void addTo(final EntityLivingBase target, final int duration, final EntityLivingBase caster, final Power power) {
-    	
-        /*final NBTTagList activeEffects = getActiveEffects(target);
-        boolean flag = true;
-        final boolean remove = duration == 0;
-        int location = -1;
-        
-        if (this instanceof IPlayerOnly && !(target instanceof EntityPlayer)) return;
-
-        for (int i = 0; i < activeEffects.tagCount(); ++i)  {
-        	
-            final NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
-
-            if (nbttagcompound.getShort("id") == id) {
-            	
-            	if (remove) location = i;
-            	
-            	nbttagcompound.setInteger("duration", duration);
-                nbttagcompound.setString( "initiatedPower", power != null ? power.getUnlocalizedName() : "" );
-                
-                if (caster != null) {
-                	
-	                if (nbttagcompound.getInteger("caster") != caster.getEntityId()) {
-	                	
-	                	nbttagcompound.setInteger("caster", caster.getEntityId());
-	                	
-	                }
-	                
-                }
-
-                flag = false;
-                break;
-            }
-        }
-        
-        if (remove) {
-        	
-        	if (location > -1) {
-        		activeEffects.removeTag(location);
-        		onRemoval(target, caster, power);
-        		if (power instanceof IEffectActivator && caster != null) {
-        			if (((IEffectActivator)power).getPowerEffect() == this) {
-        				power.triggerCooldown(caster);
-        			}
-        		}
-        	}
-        	return;
-        	
-        }
-
-        if (flag && this.shouldApplyEffect(caster, target, power)) {
-        	
-            final NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-            nbttagcompound1.setShort("id", id);
-            nbttagcompound1.setInteger("duration", duration);
-            nbttagcompound1.setInteger("caster", (caster != null ? caster.getEntityId() : -1));
-            nbttagcompound1.setString( "initiatedPower", power != null ? power.getUnlocalizedName() : "" );
-            activeEffects.appendTag(nbttagcompound1);
-            onApplied( target, duration, caster, power );
-        }
-    }*/
-	
-	/**
-	 * Clears the effect from the entity without calling PowerEffect#onRemoval().
-	 * 
-	 * @param target
-	 */
-	/*public final void clear(final PowerEffectContainer target) {
-		
-		final NBTTagList effects = getActiveEffects(target.getAffectedEntity());
-		
-		for (int i = 0; i < effects.tagCount(); i++) {
-			if (effects.getCompoundTagAt( i ).getInteger( "id" ) == id) {
-				effects.removeTag( i );
-
-        		if (target.getInitiatedPower() instanceof IEffectActivator) {
-        			target.getInitiatedPower().triggerCooldown(target.getCasterEntity());
-        		}
-			}
-		}
-		
-	}*/
-	
-	/**
-	 * Clears the effect from the entity without side effects.
-	 * 
-	 * @param target
-	 */
-	/*public final void clearQuietly(final EntityLivingBase target) {
-		
-		final NBTTagList effects = getActiveEffects(target);
-		
-		for (int i = 0; i < effects.tagCount(); i++) {
-			if (effects.getCompoundTagAt( i ).getInteger( "id" ) == id) {
-				effects.removeTag( i );
-			}
-		}
-		
-	};*/
-	
-	/**
-	 * Returns the time remaining for this effect on the target. If the target does not 
-	 * have the effect, it returns 0.
-	 * 
-	 * @param target
-	 * @return
-	 */
-	/*public final int getEffectTimeRemainingOn(final EntityLivingBase target){
-		
-		final NBTTagList activeEffects = getActiveEffects(target);
-		final boolean flag = true;
-		
-		for (int i = 0; i < activeEffects.tagCount(); ++i) {
-			
-	        final NBTTagCompound nbttagcompound = activeEffects.getCompoundTagAt(i);
-
-	        if (nbttagcompound.getShort("id") == id) {
-	            return nbttagcompound.getInteger("duration");
-	            
-	        }
-		}
-		
-		return 0;
-	}*/
-	
 	public final int getId() {
 		return id;
 	}
@@ -201,16 +63,6 @@ public class PowerEffect {
 	public String getUnlocalizedName() {
 		return name;
 	}
-	
-	/**
-	 * Checks if the effect is on the target
-	 * 
-	 * @param entity
-	 * @return
-	 */
-	/*public boolean isAffecting(final EntityLivingBase entity) {
-		return getEffectTimeRemainingOn(entity) != 0;
-	}*/
 	
 	/**
 	 * Whether or not the effect still works if the player has the negated power effect
@@ -227,11 +79,10 @@ public class PowerEffect {
 	 * This is called when the effect is first applied to the entity.
 	 * 
 	 * @param entity
-	 * @param time
-	 * @param caster
-	 * @param power the power that applied this effect, if applicable
+	 * @param caster TODO
+	 * @param effectContainer TODO
 	 */
-	public void onApplied(final EntityLivingBase entity, final int time, final EntityLivingBase caster, final Power power) {}
+	public void onApplied(final EntityLivingBase entity, EntityLivingBase caster, EffectContainer effectContainer) {}
 	
 	/**
 	 * Called when the entity attacks another entity.

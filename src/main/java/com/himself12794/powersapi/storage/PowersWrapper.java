@@ -335,6 +335,8 @@ public class PowersWrapper extends PropertiesBase {
 						if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) 
 							profile.triggerCooldown();
 						
+						theEntity.swingProgress = 0.0F;
+						theEntity.isSwingInProgress = false;
 						prevTargetPos = null;
 						preparationTimeLeft = 0;
 						this.powerInUseTimeLeft = 0;
@@ -395,7 +397,6 @@ public class PowersWrapper extends PropertiesBase {
 		}
 		
 		if (power.canCastPower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
-
 			if (power.isConcentrationPower()) {
 
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {

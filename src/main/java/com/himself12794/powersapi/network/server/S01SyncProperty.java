@@ -13,7 +13,6 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.storage.PropertiesBase;
 
-// TODO solve excessive syncs
 public class S01SyncProperty implements IMessage {
 
 	private String identifier;

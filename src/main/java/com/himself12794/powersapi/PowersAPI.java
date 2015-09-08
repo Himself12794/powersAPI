@@ -37,12 +37,13 @@ public class PowersAPI {
 	public static CommonProxy proxy;
 	
 	@EventHandler
-	public void serverStart(FMLServerStartingEvent event) {
-		proxy.serverStartEvent( event );
-	}
+    public void init(final FMLInitializationEvent event) {
+    	proxy.init(event);
+        
+    }
 	
     @EventHandler
-    public void preinit(FMLPreInitializationEvent event) {
+    public void preinit(final FMLPreInitializationEvent event) {
     	
     	logger = event.getModLog();		// load config
 		Config.loadConfig(event);
@@ -50,12 +51,11 @@ public class PowersAPI {
     }
     
     @EventHandler
-    public void init(FMLInitializationEvent event) {
-    	proxy.init(event);
-        
-    }
+	public void serverStart(final FMLServerStartingEvent event) {
+		proxy.serverStartEvent( event );
+	}
     
-    public static PlayerSaveHandler getSaveHandler(EntityPlayer entity) {
+    public static PlayerSaveHandler getSaveHandler(final EntityPlayer entity) {
     	return new PlayerSaveHandler(entity);
     }
 }

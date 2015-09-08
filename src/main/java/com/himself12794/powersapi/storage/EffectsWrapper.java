@@ -36,6 +36,7 @@ public class EffectsWrapper extends PropertiesBase {
 		EffectContainer container = new EffectContainer( theEntity, caster, duration, effect, power );
 		if (container.shouldApplyEffect()) { 
 			powerEffects.put( effect, container );
+			container.onApplied();
 			return true;
 		} else {
 			return false;

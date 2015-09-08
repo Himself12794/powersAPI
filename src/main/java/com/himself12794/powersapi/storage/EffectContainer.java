@@ -14,6 +14,7 @@ public class EffectContainer {
 	public int timeRemaining;
 	public final PowerEffect theEffect;
 	public final Power initiatedPower;
+	private NBTTagCompound dataTag = new NBTTagCompound();
 
 	public EffectContainer(final EntityLivingBase affected,
 			final EntityLivingBase caster, final int time,
@@ -36,6 +37,14 @@ public class EffectContainer {
 	public boolean shouldApplyEffect() {
 		return theEffect.shouldApplyEffect( affectedEntity, casterEntity, initiatedPower );
 	}
+	
+	public NBTTagCompound getDataTag() {
+		return this.dataTag;
+	}
+	
+	public void onApplied() {
+		theEffect.onApplied( affectedEntity, casterEntity, this );
+	}
 
 	public void onRemoval() {
 
@@ -57,6 +66,7 @@ public class EffectContainer {
 		nbt.setInteger( "timeRemaining", timeRemaining );
 		nbt.setInteger( "theEffect", theEffect != null ? theEffect.getId() : -1 );
 		nbt.setInteger( "initiatedPower", initiatedPower != null ? initiatedPower.getId() : -1);
+		nbt.setTag( "dataTags", dataTag );
 
 		return nbt;
 	}
@@ -71,8 +81,12 @@ public class EffectContainer {
 			int timeRemaining = nbt.getInteger( "timeRemaining" );
 			PowerEffect theEffect = PowerEffect.getEffectById( nbt.getInteger( "theEffect" ) );
 			Power initiatedPower = Power.lookupPowerById( nbt.getInteger( "initiatedPower" ) );
+			NBTTagCompound dataTags = nbt.getCompoundTag( "dataTags" );
 			
-			if (theEffect != null) result = new EffectContainer(affectedEntity, casterEntity, timeRemaining, theEffect, initiatedPower);
+			if (theEffect != null) {
+				result = new EffectContainer(affectedEntity, casterEntity, timeRemaining, theEffect, initiatedPower);
+				result.dataTag = dataTags;
+			}
 		} 
 		
 		return result;

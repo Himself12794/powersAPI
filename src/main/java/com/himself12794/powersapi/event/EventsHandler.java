@@ -54,8 +54,6 @@ public class EventsHandler {
 		
 		if (event.entity instanceof EntityLivingBase) {
 			
-			PropertiesBase wrapper;
-			
 			if (EffectsWrapper.get( (EntityLivingBase) event.entity ) == null)			
 				EffectsWrapper.register( (EntityLivingBase) event.entity );
 			
@@ -64,18 +62,6 @@ public class EventsHandler {
 							
 		}
 		
-	}
-		
-
-	@SubscribeEvent
-	public void playerLoggedIn(PlayerLoggedInEvent event) {
-		
-		/*if (!event.player.worldObj.isRemote) {		
-			NBTTagCompound nbttagcompound = PowersWrapper.get( event.player )
-					.getModEntityData();
-			PowersAPI.network.sendTo( new SyncNBTDataClient( nbttagcompound ),
-					(EntityPlayerMP) event.player );
-		}*/
 	}
 	
 	@SubscribeEvent
@@ -102,19 +88,6 @@ public class EventsHandler {
 			
 		}
 	}
-
-	@SubscribeEvent
-	public void saveToFile(SaveToFile event) {
-		//DataWrapperP.get( event.entityPlayer ).saveHandler.writePlayerData( event.entityPlayer );
-	}
-
-	@SubscribeEvent
-	public void loadFromFile(LoadFromFile event) {
-		
-			//NBTTagCompound data = PowersAPI.getSaveHandler( event.entityPlayer ).readPlayerData( event.entityPlayer );
-			//PowersWrapper.set( event.entityPlayer, data );
-			
-	}
 	
 	@SubscribeEvent
 	public void cancelUseWhenUsingPower(PlayerInteractEvent event) {
@@ -129,7 +102,7 @@ public class EventsHandler {
 	public void cancelWhenUsingPower2(PlayerUseItemEvent.Start event) {
 		
 		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
-			event.duration = 0;
+			event.setCanceled( true );
 		}
 		
 	}
