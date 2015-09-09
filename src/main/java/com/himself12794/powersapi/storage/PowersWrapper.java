@@ -575,4 +575,11 @@ public class PowersWrapper extends PropertiesBase {
 		return POWER_GROUP;
 	}
 
+	@Override
+	public void onJoinWorld(World world) {
+
+		// TODO Auto-generated method stub
+		
+	}
+
 }

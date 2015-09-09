@@ -17,12 +17,14 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0"
-group= "com.himself12794" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "powersAPI"
+ext.set("revision", getRevision())
+ext.set("build", getBuildNo())
+version = getTag() + "-rev" + revision
+group = "com.himself12794"
+archivesBaseName = "PowersAPI"
 
 minecraft {
-    version = "1.8-11.14.1.1419"
+    version = "1.8-11.14.1.1375"
     runDir = "eclipse"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -47,10 +49,6 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-} 
-
-jar {
-	from sourceSets.main.allSource
 }
 
 processResources
@@ -70,5 +68,27 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+String getBuildNo(){
+    return git("rev-list", "HEAD", "--count")
+}
+
+String getTag() {
+    return git("describe", "--tags", "--abbrev=0");
+}
+
+String getRevision(){
+    String tag = git("describe", "--tags", "--abbrev=0")
+    return git("rev-list", tag + "..HEAD", "--count")
+}
+
+import static net.minecraftforge.gradle.dev.DevBasePlugin.*
+String git(String[] args){
+    try{
+        return runGit(project, project.getProjectDir(), args)
+    }catch(Exception e){
+        return null
     }
 }

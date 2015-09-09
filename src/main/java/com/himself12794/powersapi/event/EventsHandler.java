@@ -47,29 +47,14 @@ public class EventsHandler {
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event) {
 		
-		if (event.entity instanceof EntityPlayerMP) {
-		
-			//PropertiesBase wrapper;
+		if (event.entity instanceof EntityLivingBase) {
 			
-			/*for (String name : PropertiesBase.getIdentifiers()) {
+			PropertiesBase.runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
+			
+			if (event.entity instanceof EntityPlayerMP) {
 				
-				Class clazz = PropertiesBase.getClassFor( name );
-				IExtendedEntityProperties wrapper = event.entity.getExtendedProperties( name );
-		
-				if (wrapper.getClass().isAssignableFrom( clazz ) && wrapper.getClass().isAssignableFrom( PropertiesBase.class )) {
-					PowersNetwork.client().syncProperties( ((PropertiesBase)wrapper), (EntityPlayer) event.entity);
-				}
-				
-			}*/
-			
-			PropertiesBase.syncPlayerToClient( (EntityPlayerMP) event.entity );
-			
-			/*wrapper = PowersWrapper.get( (EntityLivingBase) event.entity );
-			PowersNetwork.client().syncProperties( wrapper, (EntityPlayer) event.entity );
-			
-			wrapper = EffectsWrapper.get( (EntityLivingBase) event.entity );
-			PowersNetwork.client().syncProperties( wrapper, (EntityPlayer) event.entity );
-			*/
+				PropertiesBase.syncPlayerToClient( (EntityPlayerMP) event.entity );
+			}
 		}
 	}
 	
@@ -77,12 +62,6 @@ public class EventsHandler {
 	public void registerExtendedPropperties(EntityEvent.EntityConstructing event) {
 		
 		if (event.entity instanceof EntityLivingBase) {
-			
-			/*if (EffectsWrapper.get( (EntityLivingBase) event.entity ) == null)			
-				EffectsWrapper.register( (EntityLivingBase) event.entity );
-			
-			if (PowersWrapper.get( (EntityLivingBase) event.entity ) == null)
-				PowersWrapper.register( (EntityLivingBase) event.entity );*/
 			
 			PropertiesBase.registerPropertiesForEntity( (EntityLivingBase) event.entity );
 							
@@ -93,14 +72,17 @@ public class EventsHandler {
 	@SubscribeEvent
 	public void respawnSync(PlayerRespawnEvent event) {
 		
-		EntityPlayer player = event.player;
+		/*EntityPlayer player = event.player;
 		PropertiesBase wrapper;
 		
 		wrapper = EffectsWrapper.get( player ).resetForRespawn();
 		PowersNetwork.client().syncProperties( wrapper, player );
 		
 		wrapper = PowersWrapper.get( player ).resetForRespawn();
-		PowersNetwork.client().syncProperties( wrapper, player );
+		PowersNetwork.client().syncProperties( wrapper, player );*/
+		
+		PropertiesBase.runOnRespawn( event.player );
+		PropertiesBase.syncPlayerToClient( (EntityPlayerMP) event.player );
 		
 	}
 
@@ -109,8 +91,9 @@ public class EventsHandler {
 		
 		if (event.wasDeath) {
 			
-			EffectsWrapper.get( event.original ).copyTo( event.entityPlayer );
-			PowersWrapper.get( event.original ).copyTo( event.entityPlayer );
+			//EffectsWrapper.get( event.original ).copyTo( event.entityPlayer );
+			//PowersWrapper.get( event.original ).copyTo( event.entityPlayer );
+			PropertiesBase.copyAllOver( event.original, event.entityPlayer );
 			
 		}
 	}

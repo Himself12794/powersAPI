@@ -286,6 +286,9 @@ public class EffectsWrapper extends PropertiesBase {
 	public String getIdentifier() {
 		return EffectsWrapper.POWER_EFFECTS_GROUP;
 	}
+
+	@Override
+	public void onJoinWorld(World world) {}
 	
 	
 }
