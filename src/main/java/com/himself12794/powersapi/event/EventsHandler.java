@@ -3,16 +3,14 @@ package com.himself12794.powersapi.event;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.LoadFromFile;
-import net.minecraftforge.event.entity.player.PlayerEvent.SaveToFile;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 import com.himself12794.powersapi.network.PowersNetwork;
@@ -25,11 +23,24 @@ public class EventsHandler {
 	@SubscribeEvent
 	public void updates(LivingUpdateEvent event) {
 		
-		PropertiesBase powers = PowersWrapper.get( event.entityLiving );
-		if (powers != null) powers.onUpdate();
+		//PropertiesBase powers = PowersWrapper.get( event.entityLiving );
+		//if (powers != null) powers.onUpdate();
 		
-		PropertiesBase effects = EffectsWrapper.get( event.entityLiving );
-		if (effects != null) effects.onUpdate();
+		//PropertiesBase effects = EffectsWrapper.get( event.entityLiving );
+		//if (effects != null) effects.onUpdate();
+		
+		/*for (Object identifier : PropertiesBase.getIdentifiers()) {
+			
+			String name = (String)identifier;
+			Class clazz = PropertiesBase.getClassFor( name );
+			IExtendedEntityProperties wrapper = event.entityLiving.getExtendedProperties( name );
+	
+			if (wrapper.getClass().isAssignableFrom( clazz ) && wrapper.getClass().isAssignableFrom( PropertiesBase.class )) {
+				((PropertiesBase)wrapper).onUpdate();
+			}
+			
+		}*/
+		PropertiesBase.runUpdates( event.entityLiving );
 		
 	}
 
@@ -38,14 +49,27 @@ public class EventsHandler {
 		
 		if (event.entity instanceof EntityPlayerMP) {
 		
-			PropertiesBase wrapper;
+			//PropertiesBase wrapper;
 			
-			wrapper = PowersWrapper.get( (EntityLivingBase) event.entity );
+			/*for (String name : PropertiesBase.getIdentifiers()) {
+				
+				Class clazz = PropertiesBase.getClassFor( name );
+				IExtendedEntityProperties wrapper = event.entity.getExtendedProperties( name );
+		
+				if (wrapper.getClass().isAssignableFrom( clazz ) && wrapper.getClass().isAssignableFrom( PropertiesBase.class )) {
+					PowersNetwork.client().syncProperties( ((PropertiesBase)wrapper), (EntityPlayer) event.entity);
+				}
+				
+			}*/
+			
+			PropertiesBase.syncPlayerToClient( (EntityPlayerMP) event.entity );
+			
+			/*wrapper = PowersWrapper.get( (EntityLivingBase) event.entity );
 			PowersNetwork.client().syncProperties( wrapper, (EntityPlayer) event.entity );
 			
 			wrapper = EffectsWrapper.get( (EntityLivingBase) event.entity );
 			PowersNetwork.client().syncProperties( wrapper, (EntityPlayer) event.entity );
-			
+			*/
 		}
 	}
 	
@@ -54,11 +78,13 @@ public class EventsHandler {
 		
 		if (event.entity instanceof EntityLivingBase) {
 			
-			if (EffectsWrapper.get( (EntityLivingBase) event.entity ) == null)			
+			/*if (EffectsWrapper.get( (EntityLivingBase) event.entity ) == null)			
 				EffectsWrapper.register( (EntityLivingBase) event.entity );
 			
 			if (PowersWrapper.get( (EntityLivingBase) event.entity ) == null)
-				PowersWrapper.register( (EntityLivingBase) event.entity );
+				PowersWrapper.register( (EntityLivingBase) event.entity );*/
+			
+			PropertiesBase.registerPropertiesForEntity( (EntityLivingBase) event.entity );
 							
 		}
 		

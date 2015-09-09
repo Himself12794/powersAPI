@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.storage.DataWrapperP;
+import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class EffectGet implements ICommand {
@@ -71,9 +71,8 @@ public class EffectGet implements ICommand {
 
 	private String getPowerEffectsAsString(EntityPlayer entity) {
 
-		DataWrapperP wrapper = DataWrapperP.get( entity );
-		Collection powers = wrapper.getPowerEffectsData()
-				.getNonHiddenEffects();
+		EffectsWrapper wrapper = EffectsWrapper.get( entity );
+		Collection powers = wrapper.getNonHiddenEffects();
 
 		StringBuilder value = new StringBuilder( "You have: " );
 		int iterCount = 1;
@@ -92,14 +91,12 @@ public class EffectGet implements ICommand {
 	@Override
 	public int compareTo(Object o) {
 
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public String getName() {
 
-		// TODO Auto-generated method stub
 		return "add";
 	}
 

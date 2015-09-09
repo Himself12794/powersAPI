@@ -12,7 +12,7 @@ import net.minecraft.util.StatCollector;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.storage.DataWrapperP;
+import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 
@@ -71,11 +71,11 @@ public class EffectSet implements ICommand {
 				if (effect != null) {
 					if (!effect.getType().isHidden()) {
 						if (affected != null) {
-							DataWrapperP wrapper = DataWrapperP.get( affected );
+							EffectsWrapper wrapper = EffectsWrapper.get( affected );
 							if (duration == 0) {
-								wrapper.getPowerEffectsData().removePowerEffectQuietly( effect );
+								wrapper.removePowerEffectQuietly( effect );
 							} else {
-								wrapper.getPowerEffectsData().addPowerEffect( effect, duration, affector, null );
+								wrapper.addPowerEffect( effect, duration, affector, null );
 							}
 						} else {
 							throw new CommandException( StatCollector.translateToLocal( "commands.generic.player.notFound" ) );
@@ -101,21 +101,16 @@ public class EffectSet implements ICommand {
 	@Override
 	public int compareTo(Object o) {
 
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public String getName() {
-
-		// TODO Auto-generated method stub
 		return "set";
 	}
 
 	@Override
 	public List getAliases() {
-
-		// TODO Auto-generated method stub
 		return Lists.newArrayList( "set", "s" );
 	}
 

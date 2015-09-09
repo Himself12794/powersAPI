@@ -37,7 +37,6 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	/**
 	 * Made final to preserve logic.
 	 */
-	// TODO add optional onFinishedCastingEarly
 	public final boolean onFinishedCastingEarly(World world,
 			EntityLivingBase entityIn, int timeLeft, MovingObjectPosition target, int state) {
 
@@ -47,7 +46,6 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	/**
 	 * Made final to preserve logic.
 	 */
-	// TODO add optional onFinishedCasting
 	public final boolean onFinishedCasting(World world,
 			EntityLivingBase caster, MovingObjectPosition target, int state) {
 
@@ -87,8 +85,6 @@ public class PowerEffectActivatorInstant extends PowerInstant
 
 	@Override
 	public PowerEffect getPowerEffect() {
-
-		// TODO Auto-generated method stub
 		return linkedEffect;
 	}
 

@@ -218,7 +218,6 @@ public class PowerActivator extends Item {
     }
 	
 	public String getName() {
-		// TODO Auto-generated method stub
 		return name;
 	}
 }

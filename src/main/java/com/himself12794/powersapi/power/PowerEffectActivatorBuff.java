@@ -60,8 +60,6 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 
 	@Override
 	public PowerEffect getPowerEffect() {
-
-		// TODO Auto-generated method stub
 		return linkedEffect;
 	}
 

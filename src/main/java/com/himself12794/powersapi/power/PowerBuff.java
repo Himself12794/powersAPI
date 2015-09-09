@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersWrapper;
 
 /**

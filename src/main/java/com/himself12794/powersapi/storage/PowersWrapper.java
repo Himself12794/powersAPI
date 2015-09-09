@@ -54,9 +54,8 @@ public class PowersWrapper extends PropertiesBase {
 	public MovingObjectPosition prevTargetPos;
 	public MovingObjectPosition mouseOverPos;
 
-	protected PowersWrapper(final EntityLivingBase entity) {
-
-		super(POWER_GROUP, entity );
+	protected PowersWrapper(EntityLivingBase entity) {
+		super( entity );
 	}
 
 	public int getCooldownRemaining(final Power power) {
@@ -364,7 +363,6 @@ public class PowersWrapper extends PropertiesBase {
 	 * c
 	 * @param power
 	 * @param lookVec
-	 *            TODO
 	 */
 	public void usePower(final Power power, MovingObjectPosition lookVec) {
 		if (theEntity instanceof EntityPlayer) {
@@ -549,8 +547,6 @@ public class PowersWrapper extends PropertiesBase {
 	@Override
 	public void init(Entity entity, World world) {
 
-		// TODO Auto-generated method stub
-
 	}
 	
 	@Override
@@ -572,6 +568,11 @@ public class PowersWrapper extends PropertiesBase {
 		
 		return result.toString();
 		
+	}
+
+	@Override
+	public String getIdentifier() {
+		return POWER_GROUP;
 	}
 
 }

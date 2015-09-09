@@ -74,7 +74,7 @@ public abstract class Power {
 	 * @param player
 	 * @param world
 	 * @param profile
-	 * @param timeLeft TODO
+	 * @param timeLeft 
 	 * @return
 	 */
 	public boolean onPrepareTick(EntityPlayer player, World world, PowerProfile profile, int timeLeft) { return true; }
@@ -90,9 +90,9 @@ public abstract class Power {
 	 * 
 	 * @param world
 	 * @param caster
-	 * @param mouseOver TODO
+	 * @param mouseOver 
 	 * @param modifier
-	 * @param state TODO
+	 * @param state 
 	 * @param stack
 	 * @return success
 	 */
@@ -106,7 +106,7 @@ public abstract class Power {
 	 * @param world
 	 * @param caster
 	 * @param modifier
-	 * @param state TODO
+	 * @param state 
 	 * @param stack
 	 * @return whether or not the power counts as successful, and should count as a use
 	 */
@@ -123,7 +123,7 @@ public abstract class Power {
 	 * @param target
 	 * @param caster
 	 * @param modifier
-	 * @param state TODO
+	 * @param state
 	 * @param stack
 	 * @return success
 	 */
@@ -137,7 +137,7 @@ public abstract class Power {
 	 * @param world
 	 * @param entityIn
 	 * @param timeLeft
-	 * @param state TODO
+	 * @param state
 	 * @param stack
 	 * 
 	 * @return whether or not to cancel the cooldown
@@ -150,7 +150,7 @@ public abstract class Power {
 	 * @param world
 	 * @param caster
 	 * @param movingObjectPosition 
-	 * @param state TODO
+	 * @param state
 	 * @param stack
 	 * 
 	 * @return whether or not to negate the cool down

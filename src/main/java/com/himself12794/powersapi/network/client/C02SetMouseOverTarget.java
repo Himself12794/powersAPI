@@ -11,8 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
-
-// TODO solve excessive syncs
 public class C02SetMouseOverTarget implements IMessage {
 
 	private NBTTagCompound nbttags;

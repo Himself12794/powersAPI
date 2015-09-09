@@ -15,11 +15,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.DataWrapperP;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
@@ -105,12 +103,12 @@ public class Secondary implements ICommand {
 				}
 				
 				if (player != null) {
-					DataWrapperP entity = DataWrapperP.get( player );
+					PowersWrapper entity = PowersWrapper.get( player );
 					Power commandPower = Power.lookupPower( "power." + args[0] );
 
 					if (commandPower != null) {
 
-						if (entity.player.capabilities.isCreativeMode) {
+						if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 							entity.setSecondaryPower( commandPower );
 						} else {
 							throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
@@ -137,23 +135,17 @@ public class Secondary implements ICommand {
 
 	@Override
 	public int compareTo(Object o) {
-
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public boolean canCommandSenderUse(ICommandSender sender) {
-
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args,
 			BlockPos pos) {
-
-		// TODO Auto-generated method stub
 		return null;
 	}
 

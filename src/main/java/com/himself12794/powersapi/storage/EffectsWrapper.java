@@ -27,7 +27,7 @@ public class EffectsWrapper extends PropertiesBase {
 	public Map<PowerEffect, EffectContainer> powerEffects = Maps.newHashMap();
 
 	EffectsWrapper(EntityLivingBase entity) {
-		super(POWER_EFFECTS_GROUP, entity);
+		super(entity);
 	}
 
 	public boolean addPowerEffect(final PowerEffect effect, final int duration,
@@ -280,6 +280,11 @@ public class EffectsWrapper extends PropertiesBase {
 	@Override
 	public void init(Entity entity, World world) {
 		
+	}
+
+	@Override
+	public String getIdentifier() {
+		return EffectsWrapper.POWER_EFFECTS_GROUP;
 	}
 	
 	

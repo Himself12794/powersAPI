@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.storage.PropertiesBase;
 
 public class S01SyncProperty implements IMessage {

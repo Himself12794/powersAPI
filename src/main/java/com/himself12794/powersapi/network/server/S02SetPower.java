@@ -11,7 +11,6 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersWrapper;
 
-// TODO solve excessive syncs
 public class S02SetPower implements IMessage {
 
 	private Power power;

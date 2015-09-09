@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.EffectContainer;
 
-// TODO add tag for beneficial, malicious, or tagging
 public class PowerEffect {
 	
 	public static final Map<String, Short> idNameMapping = Maps.newHashMap();
@@ -79,8 +78,8 @@ public class PowerEffect {
 	 * This is called when the effect is first applied to the entity.
 	 * 
 	 * @param entity
-	 * @param caster TODO
-	 * @param effectContainer TODO
+	 * @param caster 
+	 * @param effectContainer 
 	 */
 	public void onApplied(final EntityLivingBase entity, EntityLivingBase caster, EffectContainer effectContainer) {}
 	

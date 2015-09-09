@@ -1,6 +1,5 @@
 package com.himself12794.powersapi;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -13,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.proxy.CommonProxy;
-import com.himself12794.powersapi.storage.PlayerSaveHandler;
 import com.himself12794.powersapi.util.Reference;
 
 /**
@@ -55,7 +53,4 @@ public class PowersAPI {
 		proxy.serverStartEvent( event );
 	}
     
-    public static PlayerSaveHandler getSaveHandler(final EntityPlayer entity) {
-    	return new PlayerSaveHandler(entity);
-    }
 }

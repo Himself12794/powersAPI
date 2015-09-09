@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.DataWrapperP;
+import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 
@@ -40,7 +40,7 @@ public class TeachPowers implements ICommand {
 
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 
-				DataWrapperP entity = DataWrapperP
+				PowersWrapper entity = PowersWrapper
 						.get( (EntityPlayer) sender
 								.getCommandSenderEntity() );
 				Power commandPower = Power.lookupPower( "power." + args[0] );
@@ -49,7 +49,7 @@ public class TeachPowers implements ICommand {
 
 					if (entity.knowsPower( commandPower )) {
 						entity.teachPower( commandPower );
-					} else if (entity.player.capabilities.isCreativeMode) {
+					} else if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 						entity.teachPower( commandPower );
 					} else {
 						throw new CommandException( StatCollector.translateToLocal( "commands.generic.permission" ) );
@@ -80,12 +80,12 @@ public class TeachPowers implements ICommand {
 				}
 				
 				if (player != null) {
-					DataWrapperP entity = DataWrapperP.get( player );
+					PowersWrapper entity = PowersWrapper.get( player );
 					Power commandPower = Power.lookupPower( "power." + args[0] );
 
 					if (commandPower != null) {
 
-						if (entity.player.capabilities.isCreativeMode) {
+						if (((EntityPlayer)entity.theEntity).capabilities.isCreativeMode) {
 							entity.teachPower( commandPower );
 						} else {
 							throw new CommandException( StatCollector.translateToLocalFormatted( "command.power.notknown", commandPower.getDisplayName() ) );
@@ -112,23 +112,17 @@ public class TeachPowers implements ICommand {
 
 	@Override
 	public int compareTo(Object o) {
-
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public boolean canCommandSenderUse(ICommandSender sender) {
-
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args,
 			BlockPos pos) {
-
-		// TODO Auto-generated method stub
 		return null;
 	}
 
