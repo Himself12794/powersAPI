@@ -62,8 +62,8 @@ public final class KeyBindingsHandler {
 	        	PowersNetwork.server().powerUse( null, null, Action.STOP );
 	        }
 	    } 
-	
-	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !wrapper.isUsingPower() && buttonDelay == 0) {
+		
+	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !gameSettings.keyBindUseItem.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
         	if (power != null) {
 
         		buttonDelay = 4;

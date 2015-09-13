@@ -14,11 +14,11 @@ public class PowerInstant extends Power {
 	
 	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
+		if (mouseOver == null) return false;
+		
 		onCast(world, caster, modifier, state);
 		boolean successful = onStrike( world, mouseOver, caster, modifier, state );
 		PowersWrapper wrapper = PowersWrapper.get( caster );
-		
-		if (mouseOver == null) return false;
 		
 		if (successful) {
 			wrapper.prevTargetPos = mouseOver;

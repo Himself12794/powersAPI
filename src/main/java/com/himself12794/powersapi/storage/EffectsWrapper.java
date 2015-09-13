@@ -181,7 +181,7 @@ public class EffectsWrapper extends PropertiesBase {
 		return effects;
 	}
 	
-	public PropertiesBase resetForRespawn() {
+	public void resetForRespawn() {
 
 		final Set toRemove = Sets.newHashSet();
 		
@@ -198,8 +198,6 @@ public class EffectsWrapper extends PropertiesBase {
 			powerEffects.remove( effect );
 			
 		}
-		
-		return this;
 
 	}
 	

@@ -102,7 +102,7 @@ public class EventsHandler {
 	public void cancelUseWhenUsingPower(PlayerInteractEvent event) {
 		
 		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
-			event.setCanceled( true );
+			//event.setCanceled( true );
 		}
 		
 	}
@@ -111,7 +111,7 @@ public class EventsHandler {
 	public void cancelWhenUsingPower2(PlayerUseItemEvent.Start event) {
 		
 		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
-			event.setCanceled( true );
+			//event.setCanceled( true );
 		}
 		
 	}

@@ -105,7 +105,9 @@ public class PowerEffect {
 	 * @param damageSource
 	 * @param amount
 	 * @return
+	 * @deprecated Currently unimplemented
 	 */
+	@Deprecated
 	public boolean onAttacked(final DamageSource damageSource, final float amount) {
 		return true;
 		
@@ -121,7 +123,9 @@ public class PowerEffect {
 	 * @param damageSource
 	 * @param amount
 	 * @return the new damage amount.
+	 * @deprecated Currently unimplemented
 	 */
+	@Deprecated
 	public float onHurt(final DamageSource damageSource, final float amount) {
 		
 		return amount;

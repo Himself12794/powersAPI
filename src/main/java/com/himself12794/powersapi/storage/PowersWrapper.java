@@ -43,8 +43,8 @@ public class PowersWrapper extends PropertiesBase {
 	private Power powerInUse;
 	/**
 	 * Information about the powers that the player has known. Just because a
-	 * player has a power profile for a specific power does not indicate that
-	 * they actually know the power
+	 * player has a power profile for a specific power does not mean that
+	 * they currently know that power.
 	 */
 	private final Map<Power, PowerProfile> powerProfiles = Maps.newHashMap();
 	/** The powers that player currently knows */
@@ -170,17 +170,13 @@ public class PowersWrapper extends PropertiesBase {
 	/**
 	 * Prepares the player to respawn, removing power effects that don't persist
 	 * after death.
-	 * 
-	 * @return
 	 */
 	@Override
-	public PropertiesBase resetForRespawn() {
+	public void resetForRespawn() {
 
 		for (PowerProfile profile : powerProfiles.values()) {
 			profile.cooldownRemaining = 0;
 		}
-		
-		return this;
 
 	}
 
@@ -387,16 +383,18 @@ public class PowersWrapper extends PropertiesBase {
 		PowerProfile profile = getOrCreatePowerProfile( power );
 		
 		if (EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
-		
+
 		if (preparationTimeLeft > 0) {
 			return;
 		} else {
 			isBeingPrepared = false;
 		}
 		
-		if (power.canCastPower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
-			if (power.isConcentrationPower()) {
 
+		
+		if (power.canCastPower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
+
+			if (power.isConcentrationPower()) {
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 					profile.addUse();
 					powerInUse = power;
@@ -404,6 +402,7 @@ public class PowersWrapper extends PropertiesBase {
 				}
 
 			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+				
 				theEntity.swingItem();
 				profile.addUse();
 				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) profile
@@ -460,6 +459,7 @@ public class PowersWrapper extends PropertiesBase {
 		
 		int i = 0;
 		for (Power power : learnedPowers) {
+			if (power == null) continue;
 			entries[i] = power.getId();
 			i++;
 		}

@@ -1,5 +1,6 @@
 package com.himself12794.powersapi.proxy;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,8 +45,8 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
 				PowersAPI.instance, 80, 3, true );
 		
-		PropertiesBase.registerPropertyClass( EffectsWrapper.class );
-		PropertiesBase.registerPropertyClass( PowersWrapper.class );
+		PropertiesBase.registerPropertyClass( EffectsWrapper.class, EntityLivingBase.class );
+		PropertiesBase.registerPropertyClass( PowersWrapper.class, EntityLivingBase.class );
 
 	}
 

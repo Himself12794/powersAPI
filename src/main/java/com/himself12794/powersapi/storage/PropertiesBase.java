@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,7 +28,7 @@ import com.himself12794.powersapi.network.PowersNetwork;
  */
 public abstract class PropertiesBase implements IExtendedEntityProperties {
 
-	private static final List<Class<? extends PropertiesBase>> quickReference = Lists.newArrayList();
+	private static final Map<Class<? extends PropertiesBase>, Class<? extends Entity>> quickReference = Maps.newHashMap();
 	private static final Map<String, Class<? extends PropertiesBase>> identifierClassAssociations = Maps.newHashMap();
 	public final EntityLivingBase theEntity;
 	
@@ -49,10 +50,8 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 
 	/**
 	 * Called when when the entity respawns. (If player)
-	 * 
-	 * @return this, for convenience in data synchronization
 	 */
-	public abstract PropertiesBase resetForRespawn();
+	public abstract void resetForRespawn();
 
 	public abstract String getIdentifier();
 
@@ -75,10 +74,10 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 
 	}
 	
-	public static void registerPropertyClass(Class<? extends PropertiesBase> clazz) {
+	public static void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends Entity> clazz2) {
 		
-		if (!quickReference.contains( clazz )) {
-			quickReference.add( clazz );
+		if (!quickReference.containsKey( clazz )) {
+			quickReference.put( clazz, clazz2 );
 			PowersAPI.logger.info( "Registered property {}", clazz );
 		} else {
 			PowersAPI.logger.error( "Could not register class {}, entry already exists", clazz);
@@ -87,26 +86,29 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	}
 	
 	public static Collection<Class<? extends PropertiesBase>> getRegisteredClasses() {
-		return quickReference;
+		return quickReference.keySet();
 	}
 	
-	public static void registerPropertiesForEntity(EntityLivingBase entity) {
+	public static void registerPropertiesForEntity(Entity entity) {
 		
-		for (Class clazz : quickReference) {
+		for (Entry<Class<? extends PropertiesBase>, Class<? extends Entity>> entry : quickReference.entrySet()) {
 			
 			try {
 				
-				Constructor constructor = clazz.getDeclaredConstructor( EntityLivingBase.class );
-				constructor.setAccessible( true );
-				PropertiesBase wrapper = (PropertiesBase) constructor.newInstance( entity );
-				String identifier = wrapper.getIdentifier();
+				if (entry.getValue().isAssignableFrom( entity.getClass() )) {
 				
-				if (entity.getExtendedProperties( identifier ) == null) {
-					entity.registerExtendedProperties( identifier, wrapper );
-				}
-				
-				if (!identifierClassAssociations.containsKey( identifier )) {
-					identifierClassAssociations.put( identifier, clazz );
+					Constructor constructor = entry.getKey().getDeclaredConstructor( entry.getValue() );
+					constructor.setAccessible( true );
+					PropertiesBase wrapper = (PropertiesBase) constructor.newInstance( entity );
+					String identifier = wrapper.getIdentifier();
+					
+					if (entity.getExtendedProperties( identifier ) == null) {
+						entity.registerExtendedProperties( identifier, wrapper );
+					}
+					
+					if (!identifierClassAssociations.containsKey( identifier )) {
+						identifierClassAssociations.put( identifier, entry.getKey() );
+					}
 				}
 				
 			} catch (Exception e) {

@@ -27,7 +27,7 @@ public class PowerEffectActivatorInstant extends PowerInstant
 			int maxConcentrationTime, PowerEffect effect, int duration) {
 
 		this.setUnlocalizedName( name );
-		this.setCoolDown( cooldown );
+		this.setCoolown( cooldown );
 		this.setMaxConcentrationTime( maxConcentrationTime );
 		this.linkedEffect = effect;
 		this.effectDuration = duration;
