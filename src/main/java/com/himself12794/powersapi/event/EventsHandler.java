@@ -17,6 +17,7 @@ import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.EffectsWrapper;
 import com.himself12794.powersapi.storage.PowersWrapper;
 import com.himself12794.powersapi.storage.PropertiesBase;
+import com.himself12794.powersapi.storage.PropertiesManager;
 
 public class EventsHandler {
 
@@ -40,7 +41,7 @@ public class EventsHandler {
 			}
 			
 		}*/
-		PropertiesBase.runUpdates( event.entityLiving );
+		PropertiesManager.runUpdates( event.entityLiving );
 		
 	}
 
@@ -49,11 +50,11 @@ public class EventsHandler {
 		
 		if (event.entity instanceof EntityLivingBase) {
 			
-			PropertiesBase.runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
+			PropertiesManager.runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
 			
 			if (event.entity instanceof EntityPlayerMP) {
 				
-				PropertiesBase.syncPlayerToClient( (EntityPlayerMP) event.entity );
+				PropertiesManager.syncPlayerToClient( (EntityPlayerMP) event.entity );
 			}
 		}
 	}
@@ -63,7 +64,7 @@ public class EventsHandler {
 		
 		if (event.entity instanceof EntityLivingBase) {
 			
-			PropertiesBase.registerPropertiesForEntity( (EntityLivingBase) event.entity );
+			PropertiesManager.registerPropertiesForEntity( (EntityLivingBase) event.entity );
 							
 		}
 		
@@ -72,17 +73,8 @@ public class EventsHandler {
 	@SubscribeEvent
 	public void respawnSync(PlayerRespawnEvent event) {
 		
-		/*EntityPlayer player = event.player;
-		PropertiesBase wrapper;
-		
-		wrapper = EffectsWrapper.get( player ).resetForRespawn();
-		PowersNetwork.client().syncProperties( wrapper, player );
-		
-		wrapper = PowersWrapper.get( player ).resetForRespawn();
-		PowersNetwork.client().syncProperties( wrapper, player );*/
-		
-		PropertiesBase.runOnRespawn( event.player );
-		PropertiesBase.syncPlayerToClient( (EntityPlayerMP) event.player );
+		PropertiesManager.runOnRespawn( event.player );
+		PropertiesManager.syncPlayerToClient( (EntityPlayerMP) event.player );
 		
 	}
 
@@ -91,9 +83,7 @@ public class EventsHandler {
 		
 		if (event.wasDeath) {
 			
-			//EffectsWrapper.get( event.original ).copyTo( event.entityPlayer );
-			//PowersWrapper.get( event.original ).copyTo( event.entityPlayer );
-			PropertiesBase.copyAllOver( event.original, event.entityPlayer );
+			PropertiesManager.copyAllOver( event.original, event.entityPlayer );
 			
 		}
 	}
@@ -102,7 +92,7 @@ public class EventsHandler {
 	public void cancelUseWhenUsingPower(PlayerInteractEvent event) {
 		
 		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
-			//event.setCanceled( true );
+			event.setCanceled( true );
 		}
 		
 	}
@@ -111,7 +101,7 @@ public class EventsHandler {
 	public void cancelWhenUsingPower2(PlayerUseItemEvent.Start event) {
 		
 		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
-			//event.setCanceled( true );
+			event.setCanceled( true );
 		}
 		
 	}

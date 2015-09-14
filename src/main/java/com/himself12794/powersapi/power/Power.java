@@ -60,11 +60,10 @@ public abstract class Power {
 	 * The action to be performed when the power is being prepared, before it is actually cast.
 	 * <p>
 	 * This is used primarily to check if the player should be allowed to cast the power or not.
-	 * @param state the power state
-	 * 
+	 * @param profile TODO
 	 * @return whether or not casting should continue.
 	 */
-	public boolean canCastPower(World worldIn, EntityPlayer playerIn, int state) {
+	public boolean canCastPower(PowerProfile profile) {
 		return true;
 	}
 	
@@ -175,6 +174,16 @@ public abstract class Power {
 	 */
 	public boolean showDuration(ItemStack stack, EntityPlayer caster, boolean par3) { return true; }
 	
+	/**
+	 * Called every time a use is incremented to determine whether or not to increase level.
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public boolean shouldLevelUp(PowerProfile profile) {
+		return profile.getUses() % 100 == 0;
+	}
+	
 	
 	/**
 	 * Gets the power description. This value is localized.
@@ -212,17 +221,6 @@ public abstract class Power {
 	@Deprecated
 	public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) { return null; }
 	
-	/**
-	 * Teaches the entity the power.
-	 * 
-	 * @param target 
-	 * @param duration
-	 * @param caster
-	 */
-    public final void teachPower(EntityLivingBase target) {
-    	PowersWrapper.get(target).teachPower( this );
-    }
-	
 	public final ItemStack setPower(ItemStack stack) {
 		
 		NBTTagCompound nbt = null;
@@ -253,10 +251,6 @@ public abstract class Power {
 		
 	}
 	
-	public final boolean isPowerOnStack(ItemStack stack) {
-		return Power.hasPower(stack) && lookupPower(stack) == this;
-	}
-	
 	public String getDisplayName() {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
 	}
@@ -273,10 +267,12 @@ public abstract class Power {
 		
 	}
 	
+	@Deprecated
 	protected void setTexture(String location) {
 		texture = new ResourceLocation( location );
 	}
 	
+	@Deprecated
 	public ResourceLocation getIcon(PowerProfile profile) { 
 		
 		if (texture == null) {

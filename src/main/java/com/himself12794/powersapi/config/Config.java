@@ -11,6 +11,7 @@ public class Config {
 	public static int flamethrowing;
 	//public static int instantPowerRange;
 	public static boolean enablePowerActivator;
+	public static boolean enableCommands;
 	
 	public static void loadConfig(FMLPreInitializationEvent event ) {
 		
@@ -26,23 +27,21 @@ public class Config {
 		flames.setMaxValue(3);
 		flames.comment = "Flamethrowing griefing: 0=none, 1=vines & grass, 2=all burnable blocks";
 		powers.put("FlamethrowingGriefing", flames);
-				
-		// Instant Spell Range Option
-		Property instantPower = new Property("InstantPowerRange", "50", Property.Type.INTEGER);
-		instantPower.setMinValue(1);
-		instantPower.setMaxValue(100);
-		instantPower.comment = "Deprecated. Moving to per power configuration.";
-		powers.put("InstantPowerRange", instantPower);
 		
 		// Whether or not to make the power activator available
 		Property powerActivator = new Property("EnablePowerActivator", "false", Property.Type.BOOLEAN);
 		powerActivator.comment = "Whether or not the power activator tool should be available in game";
 		powers.put("EnablePowerActivator", powerActivator);
 		
+		// Whether or not to make the power activator available
+		Property commands = new Property("EnableCommands", "true", Property.Type.BOOLEAN);
+		commands.comment = "Whether or not commands are enabled";
+		powers.put("EnableCommands", commands);
+		
 		config.load();
 		
 		flamethrowing = powers.get("FlamethrowingGriefing").getInt();
-		//instantPowerRange = powers.get("InstantPowerRange").getInt();
+		enableCommands = powers.get( "enableCommands" ).getBoolean();
 		enablePowerActivator = powers.get("EnablePowerActivator").getBoolean();
 		
 		config.save();

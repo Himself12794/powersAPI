@@ -392,7 +392,7 @@ public class PowersWrapper extends PropertiesBase {
 		
 
 		
-		if (power.canCastPower( theEntity.worldObj, (EntityPlayer) theEntity, profile.getState() )) {
+		if (power.canCastPower( null )) {
 
 			if (power.isConcentrationPower()) {
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {

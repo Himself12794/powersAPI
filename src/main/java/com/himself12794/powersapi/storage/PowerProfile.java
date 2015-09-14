@@ -130,7 +130,7 @@ public class PowerProfile {
 	}
 	
 	/**
-	 * Only increments if 
+	 * Only increments if player is not in creative mode.
 	 */
 	public void addUse() {
 		
@@ -138,6 +138,13 @@ public class PowerProfile {
 			return;
 		
 		uses++;
+		if (thePower.shouldLevelUp( this )) incrementLevel();
+	}
+	
+	public void incrementLevel() {
+		if (level < thePower.getMaxLevel( this )) {
+			level++;
+		}
 	}
 	
 	public void resetUses() {
