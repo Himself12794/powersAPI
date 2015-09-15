@@ -5,7 +5,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.himself12794.powersapi.storage.EffectContainer;
-import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.EffectsEntity;
+import com.himself12794.powersapi.storage.PowerProfile;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -56,7 +58,7 @@ public class PowerEffectActivatorInstant extends PowerInstant
 
 		for (EntityLivingBase entity : UsefulMethods.getEntitiesWithEffect(	world, getPowerEffect() )) {
 			
-			EffectsWrapper wrapper = EffectsWrapper.get( entity );
+			EffectsEntity wrapper = EffectsEntity.get( entity );
 			EffectContainer container = wrapper.getEffectContainer( getPowerEffect() );
 			if (container.casterEntity == caster
 					&& container.theEffect == getPowerEffect()
@@ -71,13 +73,14 @@ public class PowerEffectActivatorInstant extends PowerInstant
 
 		if (!alreadyAffectingEntity	&& target.entityHit instanceof EntityLivingBase) {
 
-				EffectsWrapper.get( (EntityLivingBase) target.entityHit )
-						.addPowerEffect( getPowerEffect(), getEffectDuration(),
-								caster, this );
+			PowerProfile profile = PowersEntity.get( caster ).getPowerProfile( this );
+			EffectsEntity.get( (EntityLivingBase) target.entityHit )
+					.addPowerEffect( getPowerEffect(), getEffectDuration(profile),
+							caster, this );
 
 		} else if (entityAlreadyAffected != null) {
 
-			EffectsWrapper.get( entityAlreadyAffected ).removePowerEffect( getPowerEffect() );
+			EffectsEntity.get( entityAlreadyAffected ).removePowerEffect( getPowerEffect() );
 		}
 
 		return alreadyAffectingEntity;
@@ -89,7 +92,7 @@ public class PowerEffectActivatorInstant extends PowerInstant
 	}
 
 	@Override
-	public int getEffectDuration() {
+	public int getEffectDuration(PowerProfile profile) {
 
 		return effectDuration;
 	}

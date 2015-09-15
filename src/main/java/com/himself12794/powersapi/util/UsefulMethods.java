@@ -27,7 +27,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 
 import com.google.common.base.Predicate;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 
 public class UsefulMethods {
 
@@ -486,7 +486,7 @@ public class UsefulMethods {
 			public boolean apply(Object input) {
 				
 				if (input instanceof EntityLivingBase) {
-					return PowersWrapper.get( (EntityLivingBase)input).getPowerEffectsData().isAffectedBy( effect );
+					return PowersEntity.get( (EntityLivingBase)input).getPowerEffectsData().isAffectedBy( effect );
 				}
 				return false;
 			}

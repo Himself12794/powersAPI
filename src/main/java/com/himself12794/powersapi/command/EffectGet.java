@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class EffectGet implements ICommand {
@@ -71,7 +71,7 @@ public class EffectGet implements ICommand {
 
 	private String getPowerEffectsAsString(EntityPlayer entity) {
 
-		EffectsWrapper wrapper = EffectsWrapper.get( entity );
+		EffectsEntity wrapper = EffectsEntity.get( entity );
 		Collection powers = wrapper.getNonHiddenEffects();
 
 		StringBuilder value = new StringBuilder( "You have: " );

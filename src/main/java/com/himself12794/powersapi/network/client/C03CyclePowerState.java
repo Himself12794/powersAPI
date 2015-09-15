@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 
 
 public class C03CyclePowerState implements IMessage {
@@ -48,7 +48,7 @@ public class C03CyclePowerState implements IMessage {
 
 					@Override
 					public void run() {		
-						PowersWrapper.get( player ).getPowerProfile( message.power ).cycleState(true);
+						PowersEntity.get( player ).getPowerProfile( message.power ).cycleState(true);
 					}
 									
 				};

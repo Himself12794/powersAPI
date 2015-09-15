@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 
 import com.himself12794.powersapi.network.PowersNetwork;
-import com.himself12794.powersapi.storage.EffectsWrapper;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.EffectsEntity;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.storage.PropertiesBase;
 import com.himself12794.powersapi.storage.PropertiesManager;
 
@@ -23,26 +23,7 @@ public class EventsHandler {
 
 	@SubscribeEvent
 	public void updates(LivingUpdateEvent event) {
-		
-		//PropertiesBase powers = PowersWrapper.get( event.entityLiving );
-		//if (powers != null) powers.onUpdate();
-		
-		//PropertiesBase effects = EffectsWrapper.get( event.entityLiving );
-		//if (effects != null) effects.onUpdate();
-		
-		/*for (Object identifier : PropertiesBase.getIdentifiers()) {
-			
-			String name = (String)identifier;
-			Class clazz = PropertiesBase.getClassFor( name );
-			IExtendedEntityProperties wrapper = event.entityLiving.getExtendedProperties( name );
-	
-			if (wrapper.getClass().isAssignableFrom( clazz ) && wrapper.getClass().isAssignableFrom( PropertiesBase.class )) {
-				((PropertiesBase)wrapper).onUpdate();
-			}
-			
-		}*/
 		PropertiesManager.runUpdates( event.entityLiving );
-		
 	}
 
 	@SubscribeEvent
@@ -53,7 +34,6 @@ public class EventsHandler {
 			PropertiesManager.runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
 			
 			if (event.entity instanceof EntityPlayerMP) {
-				
 				PropertiesManager.syncPlayerToClient( (EntityPlayerMP) event.entity );
 			}
 		}
@@ -63,9 +43,7 @@ public class EventsHandler {
 	public void registerExtendedPropperties(EntityEvent.EntityConstructing event) {
 		
 		if (event.entity instanceof EntityLivingBase) {
-			
-			PropertiesManager.registerPropertiesForEntity( (EntityLivingBase) event.entity );
-							
+			PropertiesManager.registerPropertiesForEntity( (EntityLivingBase) event.entity );					
 		}
 		
 	}
@@ -82,16 +60,14 @@ public class EventsHandler {
 	public void getPlayerData(PlayerEvent.Clone event) {
 		
 		if (event.wasDeath) {
-			
-			PropertiesManager.copyAllOver( event.original, event.entityPlayer );
-			
+			PropertiesManager.copyAllOver( event.original, event.entityPlayer );			
 		}
 	}
 	
 	@SubscribeEvent
 	public void cancelUseWhenUsingPower(PlayerInteractEvent event) {
 		
-		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
+		if (PowersEntity.get( event.entityPlayer ).isUsingPower()) {
 			event.setCanceled( true );
 		}
 		
@@ -100,7 +76,7 @@ public class EventsHandler {
 	@SubscribeEvent
 	public void cancelWhenUsingPower2(PlayerUseItemEvent.Start event) {
 		
-		if (PowersWrapper.get( event.entityPlayer ).isUsingPower()) {
+		if (PowersEntity.get( event.entityPlayer ).isUsingPower()) {
 			event.setCanceled( true );
 		}
 		

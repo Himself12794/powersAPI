@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.PowerProfile;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
@@ -39,7 +39,6 @@ import com.himself12794.powersapi.util.UsefulMethods;
  */
 public abstract class Power {
 	
-	
 	private static final ResourceLocation defaultTexture = new ResourceLocation("textures/blocks/beacon.png");
 	private String displayName;
 	private ResourceLocation texture;
@@ -54,6 +53,7 @@ public abstract class Power {
 	private boolean visibility = true;
 	private int preparationTime;
 	private int maxLevel = 1;
+	private int usesToLevelUp = 100;
 	private boolean isNegateable = true;
 	
 	/**
@@ -164,6 +164,14 @@ public abstract class Power {
 	 * @param currState
 	 */
 	public void onStateChanged(World world, EntityLivingBase caster, int prevState, int currState) {}
+	
+	/**
+	 * Called every tick on entities that have a profile for this power.
+	 * 
+	 * @param profile
+	 */
+	public void onKnowledgeTick(PowerProfile profile) {}
+	
 	/**
 	 * Determines whether or not powers that have a duration should show this on the tooltip.
 	 * 
@@ -181,22 +189,32 @@ public abstract class Power {
 	 * @return
 	 */
 	public boolean shouldLevelUp(PowerProfile profile) {
-		return profile.getUses() % 100 == 0;
+		return profile.getUses() % usesToLevelUp == 0;
 	}
 	
-	
 	/**
-	 * Gets the power description. This value is localized.
+	 * Provides general, non-Power Profile dependent description of this power.
 	 * 
-	 * @param profile unique object for each power, for every EntityPlayer
 	 * @return
 	 */
-	public String getInfo(PowerProfile profile) {
+	public String getDescription() {
 		String info = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".description")).trim();
 		
 		if (info.equals(getUnlocalizedName() + ".description")) info = "";
 		
 		return info;
+	}
+	
+	/**
+	 * PowerProfile sensitive version of {@link Power#getDescription()}
+	 * 
+	 * Implementation of this method is up to the user.
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public String getDescription(PowerProfile profile) {
+		return getDescription();
 	}
 	
 	/**
@@ -206,7 +224,7 @@ public abstract class Power {
 	 * @param player
 	 * @return
 	 */
-	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {return null; }
+	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) { return null; }
 	
 	/**
 	 * Location for model if the default one is not desired.
@@ -251,6 +269,16 @@ public abstract class Power {
 		
 	}
 	
+	/**
+	 * Power profile sensitive version of {@link Power#getDisplayName()}
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public String getDisplayName(PowerProfile profile) {
+		return getDisplayName();
+	}
+	
 	public String getDisplayName() {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
 	}
@@ -267,11 +295,13 @@ public abstract class Power {
 		
 	}
 	
-	@Deprecated
-	protected void setTexture(String location) {
-		texture = new ResourceLocation( location );
-	}
-	
+	/**
+	 * Gets the icon to render.
+	 * 
+	 * @param profile
+	 * @return
+	 * @deprecated Because I suck at rendering images and switched to text-only.
+	 */
 	@Deprecated
 	public ResourceLocation getIcon(PowerProfile profile) { 
 		
@@ -282,6 +312,22 @@ public abstract class Power {
 		}
 		
 	}
+	
+	/**
+	 * Gets additional information to print under the power in the gui.
+	 * If this returns null, this line will not be rendered.
+	 * This should be much shorter than the description.
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public String getInfo(PowerProfile profile) {
+		return null;
+	}
+	
+	protected void setUsesToLevelUp(int value) { value = usesToLevelUp; }
+	
+	public int getUsesToLevelUp() { return usesToLevelUp; }
 	
 	protected void setPreparationTime(int value) { preparationTime = value; }
 	
@@ -431,6 +477,7 @@ public abstract class Power {
 	public static Power lookupPower(String power) {
 		
 		if (Power.powerExists(power)) return (Power)powerRegistry.get(power);
+		else if (powerExists("power." + power)) return (Power)powerRegistry.get("power." + power);
 		
 		return null;
 		
@@ -467,7 +514,7 @@ public abstract class Power {
 	}
 	
 	public final boolean canUsePower( EntityLivingBase player ) {
-		return (PowersWrapper.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
+		return (PowersEntity.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
 	}
 	
 	public static boolean hasPower(ItemStack stack) {

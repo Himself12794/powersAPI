@@ -49,7 +49,7 @@ public class GetPowers implements ICommand {
 
 			if (Power.lookupPower( "power." + args[0] ) != null) {
 				sender.addChatMessage( new ChatComponentText( Power
-						.lookupPower( "power." + args[0] ).getInfo( null ) ) );
+						.lookupPower( "power." + args[0] ).getDescription() ) );
 			} else {
 				sender.addChatMessage( new ChatComponentTranslation(
 						"command.power.notfound", args[0] ) );

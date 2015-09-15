@@ -5,9 +5,11 @@ import java.util.Set;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 
 import com.google.common.collect.Sets;
 import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
  * Contains statistics and information for a specific power a player has used. 
@@ -21,12 +23,13 @@ import com.himself12794.powersapi.power.Power;
  */
 public class PowerProfile {
 	
-	static final String ADDITIONAL_DATA = "additionalData";
-	static final String POWER_NAME = "powerName";
-	static final String POWER_MODIFIER = "powerModifier";
-	static final String COOLDOWN_REMAINING = "cooldownRemaining";
-	static final String FUNCTIONAL_STATE = "functionalState";
-	static final String USES = "uses";
+	private static final String ADDITIONAL_DATA = "additionalData";
+	private static final String POWER_NAME = "powerName";
+	private static final String POWER_MODIFIER = "powerModifier";
+	private static final String COOLDOWN_REMAINING = "cooldownRemaining";
+	private static final String FUNCTIONAL_STATE = "functionalState";
+	private static final String USES = "uses";
+	private static final String LEVEL = "level";
 	
 	public final EntityLivingBase theEntity;
 	public final Power thePower;
@@ -117,12 +120,10 @@ public class PowerProfile {
 	
 	public void triggerCooldown() {
 		
-		if (theEntity instanceof EntityPlayer) {
-			if (!((EntityPlayer)theEntity).capabilities.isCreativeMode) 
-				cooldownRemaining = thePower.getCooldown(this);
-		} else {
+		if (!UsefulMethods.isCreativeModePlayerOrNull( theEntity )) {
+			addUse();
 			cooldownRemaining = thePower.getCooldown(this);
-		}
+		} 
 	}
 	
 	public int getUses() {
@@ -133,22 +134,25 @@ public class PowerProfile {
 	 * Only increments if player is not in creative mode.
 	 */
 	public void addUse() {
-		
-		if( theEntity instanceof EntityPlayer && ((EntityPlayer) theEntity).capabilities.isCreativeMode)
-			return;
-		
 		uses++;
-		if (thePower.shouldLevelUp( this )) incrementLevel();
+		if (thePower.shouldLevelUp( this )) levelUp();
 	}
 	
-	public void incrementLevel() {
+	public void levelUp() {
 		if (level < thePower.getMaxLevel( this )) {
 			level++;
+			if (theEntity.worldObj.isRemote) {
+				theEntity.addChatMessage( new ChatComponentText( thePower.getDisplayName() + " increased to level " + level + "!" ) );
+			}
 		}
 	}
 	
 	public void resetUses() {
 		uses = 0;
+	}
+	
+	public void update() {
+		thePower.onKnowledgeTick( this );
 	}
 	
 	public NBTTagCompound getAsNBTTagCompound() {
@@ -158,12 +162,17 @@ public class PowerProfile {
 		result.setInteger( POWER_NAME, thePower.getId() );
 		result.setFloat( POWER_MODIFIER, useModifier );
 		result.setInteger( USES, uses );
+		result.setInteger( LEVEL, level );
 		result.setInteger( COOLDOWN_REMAINING, cooldownRemaining );
 		result.setTag( ADDITIONAL_DATA, powerData );
 		result.setInteger( FUNCTIONAL_STATE, functionalState );
 		
 		return result;
 		
+	}
+	
+	public String getName() {
+		return thePower.getDisplayName( this );
 	}
 	
 	public static PowerProfile getFromNBT(EntityLivingBase theEntity, NBTTagCompound compound) {
@@ -176,6 +185,7 @@ public class PowerProfile {
 			NBTTagCompound powerData = compound.getCompoundTag( ADDITIONAL_DATA );
 			float useModifier = compound.getFloat( POWER_MODIFIER );
 			int uses = compound.getInteger( USES );
+			int level = compound.getInteger( LEVEL );
 			int cooldownRemaining = compound.getInteger( COOLDOWN_REMAINING );
 			int functionalState = compound.getInteger( FUNCTIONAL_STATE );
 			
@@ -183,6 +193,7 @@ public class PowerProfile {
 				profile = new PowerProfile(theEntity, thePower, powerData);
 				profile.cooldownRemaining = cooldownRemaining;
 				profile.uses = uses;
+				profile.level = level == 0 ? 1 : level;
 				profile.useModifier = useModifier;
 				profile.functionalState = functionalState;
 			}
@@ -197,7 +208,7 @@ public class PowerProfile {
 		String result = "PowerProfile[Power:" + thePower.getSimpleName() +
 				",Entity:" + theEntity.getName() + ",UseModifier:" + useModifier +
 				",CooldownRemaining:" + cooldownRemaining + ",Uses:" + uses +
-				",CustomDataTag:" + powerData;
+				",Level:" + level +	",CustomDataTag:" + powerData;
 		
 		return result;
 		

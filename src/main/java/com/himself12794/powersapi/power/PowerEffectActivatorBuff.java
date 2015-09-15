@@ -5,7 +5,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.himself12794.powersapi.storage.EffectContainer;
-import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.EffectsEntity;
+import com.himself12794.powersapi.storage.PowerProfile;
+import com.himself12794.powersapi.storage.PowersEntity;
 
 /**
  * Can be used cast powers that effect the world and the caster only.
@@ -30,17 +32,17 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 		setDuration(effectDuration);
 	}
 
-	public boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn,
+	public final boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn,
 			int timeLeft, MovingObjectPosition target, int state) {
 
 		return this.onFinishedCasting( world, entityIn, target, state );
 	}
 
-	public boolean onFinishedCasting(World world, EntityLivingBase caster,
+	public final boolean onFinishedCasting(World world, EntityLivingBase caster,
 			MovingObjectPosition target, int state) {
 
 		boolean alreadyAffectingEntity = false;
-		EffectsWrapper wrapper = EffectsWrapper.get( caster );
+		EffectsEntity wrapper = EffectsEntity.get( caster );
 		if (wrapper.isAffectedBy( getPowerEffect() )) {
 			EffectContainer container = wrapper.getEffectContainer( getPowerEffect() );
 			
@@ -50,7 +52,8 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 		}
 
 		if (!alreadyAffectingEntity) {
-			wrapper.addPowerEffect( getPowerEffect(), getEffectDuration(), caster, this );
+			PowerProfile profile = PowersEntity.get( caster ).getPowerProfile( this );
+			wrapper.addPowerEffect( getPowerEffect(), getEffectDuration(profile), caster, this );
 		} else if (isRemoveableByCaster( caster, caster, wrapper.getTimeRemaining( getPowerEffect() ) )) {
 			wrapper.removePowerEffect( getPowerEffect() );
 		}
@@ -64,7 +67,7 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 	}
 
 	@Override
-	public int getEffectDuration() {
+	public int getEffectDuration(PowerProfile profile) {
 		return effectDuration;
 	}
 

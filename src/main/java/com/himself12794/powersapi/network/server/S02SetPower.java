@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 
 public class S02SetPower implements IMessage {
 
@@ -53,7 +53,7 @@ public class S02SetPower implements IMessage {
 					public void run() {
 						
 						if (PowersAPI.proxy.getPlayer() != null) {
-							PowersWrapper pw = PowersWrapper.get( PowersAPI.proxy.getPlayer() );
+							PowersEntity pw = PowersEntity.get( PowersAPI.proxy.getPlayer() );
 							
 							if (message.selection == Selection.PRIMARY) 
 								pw.setPrimaryPower( message.power );

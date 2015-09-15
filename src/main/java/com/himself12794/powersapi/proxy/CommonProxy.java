@@ -20,8 +20,8 @@ import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.EventsHandler;
 import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.PowersNetwork;
-import com.himself12794.powersapi.storage.EffectsWrapper;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.EffectsEntity;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.storage.PropertiesBase;
 import com.himself12794.powersapi.storage.PropertiesManager;
 import com.himself12794.powersapi.util.Reference;
@@ -51,8 +51,8 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
 				PowersAPI.instance, 80, 3, true );
 		
-		PropertiesManager.registerPropertyClass( EffectsWrapper.class, EntityLivingBase.class );
-		PropertiesManager.registerPropertyClass( PowersWrapper.class, EntityLivingBase.class );
+		PropertiesManager.registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
+		PropertiesManager.registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
 
 	}
 

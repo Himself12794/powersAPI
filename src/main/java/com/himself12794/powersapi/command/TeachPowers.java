@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 
@@ -40,7 +40,7 @@ public class TeachPowers implements ICommand {
 
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 
-				PowersWrapper entity = PowersWrapper
+				PowersEntity entity = PowersEntity
 						.get( (EntityPlayer) sender
 								.getCommandSenderEntity() );
 				Power commandPower = Power.lookupPower( "power." + args[0] );
@@ -80,7 +80,7 @@ public class TeachPowers implements ICommand {
 				}
 				
 				if (player != null) {
-					PowersWrapper entity = PowersWrapper.get( player );
+					PowersEntity entity = PowersEntity.get( player );
 					Power commandPower = Power.lookupPower( "power." + args[0] );
 
 					if (commandPower != null) {

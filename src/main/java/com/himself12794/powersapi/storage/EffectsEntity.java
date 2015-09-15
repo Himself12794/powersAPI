@@ -19,14 +19,14 @@ import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class EffectsWrapper extends PropertiesBase {
+public class EffectsEntity extends PropertiesBase {
 
 	public static final String POWER_EFFECTS_GROUP = Reference.MODID + ":powerEffects";
 	private static final String POWER_EFFECTS = "activeEffects";
 
 	public Map<PowerEffect, EffectContainer> powerEffects = Maps.newHashMap();
 
-	EffectsWrapper(EntityLivingBase entity) {
+	EffectsEntity(EntityLivingBase entity) {
 		super(entity);
 	}
 
@@ -71,7 +71,7 @@ public class EffectsWrapper extends PropertiesBase {
 			
     		if (cont.initiatedPower instanceof IEffectActivator && cont.casterEntity != null) {
     			if (((IEffectActivator)cont.initiatedPower).getPowerEffect() == cont.theEffect) {
-    				PowersWrapper.get( cont.casterEntity ).triggerCooldown( cont.initiatedPower );
+    				PowersEntity.get( cont.casterEntity ).triggerCooldown( cont.initiatedPower );
     			}
     		}
     		
@@ -108,7 +108,7 @@ public class EffectsWrapper extends PropertiesBase {
 				
     		if (cont.initiatedPower instanceof IEffectActivator && cont.casterEntity != null) {
     			if (((IEffectActivator)cont.initiatedPower).getPowerEffect() == cont.theEffect) {
-    				PowersWrapper.get( cont.casterEntity ).triggerCooldown( cont.initiatedPower );
+    				PowersEntity.get( cont.casterEntity ).triggerCooldown( cont.initiatedPower );
     			}
     		}
     		
@@ -208,17 +208,17 @@ public class EffectsWrapper extends PropertiesBase {
 		
 	}
 	
-	public static EffectsWrapper register(EntityLivingBase entity) {
-		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, new EffectsWrapper( entity ) );
-		return (EffectsWrapper) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
+	public static EffectsEntity register(EntityLivingBase entity) {
+		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, new EffectsEntity( entity ) );
+		return (EffectsEntity) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
 	}
 	
-	public static void register(EntityLivingBase entity, EffectsWrapper other) {
+	public static void register(EntityLivingBase entity, EffectsEntity other) {
 		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, other );
 	}
 	
-	public static EffectsWrapper get(EntityLivingBase entity) {
-		return (EffectsWrapper) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
+	public static EffectsEntity get(EntityLivingBase entity) {
+		return (EffectsEntity) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
 	}
 	
 	private NBTTagList getEffectsAsList() {
@@ -282,7 +282,7 @@ public class EffectsWrapper extends PropertiesBase {
 
 	@Override
 	public String getIdentifier() {
-		return EffectsWrapper.POWER_EFFECTS_GROUP;
+		return EffectsEntity.POWER_EFFECTS_GROUP;
 	}
 
 	@Override

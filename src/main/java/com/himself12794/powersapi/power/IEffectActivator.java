@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.power;
 
+import com.himself12794.powersapi.storage.PowerProfile;
+
 import net.minecraft.entity.EntityLivingBase;
 
 /**
@@ -12,7 +14,7 @@ public interface IEffectActivator {
 	
 	PowerEffect getPowerEffect();
 	
-	int getEffectDuration();
+	int getEffectDuration(PowerProfile profile);
 	
 	/**
 	 * Determines if the effect activator is able to remove the effect, after it has added it.

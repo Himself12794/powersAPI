@@ -1,6 +1,7 @@
 package com.himself12794.powersapi.storage;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ import com.himself12794.powersapi.util.UsefulMethods;
  * @author Himself12794
  *
  */
-public class PowersWrapper extends PropertiesBase {
+public class PowersEntity extends PropertiesBase {
 
 	public static final String POWER_GROUP = Reference.MODID + ":power";
 	private static final String POWER_CURRENT = "currentPower";
@@ -54,7 +55,7 @@ public class PowersWrapper extends PropertiesBase {
 	public MovingObjectPosition prevTargetPos;
 	public MovingObjectPosition mouseOverPos;
 
-	protected PowersWrapper(EntityLivingBase entity) {
+	protected PowersEntity(EntityLivingBase entity) {
 		super( entity );
 	}
 
@@ -101,9 +102,9 @@ public class PowersWrapper extends PropertiesBase {
 		return null;
 	}
 
-	public EffectsWrapper getPowerEffectsData() {
+	public EffectsEntity getPowerEffectsData() {
 
-		return EffectsWrapper.get( theEntity );
+		return EffectsEntity.get( theEntity );
 	}
 
 	public Power getPowerInUse() {
@@ -232,7 +233,7 @@ public class PowersWrapper extends PropertiesBase {
 			
 			if (!isBeingPrepared) {
 				
-				if (!(EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && powerInUse.isNegateable())) {
+				if (!(EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated ) && powerInUse.isNegateable())) {
 					final boolean flag = powerInUse.onFinishedCastingEarly(
 							theEntity.worldObj,
 							(EntityPlayer) theEntity, getPowerUseTimeLeft(),
@@ -275,7 +276,8 @@ public class PowersWrapper extends PropertiesBase {
 	public void triggerCooldown(final Power power) {
 
 		if (power != null) {
-			getOrCreatePowerProfile( power ).cooldownRemaining = power.getCooldown(null);
+			PowerProfile profile = getOrCreatePowerProfile( power );
+			profile.triggerCooldown();
 		}
 	}
 
@@ -284,7 +286,22 @@ public class PowersWrapper extends PropertiesBase {
 		
 		updateCooldowns();
 		updateUsingPowers();
+		updateKnowledgeTicks();
 
+	}
+	
+	public void removeNullPowers() {
+		if (learnedPowers.contains( null )) {
+			learnedPowers.remove( null );
+		}
+	}
+	
+	public void updateKnowledgeTicks() {
+		
+		for (PowerProfile profile : powerProfiles.values()) {
+			if (this.knowsPower( profile.thePower )) profile.update();
+		}
+		
 	}
 
 	public void updateCooldowns() {
@@ -309,7 +326,7 @@ public class PowersWrapper extends PropertiesBase {
 				
 				if (!isBeingPrepared) {
 					
-					if (powerInUse.isNegateable() && EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
+					if (powerInUse.isNegateable() && EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
 						stopUsingPower();
 						return;
 					}
@@ -382,7 +399,7 @@ public class PowersWrapper extends PropertiesBase {
 				
 		PowerProfile profile = getOrCreatePowerProfile( power );
 		
-		if (EffectsWrapper.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
+		if (EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
 
 		if (preparationTimeLeft > 0) {
 			return;
@@ -392,11 +409,10 @@ public class PowersWrapper extends PropertiesBase {
 		
 
 		
-		if (power.canCastPower( null )) {
+		if (power.canCastPower( profile )) {
 
 			if (power.isConcentrationPower()) {
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
-					profile.addUse();
 					powerInUse = power;
 					powerInUseTimeLeft = power.getMaxConcentrationTime();
 				}
@@ -404,7 +420,6 @@ public class PowersWrapper extends PropertiesBase {
 			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 				
 				theEntity.swingItem();
-				profile.addUse();
 				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) profile
 						.triggerCooldown();
 				prevTargetPos = null;
@@ -470,13 +485,13 @@ public class PowersWrapper extends PropertiesBase {
 		
 	}
 
-	public static PowersWrapper get(final EntityLivingBase entity) {
-		return (PowersWrapper) entity.getExtendedProperties( POWER_GROUP );
+	public static PowersEntity get(final EntityLivingBase entity) {
+		return (PowersEntity) entity.getExtendedProperties( POWER_GROUP );
 	}
 
-	public static PowersWrapper register(EntityLivingBase entity) {
-		entity.registerExtendedProperties( POWER_GROUP, new PowersWrapper( entity ) );
-		return (PowersWrapper) entity.getExtendedProperties( POWER_GROUP );
+	public static PowersEntity register(EntityLivingBase entity) {
+		entity.registerExtendedProperties( POWER_GROUP, new PowersEntity( entity ) );
+		return (PowersEntity) entity.getExtendedProperties( POWER_GROUP );
 	}
 
 	@Override
@@ -578,7 +593,7 @@ public class PowersWrapper extends PropertiesBase {
 	@Override
 	public void onJoinWorld(World world) {
 
-		// TODO Auto-generated method stub
+		removeNullPowers();
 		
 	}
 

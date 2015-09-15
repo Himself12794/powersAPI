@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 
 public class PowerInstant extends Power {
 	
@@ -18,7 +18,7 @@ public class PowerInstant extends Power {
 		
 		onCast(world, caster, modifier, state);
 		boolean successful = onStrike( world, mouseOver, caster, modifier, state );
-		PowersWrapper wrapper = PowersWrapper.get( caster );
+		PowersEntity wrapper = PowersEntity.get( caster );
 		
 		if (successful) {
 			wrapper.prevTargetPos = mouseOver;

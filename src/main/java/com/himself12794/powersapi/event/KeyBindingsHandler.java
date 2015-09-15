@@ -15,7 +15,7 @@ import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerInstant;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public final class KeyBindingsHandler {
@@ -51,7 +51,7 @@ public final class KeyBindingsHandler {
 		World world = Minecraft.getMinecraft().theWorld;
 		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
 		
-		PowersWrapper wrapper = PowersWrapper.get( player );
+		PowersEntity wrapper = PowersEntity.get( player );
     	
     	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
 		
@@ -63,7 +63,7 @@ public final class KeyBindingsHandler {
 	        }
 	    } 
 		
-	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !gameSettings.keyBindUseItem.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
+	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !KeyBindings.SWITCH_STATE.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
         	if (power != null) {
 
         		buttonDelay = 4;
@@ -72,7 +72,7 @@ public final class KeyBindingsHandler {
 	        	wrapper.usePower( power, lookVec );
 	        	PowersNetwork.server().powerUse(power, lookVec, Action.START);
         	}
-	    } else if (!wrapper.isUsingPower() && gameSettings.keyBindUseItem.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
+	    } else if (!wrapper.isUsingPower() && KeyBindings.SWITCH_STATE.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
 	    	
 	    	if (power != null) {
 	    		
@@ -93,10 +93,10 @@ public final class KeyBindingsHandler {
 			
 			if (buttonDelay > 0) buttonDelay--;
 			
-			PowersWrapper dw = PowersWrapper.get( Minecraft.getMinecraft().thePlayer );
+			PowersEntity dw = PowersEntity.get( Minecraft.getMinecraft().thePlayer );
 			
 			if (dw.getPowerInUse() instanceof PowerInstant) {
-				dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange()  );
+				dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange() );
 				PowersNetwork.server().setMouseOver( dw.mouseOverPos );
 			}
 

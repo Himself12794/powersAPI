@@ -41,7 +41,7 @@ public class Config {
 		config.load();
 		
 		flamethrowing = powers.get("FlamethrowingGriefing").getInt();
-		enableCommands = powers.get( "enableCommands" ).getBoolean();
+		enableCommands = powers.get( "EnableCommands" ).getBoolean();
 		enablePowerActivator = powers.get("EnablePowerActivator").getBoolean();
 		
 		config.save();

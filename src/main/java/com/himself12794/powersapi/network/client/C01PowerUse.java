@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class C01PowerUse implements IMessage {
@@ -69,9 +69,9 @@ public class C01PowerUse implements IMessage {
 		        		NBTTagCompound nbt = message.lookVec;
 		        				
 	        			if (message.action.equals( Action.START ) && power != null) {
-	        				PowersWrapper.get( player ).usePower( power, UsefulMethods.movingObjectPositionFromNBT( nbt, player.worldObj ) );
+	        				PowersEntity.get( player ).usePower( power, UsefulMethods.movingObjectPositionFromNBT( nbt, player.worldObj ) );
 	        			} else {
-			        		PowersWrapper.get( player ).stopUsingPower();
+			        		PowersEntity.get( player ).stopUsingPower();
 						}
 
 					}

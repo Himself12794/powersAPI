@@ -20,7 +20,8 @@ import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowerProfile;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.Reference;
 
 @SuppressWarnings("unchecked")
@@ -41,7 +42,7 @@ public class PowerActivator extends Item {
     	Power power = Power.getPower(stack);
     	
     	if (power != null) {
-    		PowersWrapper.get( player ).setPrimaryPower( power );
+    		PowersEntity.get( player ).teachPower( power );
     	}
 		
     	/*if (DataWrapper.get( player ).isUsingPower()) return stack;
@@ -116,6 +117,7 @@ public class PowerActivator extends Item {
 		float modifier = 1.0F;
     	if (power != null) {
     		
+    		PowerProfile profile = PowersEntity.get( player ).getPowerProfile( power );
     		String description = power.getInfo( null );
     		String[] lines = description.split( "\\n" );
     		for (final String line : lines) {
@@ -126,14 +128,14 @@ public class PowerActivator extends Item {
 			
 			if (power.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + power.getTypeDescriptor(stack, player));
 			list.add(EnumChatFormatting.RED + "Power: " + power.getPower(modifier));
-			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCooldown(null) / 20.0F) + "s");
+			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCooldown(profile) / 20.0F) + "s");
 			
 			if (power.getDuration() > 0 && power.showDuration(stack, player, par4)) 
 				list.add(EnumChatFormatting.GREEN + "Duration: " + String.format("%.2f",(float)power.getDuration() * modifier / 20.0F) + "s");
 			else if (power.getDuration() <= -1)
 				list.add( EnumChatFormatting.GREEN + "Duration: Until Removed");
 			
-			int remaining = PowersWrapper.get( player ).getCooldownRemaining( power );
+			int remaining = PowersEntity.get( player ).getCooldownRemaining( power );
 			if ( remaining > 0 ) list.add(EnumChatFormatting.GRAY + "Time left: " + String.format("%.2f",(float)remaining / 20.0F ) + "s");
 			
 		} else list.add("Casts Powers");
@@ -181,7 +183,7 @@ public class PowerActivator extends Item {
     	if (PowersAPI.proxy.getSide().isClient()) {
         	
     	    EntityPlayer player = Minecraft.getMinecraft().thePlayer;	    	
-    	    if (Power.getPower(stack) != null) return Power.hasPower(stack) && PowersWrapper.get( player ).getCooldownRemaining(Power.getPower(stack)) > 0;
+    	    if (Power.getPower(stack) != null) return Power.hasPower(stack) && PowersEntity.get( player ).getCooldownRemaining(Power.getPower(stack)) > 0;
     	    return false;
     		
     	} else {
@@ -199,8 +201,9 @@ public class PowerActivator extends Item {
         	
         	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         	Power power = Power.getPower(stack);
+        	PowerProfile profile = PowersEntity.get( player ).getPowerProfile( power );
         	
-            return ((double)PowersWrapper.get( player ).getCooldownRemaining( power ) ) / (double)power.getCooldown(null);
+            return ((double)PowersEntity.get( player ).getCooldownRemaining( power ) ) / (double)power.getCooldown(profile);
     		
     	}
     	return 2.0D;

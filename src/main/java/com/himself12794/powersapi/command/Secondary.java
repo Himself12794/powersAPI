@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 
@@ -51,7 +51,7 @@ public class Secondary implements ICommand {
 			
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 				
-				Power power = PowersWrapper.get( (EntityLivingBase) sender.getCommandSenderEntity() ).getSecondaryPower();
+				Power power = PowersEntity.get( (EntityLivingBase) sender.getCommandSenderEntity() ).getSecondaryPower();
 				
 				if (power != null) {
 					String name = power.getDisplayName();
@@ -63,7 +63,7 @@ public class Secondary implements ICommand {
 
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 
-				PowersWrapper entity = PowersWrapper.get( (EntityPlayer) sender.getCommandSenderEntity() );
+				PowersEntity entity = PowersEntity.get( (EntityPlayer) sender.getCommandSenderEntity() );
 				Power commandPower = Power.lookupPower( "power." + args[0] );
 
 				if (commandPower != null) {
@@ -103,7 +103,7 @@ public class Secondary implements ICommand {
 				}
 				
 				if (player != null) {
-					PowersWrapper entity = PowersWrapper.get( player );
+					PowersEntity entity = PowersEntity.get( player );
 					Power commandPower = Power.lookupPower( "power." + args[0] );
 
 					if (commandPower != null) {

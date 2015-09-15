@@ -15,7 +15,8 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersWrapper;
+import com.himself12794.powersapi.storage.PowerProfile;
+import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public class ListPowers implements ICommand {
@@ -46,16 +47,19 @@ public class ListPowers implements ICommand {
 
 				EntityPlayer player = (EntityPlayer) sender
 						.getCommandSenderEntity();
-				PowersWrapper wrapper = PowersWrapper.get( player );
+				PowersEntity wrapper = PowersEntity.get( player );
 				Set<Power> powers = wrapper.learnedPowers;
 
 				StringBuilder value = new StringBuilder( "You know: " );
 				int iterCount = 1;
 
 				for (Power power : powers) {
-					value.append( power.getDisplayName() );
-					if (iterCount != powers.size()) value.append( ", " );
-					iterCount++;
+					PowerProfile profile = wrapper.getPowerProfile( power );
+					if (power != null) {
+						value.append( power.getDisplayName() );
+						if (iterCount != powers.size()) value.append( ", " );
+						iterCount++;
+					}
 
 				}
 
@@ -90,7 +94,7 @@ public class ListPowers implements ICommand {
 
 	private String getPowersAsString(EntityPlayer player) {
 
-		PowersWrapper wrapper = PowersWrapper.get( player );
+		PowersEntity wrapper = PowersEntity.get( player );
 		Set<Power> powers = wrapper.learnedPowers;
 
 		StringBuilder value = new StringBuilder( player.getName() + ": " );

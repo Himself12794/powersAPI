@@ -12,7 +12,7 @@ import net.minecraft.util.StatCollector;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.storage.EffectsWrapper;
+import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 
@@ -71,7 +71,7 @@ public class EffectSet implements ICommand {
 				if (effect != null) {
 					if (!effect.getType().isHidden()) {
 						if (affected != null) {
-							EffectsWrapper wrapper = EffectsWrapper.get( affected );
+							EffectsEntity wrapper = EffectsEntity.get( affected );
 							if (duration == 0) {
 								wrapper.removePowerEffectQuietly( effect );
 							} else {
