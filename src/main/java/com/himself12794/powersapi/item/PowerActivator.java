@@ -24,7 +24,7 @@ import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.Reference;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("deprecation")
 public class PowerActivator extends Item {
 	
 	private final String name = "powerActivator";
@@ -44,71 +44,8 @@ public class PowerActivator extends Item {
     	if (power != null) {
     		PowersEntity.get( player ).teachPower( power );
     	}
-		
-    	/*if (DataWrapper.get( player ).isUsingPower()) return stack;
-    	
-    	if (spell != null && spell.canUsePower(player)) {
-    		
-    		if (spell.onPreparePower(stack, world, player)) {
-    			
-    			if ( spell.isConcentrationPower() ) {
-    				
-    				if (spell.cast(world, player, stack, 1)) {
-    					player.setItemInUse(stack, spell.getMaxConcentrationTime());
-    				}
-        			
-    			} else if (spell.cast(world, player, stack, 1)) {
-    	    		
-    	    		DataWrapper wrapper = DataWrapper.get( player );
-    				if (spell.onFinishedCasting(stack, world, player, wrapper.getPreviousPowerTarget())) spell.triggerCooldown(player);
-    				wrapper.removePreviousPowerTarget();
-    				
-    			}
-    		}
-    	}*/
     	return stack;
     }
-	
-	/*@Override
-	public void onUsingTick(ItemStack stack, EntityPlayer player, int count) {
-		
-		Power spell = Power.lookupPower(stack);
-		if (spell != null) {
-			
-			if ( count % 4  == 0 ) {
-				
-				spell.cast(player.worldObj, player, stack, 1);
-				
-			}
-			
-		}
-	}
-    
-    @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer playerIn, int timeLeft) {
-    	Power spell = Power.getPower(stack);
-    	if (spell != null) {
-    		
-    		DataWrapper wrapper = DataWrapper.get( playerIn );
-    		if (spell.onFinishedCastingEarly(stack, world, playerIn, timeLeft, wrapper.getPreviousPowerTarget())) spell.triggerCooldown(playerIn);
-    		wrapper.removePreviousPowerTarget();
-    		
-    	}
-    }
-    
-    @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityPlayer playerIn) {
-    	Power spell = Power.getPower(stack);
-    	
-    	if (spell != null) {
-    		
-    		DataWrapper wrapper = DataWrapper.get( playerIn );
-    		if( spell.onFinishedCasting(stack, worldIn, playerIn, wrapper.getPreviousPowerTarget())) spell.triggerCooldown(playerIn);
-    		wrapper.removePreviousPowerTarget();
-    	}
-    	
-        return stack;
-    }*/
     
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4){
@@ -159,11 +96,11 @@ public class PowerActivator extends Item {
     
     @Override
     public String getUnlocalizedName(ItemStack stack) {
+    	
     	String name = getUnlocalizedName();
     	Power spell = Power.lookupPower(stack);
+    	
     	if (spell != null) {
-    		//name += ".spell." + spell.getUnlocalizedName();
-    		//name = spell.getDisplayName();
     		name = spell.getUnlocalizedName();
     	}
         return name;
