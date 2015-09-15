@@ -34,7 +34,6 @@ public class EventsHandler {
 			PropertiesManager.runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
 			
 			if (event.entity instanceof EntityPlayerMP) {
-				System.out.println("Synchronizing");
 				PropertiesManager.syncPlayerToClient( (EntityPlayerMP) event.entity );
 			}
 		}

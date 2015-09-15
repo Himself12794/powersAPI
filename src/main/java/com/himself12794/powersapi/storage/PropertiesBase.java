@@ -42,7 +42,7 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	/**
 	 * {@link IExtendedEntityProperties#init(net.minecraft.entity.Entity, net.minecraft.world.World)} is called
 	 * before the entity is loaded from NBT, so this is for after the entity is added.
-	 * @param world TODO
+	 * @param world the world the entity is joining
 	 */
 	public abstract void onJoinWorld(World world);
 

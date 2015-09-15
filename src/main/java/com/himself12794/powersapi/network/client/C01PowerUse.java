@@ -56,16 +56,16 @@ public class C01PowerUse implements IMessage {
 	public static class Handler implements IMessageHandler<C01PowerUse, IMessage> {
        
         @Override
-        public IMessage onMessage(final C01PowerUse message, final MessageContext ctx) {
+        public IMessage onMessage(final C01PowerUse message, MessageContext ctx) {
         	
         	if (ctx.side.isServer()) {
+        		
+        		final EntityPlayer player = PowersAPI.proxy.getPlayerFromContext( ctx );
         		
         		Runnable task = new Runnable() {
 
 					@Override
 					public void run() {
-		        		
-		        		EntityPlayer player = PowersAPI.proxy.getPlayerFromContext( ctx );
 		        		Power power = message.power;
 		        		NBTTagCompound nbt = message.lookVec;
 		        				
