@@ -52,8 +52,8 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
 				PowersAPI.instance, 80, 3, true );
 		
-		PropertiesManager.instance().registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
-		PropertiesManager.instance().registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
+		PropertiesManager.registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
+		PropertiesManager.registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
 
 	}
 

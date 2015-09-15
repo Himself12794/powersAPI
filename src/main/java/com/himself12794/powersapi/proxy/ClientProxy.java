@@ -53,6 +53,8 @@ public class ClientProxy extends CommonProxy {
 	public void scheduleTaskBasedOnContext(MessageContext ctx, Runnable task) {
 		if (ctx.side.isClient()) {
 			Minecraft.getMinecraft().addScheduledTask( task );
+		} else {
+			super.scheduleTaskBasedOnContext( ctx, task );
 		}
 	}
 
