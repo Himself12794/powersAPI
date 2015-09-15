@@ -6,23 +6,31 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import com.himself12794.powersapi.entity.EntitySpell;
+import com.himself12794.powersapi.entity.EntityPower;
 
+/**
+ * Base class for all ranged Power entities.
+ * 
+ * @author Himself12794
+ *
+ */
 public class PowerRanged extends Power {
 	
+	protected boolean shouldRender = false;
+	
 	@Override
-	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
+	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
-		boolean flag1 = onCast(world, caster, tome, modifier);
-		EntitySpell casting = new EntitySpell(world, caster, this, modifier );
+		boolean flag1 = onCast(world, caster, modifier, state);
+		EntityPower casting = new EntityPower(world, caster, this, modifier );
 		boolean flag2 = world.spawnEntityInWorld(casting);
 		return flag1 && flag2;
 		
 	}
 
-	public void onUpdate(EntitySpell entitySpell) {}
+	public void onUpdate(EntityPower entitySpell) {}
 	
-	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier) {
+	public boolean onStrike(World world, MovingObjectPosition target, EntityLivingBase caster, float modifier, int state) {
 		return true;
 	}
 	
@@ -36,6 +44,10 @@ public class PowerRanged extends Power {
 
 	public boolean isPiercingSpell() {
 		return false;
+	}
+	
+	public boolean shouldRender() {
+		return shouldRender;
 	}
 
 }

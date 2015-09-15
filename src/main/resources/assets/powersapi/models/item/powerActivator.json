@@ -1,7 +1,7 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "blocks/daylight_detector_inverted_top"
+        "layer0": "blocks/beacon"
     },
     "display": {
         "thirdperson": {

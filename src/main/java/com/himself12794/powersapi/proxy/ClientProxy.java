@@ -1,33 +1,61 @@
 package com.himself12794.powersapi.proxy;
 
-import com.himself12794.powersapi.item.ModItems;
-import com.himself12794.powersapi.network.PowerEffectsClient;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+
+import com.himself12794.powersapi.config.Config;
+import com.himself12794.powersapi.config.KeyBindings;
+import com.himself12794.powersapi.entity.EntityPower;
+import com.himself12794.powersapi.event.KeyBindingsHandler;
+import com.himself12794.powersapi.item.ModItems;
+import com.himself12794.powersapi.render.RenderPower;
 
 public class ClientProxy extends CommonProxy {
 	
-    @Override
-    public void preinit(FMLPreInitializationEvent event) {
-    	super.preinit(event);
+	@Override
+	public void preinit(FMLPreInitializationEvent event) {
+		super.preinit( event );
+	}
 
-		network.registerMessage(PowerEffectsClient.Handler.class, PowerEffectsClient.class, 2, Side.CLIENT);
-    }
+	@Override
+	public void init(FMLInitializationEvent event) {
 
+		super.init( event );
+		RenderingRegistry.registerEntityRenderingHandler( EntityPower.class,
+				new RenderPower(
+						Minecraft.getMinecraft().getRenderManager() ) );
 
-    @Override
-    public void init(FMLInitializationEvent event)
-    {
-    	super.init(event);    	
-    	ModItems.registerTextures(event);
-    }
-    
-    public Side getSide() {
-    	return Side.CLIENT;
-    }
-    
-    
+		if (Config.enablePowerActivator) ModItems.registerTextures( event );
+		KeyBindings.registerKeyBindings();
+		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler() );
+		
+	}
+
+	public Side getSide() {
+
+		return Side.CLIENT;
+	}
+	
+	public EntityPlayer getPlayerFromContext(MessageContext ctx) {
+		if (ctx.side.isClient()) {
+			return Minecraft.getMinecraft().thePlayer;
+		} else {
+			return super.getPlayerFromContext( ctx );
+		}
+	}
+	
+	public void scheduleTaskBasedOnContext(MessageContext ctx, Runnable task) {
+		if (ctx.side.isClient()) {
+			Minecraft.getMinecraft().addScheduledTask( task );
+		} else {
+			super.scheduleTaskBasedOnContext( ctx, task );
+		}
+	}
+
 }
-

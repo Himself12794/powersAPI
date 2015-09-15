@@ -3,7 +3,10 @@ package com.himself12794.powersapi.power;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import com.himself12794.powersapi.storage.PowersEntity;
 
 /**
  * Can be used cast powers that effect the world and the caster only.
@@ -14,30 +17,18 @@ import net.minecraft.world.World;
  *
  */
 public class PowerBuff extends Power {
-
-	public final boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
-
-		return onCast(world, caster, tome, modifier);
-		
+	
+	{
+		setUsesToLevelUp( 50 );
 	}
 	
 	@Override
-	public boolean onCast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
+	public final boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
-		boolean flag = super.onCast( world, caster, tome, modifier );
+		boolean result = onCast(world, caster, modifier, state);
+		if (result) PowersEntity.get( caster ).prevTargetPos =  new MovingObjectPosition(caster);
+		return result;
 		
-		if (this instanceof IEffectActivator && flag) {
-			
-			PowerEffect pfx = ((IEffectActivator)this).getPowerEffect();
-			
-			if (!pfx.isEffecting( caster )) pfx.addTo( caster, getDuration(), caster );
-			else pfx.clearFrom( caster, caster );
-			
-			return true;
-			
-		}
-		
-		return flag;
 	}
 	
 	public final String getTypeDescriptor(ItemStack stack, EntityPlayer player) {

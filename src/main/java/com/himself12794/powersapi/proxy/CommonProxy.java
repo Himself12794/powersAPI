@@ -1,57 +1,89 @@
 package com.himself12794.powersapi.proxy;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.entity.EntitySpell;
-import com.himself12794.powersapi.event.UpdatesHandler;
+import com.himself12794.powersapi.command.EffectsCommand;
+import com.himself12794.powersapi.command.PowersCommand;
+import com.himself12794.powersapi.config.Config;
+import com.himself12794.powersapi.entity.EntityPower;
+import com.himself12794.powersapi.event.EventsHandler;
 import com.himself12794.powersapi.item.ModItems;
-import com.himself12794.powersapi.network.CastPowerInstantServer;
-import com.himself12794.powersapi.network.PowerEffectsClient;
-import com.himself12794.powersapi.network.SetHomingPowerTargetServer;
-import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.network.PowersNetwork;
+import com.himself12794.powersapi.storage.EffectsEntity;
+import com.himself12794.powersapi.storage.PowersEntity;
+import com.himself12794.powersapi.storage.PropertiesBase;
+import com.himself12794.powersapi.storage.PropertiesManager;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
-	
-	public static SimpleNetworkWrapper network;
-	
+
+	public void serverStartEvent(FMLServerStartingEvent event) {
+
+		if (Config.enableCommands) {
+			event.registerServerCommand( new PowersCommand() );
+			event.registerServerCommand( new EffectsCommand() );
+		}
+	}
+
 	public void preinit(FMLPreInitializationEvent event) {
 		
-		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MODID + " NetChannel");
-		network.registerMessage(SetHomingPowerTargetServer.Handler.class, SetHomingPowerTargetServer.class, 0, Side.SERVER);
-		network.registerMessage(CastPowerInstantServer.Handler.class, CastPowerInstantServer.class, 1, Side.SERVER);
-       
-		// register spells
-		//Power.registerPowers();
-		ModCreativeTabs.addCreativeTabs();
-		
-		ModItems.addItems();
-		
-		PowerEffect.registerEffects();
-		
+		// Registering message types
+		PowersNetwork.init( NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID ) );
+		PowersNetwork.registerMessages();
+
+		if (Config.enablePowerActivator) {
+			ModCreativeTabs.addCreativeTabs();
+			ModItems.addItems();
+		}
+
 		// register entities
-		EntityRegistry.registerModEntity(EntitySpell.class, "spell", 1, PowersAPI.instance, 80, 3, true);
-	}
-
-	public void init(FMLInitializationEvent event){
-		UpdatesHandler uph = new UpdatesHandler();
+		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
+				PowersAPI.instance, 80, 3, true );
 		
-    	MinecraftForge.EVENT_BUS.register(uph);
-		 
-		//ModRecipes.addRecipes();
+		PropertiesManager.registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
+		PropertiesManager.registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
 
 	}
-	
+
+	public void init(FMLInitializationEvent event) {
+
+		EventsHandler uph = new EventsHandler();
+
+		MinecraftForge.EVENT_BUS.register( uph );
+
+		FMLCommonHandler.instance().bus().register( uph );
+
+	}
+
 	public Side getSide() {
+
 		return Side.SERVER;
 	}
+
+	public EntityPlayer getPlayerFromContext(MessageContext ctx) {
+		if (ctx.side.isServer()) {
+			return ctx.getServerHandler().playerEntity;
+		} else {
+			return null;
+		}
+	}
 	
+	public void scheduleTaskBasedOnContext(MessageContext ctx, Runnable task) {
+		if (ctx.side.isServer()) {
+			ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
+		}
+	}
+
 }

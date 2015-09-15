@@ -1,12 +1,12 @@
 package com.himself12794.powersapi;
 
-import com.himself12794.powersapi.config.Config;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.himself12794.powersapi.config.Config;
 
 
 public class ModCreativeTabs {

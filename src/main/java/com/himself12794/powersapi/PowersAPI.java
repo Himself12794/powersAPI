@@ -1,16 +1,12 @@
 package com.himself12794.powersapi;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import org.apache.logging.log4j.Logger;
 
@@ -32,19 +28,20 @@ public class PowersAPI {
 	public static PowersAPI instance;
 	
 	public static Logger logger;
-	public static void print(Object msg) {
-		logger.info(msg);
-	}
 	
 	@SidedProxy(
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
 	public static CommonProxy proxy;
 	
-	
+	@EventHandler
+    public void init(final FMLInitializationEvent event) {
+    	proxy.init(event);
+        
+    }
 	
     @EventHandler
-    public void preinit(FMLPreInitializationEvent event) {
+    public void preinit(final FMLPreInitializationEvent event) {
     	
     	logger = event.getModLog();		// load config
 		Config.loadConfig(event);
@@ -52,8 +49,8 @@ public class PowersAPI {
     }
     
     @EventHandler
-    public void init(FMLInitializationEvent event) {
-    	proxy.init(event);
-        
-    }
+	public void serverStart(final FMLServerStartingEvent event) {
+		proxy.serverStartEvent( event );
+	}
+    
 }

@@ -5,52 +5,26 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.config.Config;
-import com.himself12794.powersapi.network.CastPowerInstantServer;
-import com.himself12794.powersapi.util.Reference;
-import com.himself12794.powersapi.util.UsefulMethods;
+import com.himself12794.powersapi.storage.PowersEntity;
 
 public class PowerInstant extends Power {
 	
 	private int range = 40;
 	
-	public boolean cast(World world, EntityLivingBase caster, ItemStack tome, float modifier) {
+	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
-		boolean successful = false;
-		boolean hasEffect = onCast(world, caster, tome, modifier);
-			
+		if (mouseOver == null) return false;
 		
-		if (world.isRemote) {
-			
-			//System.out.println(Config.instantPowerRange);
-			
-			MovingObjectPosition pos = UsefulMethods.getMouseOverExtended(range);
-			
-			if (pos == null) return false;
-			
-			if (pos.entityHit != null ) {
-				
-				if (pos.entityHit instanceof EntityLivingBase) {
-					
-					IMessage msg = new CastPowerInstantServer( (EntityLivingBase) pos.entityHit, modifier, this );
-					PowersAPI.proxy.network.sendToServer(msg);
-					
-					successful = true;
-					
-				} 
-			}
-			
-		} else {
-			
-			successful = caster.getEntityData().getBoolean(Reference.MODID + ".power.success");
-			caster.getEntityData().setBoolean(Reference.MODID + ".power.success", false);
-			
+		onCast(world, caster, modifier, state);
+		boolean successful = onStrike( world, mouseOver, caster, modifier, state );
+		PowersEntity wrapper = PowersEntity.get( caster );
+		
+		if (successful) {
+			wrapper.prevTargetPos = mouseOver;
 		}
 		
-		return hasEffect && successful;
+		return successful;
 	}
 	
 	public String getTypeDescriptor(ItemStack stack, EntityPlayer player) {
@@ -59,6 +33,6 @@ public class PowerInstant extends Power {
 	
 	protected void setRange(int range) { this.range = range; }
 	
-	protected int getRange() {return range;}
+	public int getRange() { return range; }
 
 }
