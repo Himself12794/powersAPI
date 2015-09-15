@@ -60,7 +60,7 @@ public abstract class Power {
 	 * The action to be performed when the power is being prepared, before it is actually cast.
 	 * <p>
 	 * This is used primarily to check if the player should be allowed to cast the power or not.
-	 * @param profile TODO
+	 * @param profile the profile of this power
 	 * @return whether or not casting should continue.
 	 */
 	public boolean canCastPower(PowerProfile profile) {
@@ -423,6 +423,7 @@ public abstract class Power {
 			
 			powerRegistry.put(name, power);
 			powerIds.put(powers, name);
+			PowersAPI.logger.info( "Registered power " + name );
 			++powers;
 			return power;
 			
@@ -488,7 +489,7 @@ public abstract class Power {
 		try {
 			powered = lookupPower(power.newInstance().getUnlocalizedName());
 		} catch (Exception e) {
-			PowersAPI.logger.error( "Could not instantiate class " + power, e );
+			PowersAPI.logger.error( "Could not find class " + power, e );
 		} 
 		
 		if (powered != null) {

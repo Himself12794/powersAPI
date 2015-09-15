@@ -42,22 +42,18 @@ public class S01SyncProperty implements IMessage {
 		compound = ByteBufUtils.readTag( buf );
 	}
 
-	public static class Handler implements
-			IMessageHandler<S01SyncProperty, IMessage> {
+	public static class Handler implements IMessageHandler<S01SyncProperty, IMessage> {
 
 		@Override
 		public IMessage onMessage(final S01SyncProperty message, final MessageContext ctx) {
 
 			if (ctx.side.isClient()) {
-				System.out.println("Syncing client side");
 				Runnable task = new Runnable() {
 					
 					@Override
 					public void run() {
 						
 						EntityPlayer player = PowersAPI.proxy.getPlayerFromContext(ctx);
-						
-						System.out.println(player);
 						
 						if (player != null) {
 							
