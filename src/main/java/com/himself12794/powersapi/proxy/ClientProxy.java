@@ -6,6 +6,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.config.Config;
@@ -41,8 +42,18 @@ public class ClientProxy extends CommonProxy {
 		return Side.CLIENT;
 	}
 	
-	public EntityPlayer getPlayer() {
-		return Minecraft.getMinecraft().thePlayer;
+	public EntityPlayer getPlayerFromContext(MessageContext ctx) {
+		if (ctx.side.isClient()) {
+			return Minecraft.getMinecraft().thePlayer;
+		} else {
+			return super.getPlayerFromContext( ctx );
+		}
+	}
+	
+	public void scheduleTaskBasedOnContext(MessageContext ctx, Runnable task) {
+		if (ctx.side.isClient()) {
+			Minecraft.getMinecraft().addScheduledTask( task );
+		}
 	}
 
 }

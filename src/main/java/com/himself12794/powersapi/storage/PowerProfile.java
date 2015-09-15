@@ -35,10 +35,10 @@ public class PowerProfile {
 	public final Power thePower;
 	/**Used to store custom information about a power's uses. Think NBT tag for ItemStack*/
 	public final NBTTagCompound powerData;
+	private int functionalState;
 	/**Modifier that is passed when the power is used*/
 	public float useModifier = 1.0F;
 	public int level = 1;
-	public int functionalState;
 	public int cooldownRemaining;
 	public int uses;
 	
@@ -93,16 +93,16 @@ public class PowerProfile {
 		return functionalState;
 	}
 	
-	public void setState(int value) {
+	public void setState(int value, boolean doOnStateChanged) {
 		if (value <= thePower.getMaxFunctionalState(this)) {
 			int prevState = functionalState;
 			functionalState = value;
-			thePower.onStateChanged( theEntity.worldObj, theEntity, prevState, functionalState );
+			if (doOnStateChanged) thePower.onStateChanged( theEntity.worldObj, theEntity, prevState, functionalState );
 		} 
 	}
 	
 	/**
-	 * Cycles the power state. 
+	 * Cycles the power state to the next in line. 
 	 * @param doOnStateChange whether to call {@link Power#onStateChanged(net.minecraft.world.World, EntityLivingBase, int, int)}
 	 */
 	public void cycleState(boolean doOnStateChange) {

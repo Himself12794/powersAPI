@@ -290,6 +290,9 @@ public class PowersEntity extends PropertiesBase {
 
 	}
 	
+	/**
+	 * Added in case a power is removed from the mod while an entity knows it.
+	 */
 	public void removeNullPowers() {
 		if (learnedPowers.contains( null )) {
 			learnedPowers.remove( null );

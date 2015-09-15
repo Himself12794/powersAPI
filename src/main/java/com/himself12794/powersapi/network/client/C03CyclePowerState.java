@@ -1,12 +1,14 @@
 package com.himself12794.powersapi.network.client;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 
@@ -42,7 +44,7 @@ public class C03CyclePowerState implements IMessage {
 
 			if (ctx.side.isServer() && message.power != null) {
 
-				final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+				final EntityPlayer player =  PowersAPI.proxy.getPlayerFromContext( ctx );
 				
 				Runnable task = new Runnable() {
 
@@ -53,7 +55,7 @@ public class C03CyclePowerState implements IMessage {
 									
 				};
 				
-				player.getServerForPlayer().addScheduledTask( task );
+				ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
 				
 			}
 			

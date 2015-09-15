@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -51,8 +52,8 @@ public class CommonProxy {
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
 				PowersAPI.instance, 80, 3, true );
 		
-		PropertiesManager.registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
-		PropertiesManager.registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
+		PropertiesManager.instance().registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
+		PropertiesManager.instance().registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
 
 	}
 
@@ -71,8 +72,18 @@ public class CommonProxy {
 		return Side.SERVER;
 	}
 
-	public EntityPlayer getPlayer() {
-		return null;
+	public EntityPlayer getPlayerFromContext(MessageContext ctx) {
+		if (ctx.side.isServer()) {
+			return ctx.getServerHandler().playerEntity;
+		} else {
+			return null;
+		}
+	}
+	
+	public void scheduleTaskBasedOnContext(MessageContext ctx, Runnable task) {
+		if (ctx.side.isServer()) {
+			ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
+		}
 	}
 
 }

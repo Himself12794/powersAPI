@@ -23,15 +23,19 @@ import com.himself12794.powersapi.network.PowersNetwork;
  *
  */
 public class PropertiesManager {
+
+	private static final PropertiesManager INSTANCE = new PropertiesManager();
+	
+	private final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> quickReference = Maps.newHashMap();
+	private final Map<String, Class<? extends PropertiesBase>> identifierClassAssociations = Maps.newHashMap();
 	
 	private PropertiesManager() {}
 
-	private static final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> quickReference = Maps.newHashMap();
-	private static final Map<String, Class<? extends PropertiesBase>> identifierClassAssociations = Maps.newHashMap();
-
-	public static void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
 		
-		if (!quickReference.containsKey( clazz )) {
+		System.out.println("");
+		
+		if (quickReference.containsKey( clazz )) {
 			quickReference.put( clazz, clazz2 );
 			PowersAPI.logger.info( "Registered property {}", clazz );
 		} else {
@@ -40,11 +44,13 @@ public class PropertiesManager {
 		
 	}
 	
-	public static Collection<Class<? extends PropertiesBase>> getRegisteredClasses() {
+	public static PropertiesManager instance() { return INSTANCE; }
+	
+	public Collection<Class<? extends PropertiesBase>> getRegisteredClasses() {
 		return quickReference.keySet();
 	}
 	
-	public static void registerPropertiesForEntity(EntityLivingBase entity) {
+	public void registerPropertiesForEntity(EntityLivingBase entity) {
 		
 		for (Entry<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entry : quickReference.entrySet()) {
 			
@@ -74,7 +80,7 @@ public class PropertiesManager {
 		
 	}
 	
-	public static void runUpdates(EntityLivingBase entity) {
+	public void runUpdates(EntityLivingBase entity) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 
@@ -95,7 +101,7 @@ public class PropertiesManager {
 		
 	}
 	
-	public static void syncPlayerToClient(EntityPlayerMP entityPlayer) {
+	public void syncPlayerToClient(EntityPlayerMP entityPlayer) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 			
@@ -110,7 +116,7 @@ public class PropertiesManager {
 		}
 	}
 	
-	public static void runOnJoinWorld(EntityLivingBase entity, World world) {
+	public void runOnJoinWorld(EntityLivingBase entity, World world) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 
@@ -130,7 +136,7 @@ public class PropertiesManager {
 		}
 	}
 	
-	public static void runOnRespawn(EntityPlayer player) {
+	public void runOnRespawn(EntityPlayer player) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 
@@ -150,7 +156,7 @@ public class PropertiesManager {
 		}
 	}
 	
-	public static void copyAllOver(EntityLivingBase entity1, EntityLivingBase entity2) {
+	public void copyAllOver(EntityLivingBase entity1, EntityLivingBase entity2) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 

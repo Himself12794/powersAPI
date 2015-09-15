@@ -23,7 +23,7 @@ public class EventsHandler {
 
 	@SubscribeEvent
 	public void updates(LivingUpdateEvent event) {
-		PropertiesManager.runUpdates( event.entityLiving );
+		PropertiesManager.instance().runUpdates( event.entityLiving );
 	}
 
 	@SubscribeEvent
@@ -31,10 +31,11 @@ public class EventsHandler {
 		
 		if (event.entity instanceof EntityLivingBase) {
 			
-			PropertiesManager.runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
+			PropertiesManager.instance().runOnJoinWorld( (EntityLivingBase) event.entity, event.world );
 			
 			if (event.entity instanceof EntityPlayerMP) {
-				PropertiesManager.syncPlayerToClient( (EntityPlayerMP) event.entity );
+				System.out.println("Synchronizing");
+				PropertiesManager.instance().syncPlayerToClient( (EntityPlayerMP) event.entity );
 			}
 		}
 	}
@@ -43,7 +44,7 @@ public class EventsHandler {
 	public void registerExtendedPropperties(EntityEvent.EntityConstructing event) {
 		
 		if (event.entity instanceof EntityLivingBase) {
-			PropertiesManager.registerPropertiesForEntity( (EntityLivingBase) event.entity );					
+			PropertiesManager.instance().registerPropertiesForEntity( (EntityLivingBase) event.entity );					
 		}
 		
 	}
@@ -51,8 +52,8 @@ public class EventsHandler {
 	@SubscribeEvent
 	public void respawnSync(PlayerRespawnEvent event) {
 		
-		PropertiesManager.runOnRespawn( event.player );
-		PropertiesManager.syncPlayerToClient( (EntityPlayerMP) event.player );
+		PropertiesManager.instance().runOnRespawn( event.player );
+		PropertiesManager.instance().syncPlayerToClient( (EntityPlayerMP) event.player );
 		
 	}
 
@@ -60,7 +61,7 @@ public class EventsHandler {
 	public void getPlayerData(PlayerEvent.Clone event) {
 		
 		if (event.wasDeath) {
-			PropertiesManager.copyAllOver( event.original, event.entityPlayer );			
+			PropertiesManager.instance().copyAllOver( event.original, event.entityPlayer );			
 		}
 	}
 	

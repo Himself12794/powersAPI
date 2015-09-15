@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -64,7 +65,7 @@ public class C01PowerUse implements IMessage {
 					@Override
 					public void run() {
 		        		
-		        		EntityPlayer player = ctx.getServerHandler().playerEntity;
+		        		EntityPlayer player = PowersAPI.proxy.getPlayerFromContext( ctx );
 		        		Power power = message.power;
 		        		NBTTagCompound nbt = message.lookVec;
 		        				
@@ -77,11 +78,8 @@ public class C01PowerUse implements IMessage {
 					}
    
         		};
-        		
-        		ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
-        		
-
-        		
+				
+				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
         	}
         	
         	return null;

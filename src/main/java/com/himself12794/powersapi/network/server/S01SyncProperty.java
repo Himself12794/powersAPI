@@ -49,12 +49,15 @@ public class S01SyncProperty implements IMessage {
 		public IMessage onMessage(final S01SyncProperty message, final MessageContext ctx) {
 
 			if (ctx.side.isClient()) {
+				System.out.println("Syncing client side");
 				Runnable task = new Runnable() {
-
+					
 					@Override
 					public void run() {
 						
-						EntityPlayer player = PowersAPI.proxy.getPlayer();
+						EntityPlayer player = PowersAPI.proxy.getPlayerFromContext(ctx);
+						
+						System.out.println(player);
 						
 						if (player != null) {
 							
@@ -67,8 +70,7 @@ public class S01SyncProperty implements IMessage {
 					}
 				};
 				
-				Minecraft.getMinecraft().addScheduledTask( task );
-				
+				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
 			}
 
 			return null;

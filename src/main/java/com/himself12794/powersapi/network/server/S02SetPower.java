@@ -52,8 +52,8 @@ public class S02SetPower implements IMessage {
 					@Override
 					public void run() {
 						
-						if (PowersAPI.proxy.getPlayer() != null) {
-							PowersEntity pw = PowersEntity.get( PowersAPI.proxy.getPlayer() );
+						if (PowersAPI.proxy.getPlayerFromContext(ctx) != null) {
+							PowersEntity pw = PowersEntity.get( PowersAPI.proxy.getPlayerFromContext(ctx) );
 							
 							if (message.selection == Selection.PRIMARY) 
 								pw.setPrimaryPower( message.power );
@@ -63,7 +63,7 @@ public class S02SetPower implements IMessage {
 					}
 				};
 				
-				Minecraft.getMinecraft().addScheduledTask( task );
+				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
 				
 			}
 

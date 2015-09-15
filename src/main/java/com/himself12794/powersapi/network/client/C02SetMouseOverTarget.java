@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 public class C02SetMouseOverTarget implements IMessage {
@@ -47,15 +48,14 @@ public class C02SetMouseOverTarget implements IMessage {
 
 					@Override
 					public void run() {
-						EntityPlayer player =  ctx.getServerHandler().playerEntity;
+						EntityPlayer player =  PowersAPI.proxy.getPlayerFromContext( ctx );
 						if (player != null) {
 							PowersEntity.get( player ).mouseOverPos = UsefulMethods.movingObjectPositionFromNBT( message.nbttags, player.worldObj );						
 						}
 					}
 				};
 				
-				ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
-				
+				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
 			}
 
 			return null;

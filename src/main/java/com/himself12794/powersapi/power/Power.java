@@ -166,7 +166,7 @@ public abstract class Power {
 	public void onStateChanged(World world, EntityLivingBase caster, int prevState, int currState) {}
 	
 	/**
-	 * Called every tick on entities that have a profile for this power.
+	 * Called every tick on entities that know this power.
 	 * 
 	 * @param profile
 	 */
