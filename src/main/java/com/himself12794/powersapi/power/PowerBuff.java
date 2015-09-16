@@ -18,8 +18,14 @@ import com.himself12794.powersapi.storage.PowersEntity;
  */
 public class PowerBuff extends Power {
 	
-	{
-		setUsesToLevelUp( 50 );
+	public PowerBuff(String name) {
+		this.setUnlocalizedName( name );
+		this.setUsesToLevelUp( 50 );
+	}
+	
+	public PowerBuff(String name, int cooldown) {
+		this(name);
+		this.setCooldown( cooldown );
 	}
 	
 	@Override

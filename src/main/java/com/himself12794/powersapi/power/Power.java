@@ -358,7 +358,7 @@ public abstract class Power {
 
 	public float getPower(float modifier) { return power * modifier; }
 	
-	protected Power setCoolown(int amount) { cooldown = amount; return this; }
+	protected Power setCooldown(int amount) { cooldown = amount; return this; }
 	
 	public int getCooldown() { return cooldown; }
 	

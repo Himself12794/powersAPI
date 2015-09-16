@@ -20,7 +20,7 @@ import com.himself12794.powersapi.util.Reference;
  * @author Himself12794
  *
  */
-@Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME, guiFactory = Reference.GUI_FACTORY )
+@Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME, useMetadata = true, guiFactory = Reference.GUI_FACTORY )
 public class PowersAPI {    
 
 	@Mod.Instance(Reference.MODID)

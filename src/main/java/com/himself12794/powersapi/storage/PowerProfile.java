@@ -93,6 +93,22 @@ public class PowerProfile {
 		return functionalState;
 	}
 	
+	public int getMaxLevel() {
+		return thePower.getMaxLevel( this );
+	}
+	
+	public String getInfo() {
+		return thePower.getInfo( this );
+	}
+	
+	public String getDisplayName() {
+		return thePower.getDisplayName( this );
+	}
+	
+	public int getCooldown() {
+		return thePower.getCooldown( this );
+	}
+	
 	public void setState(int value, boolean doOnStateChanged) {
 		if (value <= thePower.getMaxFunctionalState(this)) {
 			int prevState = functionalState;
