@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import com.himself12794.powersapi.config.KeyBindings;
+import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;
@@ -28,19 +28,19 @@ public final class KeyBindingsHandler {
 	@SubscribeEvent
 	public void onKeyUsage(KeyInputEvent event) {
 		
-		if (KeyBindings.PRIMARY_POWER.isKeyDown() && !primaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.PRIMARY_POWER);
+		if (ModConfig.KEY_BINDING_PRIMARY_POWER.isKeyDown() && !primaryHadBeenPressed) {
+			handleKeyBinding(ModConfig.KEY_BINDING_PRIMARY_POWER);
 			primaryHadBeenPressed = true;
-		} else if (!KeyBindings.PRIMARY_POWER.isKeyDown() && primaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.PRIMARY_POWER);
+		} else if (!ModConfig.KEY_BINDING_PRIMARY_POWER.isKeyDown() && primaryHadBeenPressed) {
+			handleKeyBinding(ModConfig.KEY_BINDING_PRIMARY_POWER);
 			primaryHadBeenPressed = false;
 		}
 		
-		if (KeyBindings.SECONDARY_POWER.isKeyDown() && !secondaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.SECONDARY_POWER);
+		if (ModConfig.KEY_BINDING_SECONDARY_POWER.isKeyDown() && !secondaryHadBeenPressed) {
+			handleKeyBinding(ModConfig.KEY_BINDING_SECONDARY_POWER);
 			secondaryHadBeenPressed = true;
-		} else if (!KeyBindings.SECONDARY_POWER.isKeyDown() && secondaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.SECONDARY_POWER);
+		} else if (!ModConfig.KEY_BINDING_SECONDARY_POWER.isKeyDown() && secondaryHadBeenPressed) {
+			handleKeyBinding(ModConfig.KEY_BINDING_SECONDARY_POWER);
 			secondaryHadBeenPressed = false;
 		}
 	}
@@ -53,17 +53,17 @@ public final class KeyBindingsHandler {
 		
 		PowersEntity wrapper = PowersEntity.get( player );
     	
-    	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
+    	Power power = binding == ModConfig.KEY_BINDING_PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
 		
 		if (wrapper.isUsingPower()){
 			
-	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
+	        if (!ModConfig.KEY_BINDING_PRIMARY_POWER.isKeyDown() && !ModConfig.KEY_BINDING_SECONDARY_POWER.isKeyDown()) {
 	        	wrapper.stopUsingPower();
 	        	PowersNetwork.server().powerUse( null, null, Action.STOP );
 	        }
 	    } 
 		
-	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !KeyBindings.SWITCH_STATE.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
+	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !ModConfig.KEY_BINDING_SWITCH_STATE.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
         	if (power != null) {
 
         		buttonDelay = 4;
@@ -72,7 +72,7 @@ public final class KeyBindingsHandler {
 	        	wrapper.usePower( power, lookVec );
 	        	PowersNetwork.server().powerUse(power, lookVec, Action.START);
         	}
-	    } else if (!wrapper.isUsingPower() && KeyBindings.SWITCH_STATE.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
+	    } else if (!wrapper.isUsingPower() && ModConfig.KEY_BINDING_SWITCH_STATE.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
 	    	
 	    	if (power != null) {
 	    		

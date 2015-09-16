@@ -13,11 +13,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-import com.himself12794.powersapi.ModCreativeTabs;
+import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.command.EffectsCommand;
 import com.himself12794.powersapi.command.PowersCommand;
-import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.EventsHandler;
 import com.himself12794.powersapi.item.ModItems;
@@ -30,7 +29,7 @@ public class CommonProxy {
 
 	public void serverStartEvent(FMLServerStartingEvent event) {
 
-		if (Config.enableCommands) {
+		if (ModConfig.enableCommands) {
 			event.registerServerCommand( new PowersCommand() );
 			event.registerServerCommand( new EffectsCommand() );
 		}
@@ -38,15 +37,15 @@ public class CommonProxy {
 
 	public void preinit(FMLPreInitializationEvent event) {
 		
-		Config.loadConfig(event);
+		ModConfig.loadConfig(event);
 		configureMetadata(PowersAPI.metadata());
 		
 		// Registering message types
 		PowersNetwork.init( NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID ) );
 		PowersNetwork.registerMessages();
 
-		if (Config.enablePowerActivator) {
-			ModCreativeTabs.addCreativeTabs();
+		if (ModConfig.enablePowerActivator) {
+			ModConfig.addCreativeTabs();
 			ModItems.addItems();
 		}
 

@@ -1,8 +1,5 @@
 package com.himself12794.powersapi.power;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.storage.PowerProfile;

@@ -8,5 +8,7 @@ public final class Reference {
     public static final String VERSION = "1.0-rev8";
     public static final String NAME = "Powers API";
     public static final String AUTHOR = "Himself12794";
+    public static final String COMMON_PROXY = "com.himself12794.powersapi.proxy.CommonProxy";
+    public static final String CLIENT_PROXY = "com.himself12794.powersapi.proxy.ClientProxy";
     
 }

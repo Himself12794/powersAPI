@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -16,10 +15,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.ModCreativeTabs;
+import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.config.Config;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
@@ -35,7 +33,7 @@ public class PowerActivator extends Item {
 		setHasSubtypes(true);
 		GameRegistry.registerItem(this, name);
 		setUnlocalizedName(Reference.MODID + "_" + name);
-		if (Config.enablePowerActivator) setCreativeTab(ModCreativeTabs.powersAPI);
+		if (ModConfig.enablePowerActivator) setCreativeTab(ModConfig.creativeTabPowersAPI);
 	}
     
     @Override

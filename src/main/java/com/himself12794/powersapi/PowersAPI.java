@@ -29,14 +29,13 @@ public class PowersAPI {
 	@Mod.Metadata(Reference.MODID)
 	private static ModMetadata META;
 	
-	@SidedProxy(
-			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
-			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
+	@SidedProxy( clientSide=Reference.CLIENT_PROXY,	serverSide=Reference.COMMON_PROXY )
 	private static CommonProxy PROXY;
 	
 	private Logger logger;
 	private final PropertiesRegistry propertyManager;
 	private final PowersRegistry powersRegistry;
+	private boolean isInitialized;
 	
 	private PowersAPI(PropertiesRegistry pr, PowersRegistry pwr) { 
 		propertyManager = pr;
@@ -52,7 +51,7 @@ public class PowersAPI {
 	@Mod.EventHandler
     public void init(final FMLInitializationEvent event) {
     	PROXY.init(event);
-        
+    	INSTANCE.isInitialized = true;
     }
     
     @Mod.EventHandler
@@ -87,6 +86,10 @@ public class PowersAPI {
     
     public static void registerPower(Power power) {
     	INSTANCE.powersRegistry.registerPower( power );
+    }
+    
+    public static boolean initializationComplete() {
+    	return INSTANCE.isInitialized;
     }
     
 }
