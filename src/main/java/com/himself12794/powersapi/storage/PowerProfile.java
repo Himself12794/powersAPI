@@ -3,11 +3,11 @@ package com.himself12794.powersapi.storage;
 import java.util.Set;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 
 import com.google.common.collect.Sets;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.UsefulMethods;
 
@@ -181,7 +181,7 @@ public class PowerProfile {
 		
 		if (compound != null) {
 			
-			Power thePower = Power.lookupPowerById( compound.getInteger( POWER_NAME ) );
+			Power thePower = PowersRegistry.lookupPowerById( compound.getInteger( POWER_NAME ) );
 			NBTTagCompound powerData = compound.getCompoundTag( ADDITIONAL_DATA );
 			float useModifier = compound.getFloat( POWER_MODIFIER );
 			int uses = compound.getInteger( USES );

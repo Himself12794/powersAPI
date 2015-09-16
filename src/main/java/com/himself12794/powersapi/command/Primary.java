@@ -15,6 +15,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.server.S02SetPower.Selection;
 import com.himself12794.powersapi.power.Power;
@@ -66,7 +67,7 @@ public class Primary implements ICommand {
 				PowersEntity entity = PowersEntity
 						.get( (EntityPlayer) sender
 								.getCommandSenderEntity() );
-				Power commandPower = Power.lookupPower( "power." + args[0] );
+				Power commandPower = PowersRegistry.lookupPower( "power." + args[0] );
 
 				if (commandPower != null) {
 					if (entity.knowsPower( commandPower )) {
@@ -105,7 +106,7 @@ public class Primary implements ICommand {
 				
 				if (player != null) {
 					PowersEntity entity = PowersEntity.get( player );
-					Power commandPower = Power.lookupPower( "power." + args[0] );
+					Power commandPower = PowersRegistry.lookupPower( "power." + args[0] );
 
 					if (commandPower != null) {
 

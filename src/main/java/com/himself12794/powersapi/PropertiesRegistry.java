@@ -1,11 +1,10 @@
-package com.himself12794.powersapi.storage;
+package com.himself12794.powersapi;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,8 +12,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
 import com.google.common.collect.Maps;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.network.PowersNetwork;
+import com.himself12794.powersapi.storage.PropertiesBase;
 
 /**
  * Manages modded ExtendedEntityProperties.
@@ -22,29 +21,29 @@ import com.himself12794.powersapi.network.PowersNetwork;
  * @author Himself12794
  *
  */
-public class PropertiesManager {
+public class PropertiesRegistry {
 	
-	private PropertiesManager() {}
+	PropertiesRegistry() {}
 
-	private static final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> quickReference = Maps.newHashMap();
-	private static final Map<String, Class<? extends PropertiesBase>> identifierClassAssociations = Maps.newHashMap();
+	private final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> quickReference = Maps.newHashMap();
+	private final Map<String, Class<? extends PropertiesBase>> identifierClassAssociations = Maps.newHashMap();
 
-	public static void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
 		
 		if (!quickReference.containsKey( clazz )) {
 			quickReference.put( clazz, clazz2 );
-			PowersAPI.logger.info( "Registered property {}", clazz );
+			PowersAPI.logger().info( "Registered property {}", clazz );
 		} else {
-			PowersAPI.logger.error( "Could not register class {}, entry already exists", clazz);
+			PowersAPI.logger().error( "Could not register class {}, entry already exists", clazz);
 		}
 		
 	}
 	
-	public static Collection<Class<? extends PropertiesBase>> getRegisteredClasses() {
+	public Collection<Class<? extends PropertiesBase>> getRegisteredClasses() {
 		return quickReference.keySet();
 	}
 	
-	public static void registerPropertiesForEntity(EntityLivingBase entity) {
+	public void registerPropertiesForEntity(EntityLivingBase entity) {
 		
 		for (Entry<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entry : quickReference.entrySet()) {
 			
@@ -67,14 +66,14 @@ public class PropertiesManager {
 				}
 				
 			} catch (Exception e) {
-				PowersAPI.logger.error( e );
+				PowersAPI.logger().error( e );
 			} 
 			
 		}
 		
 	}
 	
-	public static void runUpdates(EntityLivingBase entity) {
+	public void runUpdates(EntityLivingBase entity) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 
@@ -95,7 +94,7 @@ public class PropertiesManager {
 		
 	}
 	
-	public static void syncPlayerToClient(EntityPlayerMP entityPlayer) {
+	public void syncPlayerToClient(EntityPlayerMP entityPlayer) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 			
@@ -110,7 +109,7 @@ public class PropertiesManager {
 		}
 	}
 	
-	public static void runOnJoinWorld(EntityLivingBase entity, World world) {
+	public void runOnJoinWorld(EntityLivingBase entity, World world) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 
@@ -130,7 +129,7 @@ public class PropertiesManager {
 		}
 	}
 	
-	public static void runOnRespawn(EntityPlayer player) {
+	public void runOnRespawn(EntityPlayer player) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 
@@ -150,7 +149,7 @@ public class PropertiesManager {
 		}
 	}
 	
-	public static void copyAllOver(EntityLivingBase entity1, EntityLivingBase entity2) {
+	public void copyAllOver(EntityLivingBase entity1, EntityLivingBase entity2) {
 		
 		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
 

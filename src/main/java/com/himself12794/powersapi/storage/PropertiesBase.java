@@ -1,23 +1,9 @@
 package com.himself12794.powersapi.storage;
 
-import java.lang.reflect.Constructor;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.PowersNetwork;
 
 /**
  * Implementation of IExtendedEntityProperties for this mod. Base class used by

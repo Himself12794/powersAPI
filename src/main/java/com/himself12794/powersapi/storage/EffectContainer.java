@@ -3,6 +3,7 @@ package com.himself12794.powersapi.storage;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -35,6 +36,7 @@ public class EffectContainer {
 	}
 	
 	public boolean shouldApplyEffect() {
+		System.out.println(theEffect);
 		return theEffect.shouldApplyEffect( affectedEntity, casterEntity, initiatedPower );
 	}
 	
@@ -80,7 +82,7 @@ public class EffectContainer {
 			EntityLivingBase casterEntity = (EntityLivingBase) UsefulMethods.getEntityFromPersistentId( affectedEntity.worldObj, nbt.getString( "casterEntity" ), EntityLivingBase.class );
 			int timeRemaining = nbt.getInteger( "timeRemaining" );
 			PowerEffect theEffect = PowerEffect.getEffectById( nbt.getInteger( "theEffect" ) );
-			Power initiatedPower = Power.lookupPowerById( nbt.getInteger( "initiatedPower" ) );
+			Power initiatedPower = PowersRegistry.lookupPowerById( nbt.getInteger( "initiatedPower" ) );
 			NBTTagCompound dataTags = nbt.getCompoundTag( "dataTags" );
 			
 			if (theEffect != null) {

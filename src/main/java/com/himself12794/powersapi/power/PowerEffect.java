@@ -202,7 +202,7 @@ public class PowerEffect {
 	private static short getNextIndex() {
 		
 		for (short i = 0; i < powerEffectIds.length; i++) {
-			PowersAPI.logger.debug(powerEffectIds[i]);
+			PowersAPI.logger().debug(powerEffectIds[i]);
 			if (powerEffectIds[i] == null) return i;
 			
 		}
@@ -236,7 +236,7 @@ public class PowerEffect {
 			powerEffectIds[nextId] = effect;
 			idNameMapping.put( effect.name, nextId );
 			++powerEffectCount;
-			PowersAPI.logger.debug("Registered effect " + effect.getClass().getSimpleName());
+			PowersAPI.logger().info("Registered effect " + effect.name);
 			return effect;
 			
 		} else {

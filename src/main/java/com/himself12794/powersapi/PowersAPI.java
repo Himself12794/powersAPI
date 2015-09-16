@@ -1,8 +1,7 @@
 package com.himself12794.powersapi;
 
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -10,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import org.apache.logging.log4j.Logger;
 
-import com.himself12794.powersapi.config.Config;
+import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.proxy.CommonProxy;
 import com.himself12794.powersapi.util.Reference;
 
@@ -24,33 +23,70 @@ import com.himself12794.powersapi.util.Reference;
 @Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME)
 public class PowersAPI {    
 
-	@Instance(value = Reference.MODID)
-	public static PowersAPI instance;
+	@Mod.Instance(Reference.MODID)
+	private static PowersAPI INSTANCE;
 	
-	public static Logger logger;
+	@Mod.Metadata(Reference.MODID)
+	private static ModMetadata META;
 	
 	@SidedProxy(
 			clientSide="com.himself12794.powersapi.proxy.ClientProxy", 
 			serverSide="com.himself12794.powersapi.proxy.CommonProxy")
-	public static CommonProxy proxy;
+	private static CommonProxy PROXY;
 	
-	@EventHandler
+	private Logger logger;
+	private final PropertiesRegistry propertyManager;
+	private final PowersRegistry powersRegistry;
+	
+	private PowersAPI(PropertiesRegistry pr, PowersRegistry pwr) { 
+		propertyManager = pr;
+		powersRegistry = pwr;
+	}
+	
+    @Mod.EventHandler
+    public void preinit(final FMLPreInitializationEvent event) {
+    	logger = event.getModLog();
+    	PROXY.preinit(event);
+    }
+	
+	@Mod.EventHandler
     public void init(final FMLInitializationEvent event) {
-    	proxy.init(event);
+    	PROXY.init(event);
         
     }
-	
-    @EventHandler
-    public void preinit(final FMLPreInitializationEvent event) {
-    	
-    	logger = event.getModLog();		// load config
-		Config.loadConfig(event);
-    	proxy.preinit(event);
+    
+    @Mod.EventHandler
+	public void serverStart(final FMLServerStartingEvent event) {
+		PROXY.serverStartEvent( event );
+	}
+    
+    @Mod.InstanceFactory
+    public static PowersAPI initializeMod() {
+    	return new PowersAPI(new PropertiesRegistry(), PowersRegistry.INSTANCE);
     }
     
-    @EventHandler
-	public void serverStart(final FMLServerStartingEvent event) {
-		proxy.serverStartEvent( event );
-	}
+    public static Logger logger() {
+    	return INSTANCE.logger;
+    }
+    
+    public static PowersAPI instance() {
+    	return INSTANCE;
+    }
+    
+    public static PropertiesRegistry propertiesManager() {
+    	return INSTANCE.propertyManager;
+    }
+    
+    public static ModMetadata metadata() {
+    	return META;
+    }
+    
+    public static CommonProxy proxy() {
+    	return PROXY;
+    }
+    
+    public static void registerPower(Power power) {
+    	INSTANCE.powersRegistry.registerPower( power );
+    }
     
 }

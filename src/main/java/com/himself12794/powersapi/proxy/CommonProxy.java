@@ -4,6 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -23,8 +24,6 @@ import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.storage.PowersEntity;
-import com.himself12794.powersapi.storage.PropertiesBase;
-import com.himself12794.powersapi.storage.PropertiesManager;
 import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
@@ -39,6 +38,9 @@ public class CommonProxy {
 
 	public void preinit(FMLPreInitializationEvent event) {
 		
+		Config.loadConfig(event);
+		configureMetadata(PowersAPI.metadata());
+		
 		// Registering message types
 		PowersNetwork.init( NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID ) );
 		PowersNetwork.registerMessages();
@@ -50,25 +52,26 @@ public class CommonProxy {
 
 		// register entities
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,
-				PowersAPI.instance, 80, 3, true );
-		
-		PropertiesManager.registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
-		PropertiesManager.registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
+				PowersAPI.instance(), 80, 3, true );
 
 	}
 
 	public void init(FMLInitializationEvent event) {
 
+		PowersAPI.propertiesManager().registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
+		PowersAPI.propertiesManager().registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
+		
+		//PropertiesManager.registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
+		//PropertiesManager.registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
+		
 		EventsHandler uph = new EventsHandler();
 
 		MinecraftForge.EVENT_BUS.register( uph );
-
 		FMLCommonHandler.instance().bus().register( uph );
 
 	}
 
 	public Side getSide() {
-
 		return Side.SERVER;
 	}
 
@@ -85,5 +88,13 @@ public class CommonProxy {
 			ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
 		}
 	}
+    
+    private void configureMetadata(ModMetadata meta) {
+
+		meta.name = Reference.NAME;
+		meta.modId = Reference.MODID;
+		meta.version = Reference.VERSION;
+		meta.authorList.add( Reference.AUTHOR );
+    }
 
 }

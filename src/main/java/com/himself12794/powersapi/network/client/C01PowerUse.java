@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -43,7 +44,7 @@ public class C01PowerUse implements IMessage {
 		action = Action.values()[ByteBufUtils.readVarShort( buf )];
 		
 		if (action == Action.START) {
-			power = Power.lookupPower( ByteBufUtils.readUTF8String( buf ) );
+			power = PowersRegistry.lookupPower( ByteBufUtils.readUTF8String( buf ) );
 			lookVec = ByteBufUtils.readTag( buf );
 		}
 	}
@@ -60,7 +61,7 @@ public class C01PowerUse implements IMessage {
         	
         	if (ctx.side.isServer()) {
         		
-        		final EntityPlayer player = PowersAPI.proxy.getPlayerFromContext( ctx );
+        		final EntityPlayer player = PowersAPI.proxy().getPlayerFromContext( ctx );
         		
         		Runnable task = new Runnable() {
 
@@ -79,7 +80,7 @@ public class C01PowerUse implements IMessage {
    
         		};
 				
-				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, task );
         	}
         	
         	return null;

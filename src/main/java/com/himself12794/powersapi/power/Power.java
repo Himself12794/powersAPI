@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
@@ -254,9 +255,9 @@ public abstract class Power {
 			
 		}
 		
-		if (!powerExists(power)) {
+		if (!PowersRegistry.powerExists(power)) {
 			
-			PowersAPI.logger.error("Cannot set unregistered power \"" + power + "\"");
+			PowersAPI.logger().error("Cannot set unregistered power \"" + power + "\"");
 			
 		} else {
 			
@@ -393,147 +394,11 @@ public abstract class Power {
 	public String getSimpleName() { return displayName; }
 	
 	public int getId() {
-		return getPowerId(this);
-	}
-	
-	/*================================= Begin Power Registration Section ===============================*/ 
-	
-	private static Map<Integer, String> powerIds = Maps.newHashMap();
-	private static Map<String, Power> powerRegistry = Maps.newHashMap();
-	private static int powers = 1;
-	
-	public static void registerPowers() {
-		
-		PowersAPI.logger.info("Registered [" + Power.getPowerCount() + "] powers");
-		
-	}
-	
-	/**
-	 * Used to register created powers. Powers are stored with their unlocalized name, as well
-	 * as a generated id.
-	 * 
-	 * @param power
-	 * @return 
-	 */
-	public static Power registerPower(Power power) {
-		
-		String name = power.getUnlocalizedName();
-		
-		if (!Power.powerExists(name)) {
-			
-			powerRegistry.put(name, power);
-			powerIds.put(powers, name);
-			PowersAPI.logger.info( "Registered power " + name );
-			++powers;
-			return power;
-			
-		} else {
-			
-			PowersAPI.logger.error("Could not register power " + power + " under name \"" + name + "\", name has already been registered for " + lookupPower(name));
-			return null;
-			
-		}
-	}
-	
-	public static Power lookupPowerById(int id) {
-		
-		return lookupPower(powerIds.get(id));
-		
-	}
-	
-	public static int getPowerId(Power power) {
-		
-		if (powerIds.containsValue(power.getUnlocalizedName())) {
-			
-			for (Entry<Integer, String> value : powerIds.entrySet()) {
-				
-				if (value.getValue().equals(power.getUnlocalizedName()))
-					return value.getKey();
-				
-			}    		
-		}
-		
-		return -1;
-		
-	}
-	
-	public static Power lookupPower(ItemStack stack) {
-		
-		if (Power.hasPower(stack)) {
-			
-			return lookupPower(stack.getTagCompound().getString( "currentPower"));
-			
-		}
-		
-		return null;
-		
-	}
-	
-	/**
-	 * Looks up the power by name. If it doesn't exist, returns null.
-	 * 
-	 * @param power
-	 * @return
-	 */
-	public static Power lookupPower(String power) {
-		
-		if (Power.powerExists(power)) return (Power)powerRegistry.get(power);
-		else if (powerExists("power." + power)) return (Power)powerRegistry.get("power." + power);
-		
-		return null;
-		
-	}
-	
-	public static <P extends Power> P lookupPower(Class<P> power) {
-		Power powered = null;
-		try {
-			powered = lookupPower(power.newInstance().getUnlocalizedName());
-		} catch (Exception e) {
-			PowersAPI.logger.error( "Could not find class " + power, e );
-		} 
-		
-		if (powered != null) {
-			if (powered.getClass().equals( power )) {
-				return (P)powered;
-			}
-		}
-		
-		return null;
-		
-	}
-	
-	public static Map<String, Power> getPowers() {
-		return powerRegistry;
-	}
-
-	public static int getPowerCount() {
-		return powers;
-	}
-	
-	public static boolean powerExists(String unlocalizedName) {
-		return Power.getPowers().containsKey(unlocalizedName);
+		return PowersRegistry.getPowerId(this);
 	}
 	
 	public final boolean canUsePower( EntityLivingBase player ) {
 		return (PowersEntity.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
-	}
-	
-	public static boolean hasPower(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey("currentPower");
-	}
-	
-	public static Power getPower(ItemStack stack) {
-		return Power.lookupPower(stack);
-	}
-	
-	/**
-	 * If the given power is valid, returns unlocalized name, else returns "".
-	 * 
-	 * @param power
-	 * @return
-	 */
-	public static String validatePowerName(Power power) {
-		return power != null ? power.getUnlocalizedName() : "";
 	}
 	
 	public String toString() {

@@ -48,14 +48,14 @@ public class C02SetMouseOverTarget implements IMessage {
 
 					@Override
 					public void run() {
-						EntityPlayer player =  PowersAPI.proxy.getPlayerFromContext( ctx );
+						EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 						if (player != null) {
 							PowersEntity.get( player ).mouseOverPos = UsefulMethods.movingObjectPositionFromNBT( message.nbttags, player.worldObj );						
 						}
 					}
 				};
 				
-				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, task );
 			}
 
 			return null;

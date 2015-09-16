@@ -68,8 +68,7 @@ public class PlayerSaveHandler implements IPlayerFileData {
 							getPlayerSaveDirectory( player ) ) );
 
 		} catch (Exception e) {
-			PowersAPI.logger
-					.warn( "Could not read player power data" );
+			PowersAPI.logger().warn( "Could not read player power data" );
 		}
 		return nbttagcompound;
 	}

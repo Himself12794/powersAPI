@@ -10,6 +10,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 
 import com.google.common.collect.Lists;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 
 
@@ -34,10 +35,10 @@ public class GetPowers implements ICommand {
 
 			StringBuilder powers = new StringBuilder("Available powers: ");
 
-			int powerCount = Power.getPowerCount();
+			int powerCount = PowersRegistry.getPowerCount();
 			int count = 1;
 
-			for (Power power : Power.getPowers().values()) {
+			for (Power power : PowersRegistry.getPowers().values()) {
 				powers.append( power.getSimpleName() );
 				if (powerCount != count) powers.append( ", " );
 				count++;
@@ -47,8 +48,8 @@ public class GetPowers implements ICommand {
 
 		} else if (args.length == 1) {
 
-			if (Power.lookupPower( "power." + args[0] ) != null) {
-				sender.addChatMessage( new ChatComponentText( Power
+			if (PowersRegistry.lookupPower( "power." + args[0] ) != null) {
+				sender.addChatMessage( new ChatComponentText( PowersRegistry
 						.lookupPower( "power." + args[0] ).getDescription() ) );
 			} else {
 				sender.addChatMessage( new ChatComponentTranslation(

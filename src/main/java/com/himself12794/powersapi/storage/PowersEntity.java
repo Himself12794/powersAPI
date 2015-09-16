@@ -1,7 +1,6 @@
 package com.himself12794.powersapi.storage;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +15,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
@@ -547,7 +547,7 @@ public class PowersEntity extends PropertiesBase {
 					
 					for (int i = 0; i < learnedPowers.length; i++) {
 						
-						Power power = Power.lookupPowerById( learnedPowers[i] );
+						Power power = PowersRegistry.lookupPowerById( learnedPowers[i] );
 						
 						if (power != null) {
 							this.learnedPowers.add( power );
@@ -555,8 +555,8 @@ public class PowersEntity extends PropertiesBase {
 					}
 				}
 				
-				primaryPower = Power.lookupPowerById( powersData.getInteger( POWER_PRIMARY ) );
-				secondaryPower = Power.lookupPowerById( powersData.getInteger( POWER_SECONDARY ) );
+				primaryPower = PowersRegistry.lookupPowerById( powersData.getInteger( POWER_PRIMARY ) );
+				secondaryPower = PowersRegistry.lookupPowerById( powersData.getInteger( POWER_SECONDARY ) );
 			}
 		}
 
