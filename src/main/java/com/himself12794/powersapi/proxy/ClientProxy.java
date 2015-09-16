@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.KeyBindingsHandler;
-import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.render.RenderPower;
 
 public class ClientProxy extends CommonProxy {
@@ -30,7 +29,6 @@ public class ClientProxy extends CommonProxy {
 				new RenderPower(
 						Minecraft.getMinecraft().getRenderManager() ) );
 
-		if (ModConfig.enablePowerActivator) ModItems.registerTextures( event );
 		ModConfig.registerKeyBindings();
 		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler() );
 		

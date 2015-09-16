@@ -19,7 +19,6 @@ import com.himself12794.powersapi.command.EffectsCommand;
 import com.himself12794.powersapi.command.PowersCommand;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.EventsHandler;
-import com.himself12794.powersapi.item.ModItems;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.storage.PowersEntity;
@@ -43,11 +42,6 @@ public class CommonProxy {
 		// Registering message types
 		PowersNetwork.init( NetworkRegistry.INSTANCE.newSimpleChannel( Reference.MODID ) );
 		PowersNetwork.registerMessages();
-
-		if (ModConfig.enablePowerActivator) {
-			ModConfig.addCreativeTabs();
-			ModItems.addItems();
-		}
 
 		// register entities
 		EntityRegistry.registerModEntity( EntityPower.class, "power", 1,

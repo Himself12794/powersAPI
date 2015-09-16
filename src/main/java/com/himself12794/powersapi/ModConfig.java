@@ -23,8 +23,6 @@ public class ModConfig {
 	public static final KeyBinding KEY_BINDING_PRIMARY_POWER = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
 	public static final KeyBinding KEY_BINDING_SECONDARY_POWER = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
 	public static final KeyBinding KEY_BINDING_SWITCH_STATE = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
-	public static CreativeTabs creativeTabPowersAPI;
-	public static boolean enablePowerActivator;
 	public static boolean enableCommands;
 	
 	public static void loadConfig(FMLPreInitializationEvent event ) {
@@ -35,12 +33,7 @@ public class ModConfig {
 		ConfigCategory powers = config.getCategory(Reference.NAME);
 		powers.setComment("Configuration for " + Reference.NAME);
 		
-		// Whether or not to make the power activator available
-		Property powerActivator = new Property("EnablePowerActivator", "false", Property.Type.BOOLEAN);
-		powerActivator.comment = "Whether or not the power activator tool should be available in game";
-		powers.put("EnablePowerActivator", powerActivator);
-		
-		// Whether or not to make the power activator available
+		// Whether or not to make commands available
 		Property commands = new Property("EnableCommands", "true", Property.Type.BOOLEAN);
 		commands.comment = "Whether or not commands are enabled";
 		powers.put("EnableCommands", commands);
@@ -48,11 +41,8 @@ public class ModConfig {
 		config.load();
 		
 		enableCommands = powers.get( "EnableCommands" ).getBoolean();
-		enablePowerActivator = powers.get("EnablePowerActivator").getBoolean();
 		
 		config.save();
-		
-		
 	}
 	
 	// Register key bindings
@@ -64,20 +54,6 @@ public class ModConfig {
 			ClientRegistry.registerKeyBinding(KEY_BINDING_SWITCH_STATE);
 		}
 		
-	}
-	
-	public static void addCreativeTabs() {
-		
-		if (!PowersAPI.initializationComplete()) {
-			creativeTabPowersAPI = new CreativeTabs("powersAPI") {
-			    
-				@Override
-			    @SideOnly(Side.CLIENT)
-			    public Item getTabIconItem() {
-			        return Items.enchanted_book;
-			    }
-			};
-		}
 	}
 	
 }

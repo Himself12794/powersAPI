@@ -31,9 +31,7 @@ public class PowerActivator extends Item {
 	public PowerActivator() {
 		setMaxStackSize(1);
 		setHasSubtypes(true);
-		GameRegistry.registerItem(this, name);
 		setUnlocalizedName(Reference.MODID + "_" + name);
-		if (ModConfig.enablePowerActivator) setCreativeTab(ModConfig.creativeTabPowersAPI);
 	}
     
     @Override
