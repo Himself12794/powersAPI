@@ -11,38 +11,35 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ModConfig {
 
-	
-	// Instantiate the key bindings
 	public static final KeyBinding KEY_BINDING_PRIMARY_POWER = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
 	public static final KeyBinding KEY_BINDING_SECONDARY_POWER = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
 	public static final KeyBinding KEY_BINDING_SWITCH_STATE = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
-	public static boolean enableCommands;
+	public static boolean modCommandsEnabled = true;
+	public static Configuration config;
+	public static ConfigCategory powers;
 	
 	public static void loadConfig(FMLPreInitializationEvent event ) {
+		config = new Configuration(event.getSuggestedConfigurationFile(), true);
+		powers = config.getCategory("Powers API");
+		powers.setLanguageKey( "powers.config" );
+		powers.setComment("Configuration for powers");
+		syncConfig();
+	}
+	
+	public static void syncConfig() {
 		
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+		modCommandsEnabled = config.getBoolean( "ModCommandsEnabled", powers.getName(), true, "Whether or not mod commands are enabled" );
 		
-		/*Config for Power Options*/
-		ConfigCategory powers = config.getCategory(Reference.NAME);
-		powers.setComment("Configuration for " + Reference.NAME);
-		
-		// Whether or not to make commands available
-		Property commands = new Property("EnableCommands", "true", Property.Type.BOOLEAN);
-		commands.comment = "Whether or not commands are enabled";
-		powers.put("EnableCommands", commands);
-		
-		config.load();
-		
-		enableCommands = powers.get( "EnableCommands" ).getBoolean();
-		
-		config.save();
+		if (config.hasChanged()) config.save();
 	}
 	
 	// Register key bindings
@@ -52,6 +49,16 @@ public class ModConfig {
 			ClientRegistry.registerKeyBinding(KEY_BINDING_PRIMARY_POWER);
 			ClientRegistry.registerKeyBinding(KEY_BINDING_SECONDARY_POWER);
 			ClientRegistry.registerKeyBinding(KEY_BINDING_SWITCH_STATE);
+		}
+		
+	}
+	
+	@SubscribeEvent
+	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+		
+		if (event.modID.equals( Reference.MODID )) {
+			System.out.println("Config changed, syncing");
+			syncConfig();
 		}
 		
 	}
