@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
@@ -127,6 +128,30 @@ public class PropertiesRegistry {
 			}
 			
 		}
+	}
+	
+	public float runOnDamaged(EntityLivingBase entity, DamageSource source, float amount) {
+		
+		float value = amount;
+		
+		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+
+			String identifier = entry.getKey();
+			Class association = entry.getValue();
+			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
+			
+			if(wrapper != null) {
+				
+				if (wrapper.getClass().isAssignableFrom( association )) {
+					
+					value = ((PropertiesBase)wrapper).onDamaged( entity, source, value, value != amount );
+				}
+				
+			}
+			
+		}
+		
+		return value;
 	}
 	
 	public void runOnRespawn(EntityPlayer player) {

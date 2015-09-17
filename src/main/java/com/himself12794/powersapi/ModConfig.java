@@ -20,9 +20,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ModConfig {
 
-	public static final KeyBinding KEY_BINDING_PRIMARY_POWER = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
-	public static final KeyBinding KEY_BINDING_SECONDARY_POWER = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
-	public static final KeyBinding KEY_BINDING_SWITCH_STATE = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
+	public static final KeyBinding keyBindingPrimaryPower = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
+	public static final KeyBinding keyBindingSecondaryPower = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
+	public static final KeyBinding keyBindingSwitchState = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
 	public static boolean modCommandsEnabled = true;
 	public static Configuration config;
 	public static ConfigCategory powers;
@@ -46,9 +46,9 @@ public class ModConfig {
 	public static void registerKeyBindings() {
 		
 		if (!PowersAPI.initializationComplete()) {
-			ClientRegistry.registerKeyBinding(KEY_BINDING_PRIMARY_POWER);
-			ClientRegistry.registerKeyBinding(KEY_BINDING_SECONDARY_POWER);
-			ClientRegistry.registerKeyBinding(KEY_BINDING_SWITCH_STATE);
+			ClientRegistry.registerKeyBinding(keyBindingPrimaryPower);
+			ClientRegistry.registerKeyBinding(keyBindingSecondaryPower);
+			ClientRegistry.registerKeyBinding(keyBindingSwitchState);
 		}
 		
 	}

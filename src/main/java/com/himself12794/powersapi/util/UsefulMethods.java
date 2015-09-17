@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 import com.google.common.base.Predicate;
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.storage.PowersEntity;
 
@@ -325,7 +326,9 @@ public class UsefulMethods {
 	}
 	
 	public static Entity getEntityFromPersistentId(World world, String id, Class entity) {
+
 		try {
+
 			final UUID uuid = UUID.fromString( id );
 			
 			Entity found = world.getPlayerEntityByUUID( uuid );
@@ -348,10 +351,9 @@ public class UsefulMethods {
 			if (!entities.isEmpty()) {
 				found = (Entity) entities.get( 0 );
 			}
-			
+			System.out.println(found);
 			return found;
 		} catch (IllegalArgumentException e) {
-			// No action needed
 		}
 		return null;
 	}

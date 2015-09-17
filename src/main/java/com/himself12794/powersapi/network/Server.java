@@ -17,12 +17,12 @@ public class Server {
 		this.network = network;
 	}
 
-	public void powerUse(Power power, MovingObjectPosition pos, C01PowerUse.Action action) {
-		network.sendToServer( new C01PowerUse(power, pos, action) );
+	public void powerUse(boolean isPrimary, MovingObjectPosition pos, C01PowerUse.Action action) {
+		network.sendToServer( new C01PowerUse(isPrimary, pos, action) );
 	}
 	
-	public void setMouseOver(MovingObjectPosition pos) {
-		network.sendToServer( new C02SetMouseOverTarget( pos ));
+	public void setMouseOver( boolean isPrimary, MovingObjectPosition pos ) {
+		network.sendToServer( new C02SetMouseOverTarget( isPrimary, pos ));
 	}
 	
 	public void cyclePowerState(Power power) {

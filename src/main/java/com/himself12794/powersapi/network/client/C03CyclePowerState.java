@@ -16,6 +16,7 @@ import com.himself12794.powersapi.storage.PowersEntity;
 public class C03CyclePowerState implements IMessage {
 	
 	private Power power;
+	private boolean primary;
 	
 	public C03CyclePowerState() { }
 

@@ -32,7 +32,7 @@ public class PowerBuff extends Power {
 	public final boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
 		
 		boolean result = onCast(world, caster, modifier, state);
-		if (result) PowersEntity.get( caster ).prevTargetPos =  new MovingObjectPosition(caster);
+		if (result) PowersEntity.get( caster ).prevTargetPosPrimary =  new MovingObjectPosition(caster);
 		return result;
 		
 	}

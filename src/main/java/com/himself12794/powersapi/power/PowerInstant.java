@@ -21,7 +21,7 @@ public class PowerInstant extends Power {
 		PowersEntity wrapper = PowersEntity.get( caster );
 		
 		if (successful) {
-			wrapper.prevTargetPos = mouseOver;
+			wrapper.prevTargetPosPrimary = mouseOver;
 		}
 		
 		return successful;

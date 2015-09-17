@@ -38,10 +38,16 @@ public class PowersEntity extends PropertiesBase {
 	private static final String POWER_PREVIOUS_TARGET = "previousTarget";
 	private static final String POWER_PROFILES = "powerProfiles";
 
-	private int preparationTimeLeft;
-	private boolean isBeingPrepared;
-	private int powerInUseTimeLeft;
-	private Power powerInUse;
+	private int primaryPreparationTime;
+	private int secondaryPreparationTime;
+	private boolean isBeingPreparedPrimary;
+	private boolean isBeingPreparedSecondary;
+	private int primaryUseTimeLeft;
+	private int secondaryUseTimeLeft;
+	//private Power powerInUsePrimary;
+	//private Power powerInUseSecondary;
+	private boolean secondaryPowerInUse;
+	private boolean primaryPowerInUse;
 	/**
 	 * Information about the powers that the player has known. Just because a
 	 * player has a power profile for a specific power does not mean that
@@ -52,8 +58,10 @@ public class PowersEntity extends PropertiesBase {
 	public final Set<Power> learnedPowers = Sets.newHashSet();
 	private Power primaryPower;
 	private Power secondaryPower;
-	public MovingObjectPosition prevTargetPos;
-	public MovingObjectPosition mouseOverPos;
+	public MovingObjectPosition prevTargetPosPrimary;
+	public MovingObjectPosition prevTargetPosSecondary;
+	public MovingObjectPosition mouseOverPosPrimary;
+	public MovingObjectPosition mouseOverPosSecondary;
 
 	protected PowersEntity(EntityLivingBase entity) {
 		super( entity );
@@ -107,19 +115,24 @@ public class PowersEntity extends PropertiesBase {
 		return EffectsEntity.get( theEntity );
 	}
 
-	public Power getPowerInUse() {
+	public int getPrimaryPowerUseTimeLeft() {
 
-		return powerInUse;
+		return primaryUseTimeLeft;
 	}
 
-	public int getPowerUseTimeLeft() {
+	public int getSecondaryPowerUseTimeLeft() {
 
-		return powerInUseTimeLeft;
+		return secondaryUseTimeLeft;
 	}
 
-	public MovingObjectPosition getPreviousPowerTarget() {
+	public MovingObjectPosition getPreviousPrimaryPowerTarget() {
 
-		return prevTargetPos;
+		return prevTargetPosPrimary;
+	}
+
+	public MovingObjectPosition getPreviousSecondaryPowerTarget() {
+
+		return prevTargetPosSecondary;
 	}
 
 	/**
@@ -152,9 +165,14 @@ public class PowersEntity extends PropertiesBase {
 		return getOrCreatePowerProfile( secondaryPower ).cooldownRemaining;
 	}
 
-	public boolean isUsingPower() {
+	public boolean isUsingPrimaryPower() {
 
-		return powerInUse != null;
+		return primaryPowerInUse;
+	}
+
+	public boolean isUsingSecondaryPower() {
+
+		return secondaryPowerInUse;
 	}
 
 	/**
@@ -189,7 +207,12 @@ public class PowersEntity extends PropertiesBase {
 	 */
 	public void setPrimaryPower(final Power power) {
 
-		if (power == null || primaryPower == power) return;
+		if (power == null || primaryPower == power || isPowerInUse(power)) return;
+		
+		if (secondaryPower == power) {
+			secondaryPower = primaryPower;
+			primaryPower = power;
+		}
 
 		if (!this.knowsPower( power )) teachPower(power);
 		primaryPower = power;
@@ -209,7 +232,12 @@ public class PowersEntity extends PropertiesBase {
 	 */
 	public void setSecondaryPower(final Power power) {
 
-		if (power == null || secondaryPower == power) return;
+		if (power == null || secondaryPower == power || isPowerInUse(power)) return;
+		
+		if (primaryPower == power) {
+			primaryPower = secondaryPower;
+			secondaryPower = power;
+		}
 		
 		if (!this.knowsPower( power )) teachPower(power);
 		secondaryPower = power;
@@ -220,41 +248,87 @@ public class PowersEntity extends PropertiesBase {
 		if (theEntity instanceof EntityPlayer && !theEntity.worldObj.isRemote) theEntity
 				.addChatMessage( message );
 	}
+	
+	public boolean isPowerInUse(Power power) {
+		return primaryPowerInUse || secondaryPowerInUse;
+	}
+	
+	public int getPowerInUseTimeLeft(Power power) {
+		return power == secondaryPower ? secondaryUseTimeLeft : (power == primaryPower ? primaryUseTimeLeft : 0);
+	}
+	
+	public int getPreparationTimeLeft(Power power) {
+		return power == secondaryPower ? secondaryPreparationTime : (power == primaryPower ? primaryPreparationTime : 0);
+	}
 
 	/**
 	 * Makes the player stop using the power.
 	 */
-	public void stopUsingPower() {
+	public void stopUsingPrimaryPower() {
 		
-		if (theEntity instanceof EntityPlayer && powerInUse != null) {
+		if (theEntity instanceof EntityPlayer && primaryPowerInUse) {
 			
 			theEntity.isSwingInProgress = false;
 			theEntity.swingProgressInt = 0;
 			
-			if (!isBeingPrepared) {
+			if (!isBeingPreparedPrimary) {
 				
-				if (!(EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated ) && powerInUse.isNegateable())) {
-					final boolean flag = powerInUse.onFinishedCastingEarly(
+				if (!(EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated ) && primaryPower.isNegateable())) {
+					final boolean flag = primaryPower.onFinishedCastingEarly(
 							theEntity.worldObj,
-							(EntityPlayer) theEntity, getPowerUseTimeLeft(),
-							getPreviousPowerTarget(), getPowerProfile( powerInUse ).getState() );
+							(EntityPlayer) theEntity, getPrimaryPowerUseTimeLeft(),
+							getPreviousPrimaryPowerTarget(), getPowerProfile( primaryPower ).getState() );
 		
 					if (flag) {
-						getOrCreatePowerProfile( powerInUse ).triggerCooldown();
+						getOrCreatePowerProfile( primaryPower ).triggerCooldown();
 					}
 					
 				} else {
-					getOrCreatePowerProfile( powerInUse ).triggerCooldown();
+					getOrCreatePowerProfile( primaryPower ).triggerCooldown();
 				}
 				
 			}
 			
-			preparationTimeLeft = 0;
-			isBeingPrepared = false;
-			powerInUseTimeLeft = 0;
-			prevTargetPos = null;
-			mouseOverPos = null;
-			powerInUse = null;
+			primaryPreparationTime = 0;
+			isBeingPreparedPrimary = false;
+			primaryUseTimeLeft = 0;
+			prevTargetPosPrimary = null;
+			mouseOverPosPrimary = null;
+			primaryPowerInUse = false;
+		}
+	}
+
+	/**
+	 * Makes the player stop using the power.
+	 */
+	public void stopUsingSecondaryPower() {
+		
+		if (theEntity instanceof EntityPlayer && secondaryPowerInUse) {
+			
+			if (!isBeingPreparedSecondary) {
+				
+				if (!(EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated ) && secondaryPower.isNegateable())) {
+					final boolean flag = secondaryPower.onFinishedCastingEarly(
+							theEntity.worldObj,
+							(EntityPlayer) theEntity, getSecondaryPowerUseTimeLeft(),
+							getPreviousSecondaryPowerTarget(), getPowerProfile( secondaryPower ).getState() );
+		
+					if (flag) {
+						getOrCreatePowerProfile( secondaryPower ).triggerCooldown();
+					}
+					
+				} else {
+					getOrCreatePowerProfile( secondaryPower ).triggerCooldown();
+				}
+				
+			}
+			
+			secondaryPreparationTime = 0;
+			isBeingPreparedSecondary = false;
+			secondaryUseTimeLeft = 0;
+			prevTargetPosSecondary = null;
+			mouseOverPosSecondary = null;
+			secondaryPowerInUse = false;
 		}
 	}
 
@@ -268,8 +342,6 @@ public class PowersEntity extends PropertiesBase {
 
 		if (!learnedPowers.contains( power )) {
 			learnedPowers.add( power );
-			//theEntity.addChatMessage( new ChatComponentTranslation(
-			//		"command.power.learned", power.getDisplayName() ) );
 		}
 	}
 
@@ -285,8 +357,9 @@ public class PowersEntity extends PropertiesBase {
 	public void onUpdate() {
 		
 		updateCooldowns();
-		updateUsingPowers();
 		updateKnowledgeTicks();
+		updateUsingPrimaryPower();
+		updateUsingSecondaryPower();
 
 	}
 	
@@ -319,18 +392,18 @@ public class PowersEntity extends PropertiesBase {
 
 	}
 
-	public void updateUsingPowers() {
+	public void updateUsingPrimaryPower() {
 
 		if (theEntity instanceof EntityPlayer) {
 
-			if (powerInUse != null) {
+			if (primaryPowerInUse) {
 
-				PowerProfile profile = getOrCreatePowerProfile( powerInUse );
+				PowerProfile profile = getOrCreatePowerProfile( primaryPower );
 				
-				if (!isBeingPrepared) {
+				if (!isBeingPreparedPrimary) {
 					
-					if (powerInUse.isNegateable() && EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
-						stopUsingPower();
+					if (primaryPower.isNegateable() && EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
+						stopUsingPrimaryPower();
 						return;
 					}
 	
@@ -338,33 +411,79 @@ public class PowersEntity extends PropertiesBase {
 						theEntity.swingProgressInt = 1;
 					}
 	
-					if (this.powerInUseTimeLeft > 0) {
+					if (this.primaryUseTimeLeft > 0) {
 	
-						if (this.powerInUseTimeLeft % 4 == 0) {
-							powerInUse.cast( theEntity.worldObj, theEntity, mouseOverPos, profile.useModifier, profile.getState() );
+						if (this.primaryUseTimeLeft % 4 == 0) {
+							primaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosPrimary, profile.useModifier, profile.getState() );
 						}
-						this.powerInUseTimeLeft--;
+						this.primaryUseTimeLeft--;
 	
-					} else if (this.powerInUseTimeLeft <= 0) {
+					} else if (this.primaryUseTimeLeft <= 0) {
 	
-						if (powerInUse.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) 
+						if (primaryPower.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosPrimary, profile.getState() )) 
 							profile.triggerCooldown();
 						
 						theEntity.swingProgress = 0.0F;
 						theEntity.isSwingInProgress = false;
-						prevTargetPos = null;
-						preparationTimeLeft = 0;
-						this.powerInUseTimeLeft = 0;
-						powerInUse = null;
-						mouseOverPos = null;
+						prevTargetPosPrimary = null;
+						primaryPreparationTime = 0;
+						primaryUseTimeLeft = 0;
+						primaryPowerInUse = false;
+						mouseOverPosPrimary = null;
 					}
 	
 				} else {
-					powerInUse.onPrepareTick( (EntityPlayer) theEntity, theEntity.worldObj, profile, preparationTimeLeft );
+					primaryPower.onPrepareTick( (EntityPlayer) theEntity, theEntity.worldObj, profile, primaryPreparationTime );
 					theEntity.swingProgressInt = 0;
 
-					usePower(powerInUse, mouseOverPos, preparationTimeLeft);
-					preparationTimeLeft--;
+					usePowerAsPrimary(primaryPower, mouseOverPosPrimary, primaryPreparationTime);
+					primaryPreparationTime--;
+				}
+				
+			}
+
+		}
+
+	}
+
+	public void updateUsingSecondaryPower() {
+
+		if (theEntity instanceof EntityPlayer) {
+
+			if (secondaryPowerInUse) {
+
+				PowerProfile profile = getOrCreatePowerProfile( secondaryPower );
+				
+				if (!isBeingPreparedSecondary) {
+					
+					if (secondaryPower.isNegateable() && EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated )) {
+						stopUsingSecondaryPower();
+						return;
+					}
+	
+					if (this.secondaryUseTimeLeft > 0) {
+	
+						if (this.secondaryUseTimeLeft % 4 == 0) {
+							secondaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosSecondary, profile.useModifier, profile.getState() );
+						}
+						this.secondaryUseTimeLeft--;
+	
+					} else if (this.secondaryUseTimeLeft <= 0) {
+	
+						if (secondaryPower.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosSecondary, profile.getState() )) 
+							profile.triggerCooldown();
+						
+						prevTargetPosSecondary = null;
+						secondaryPreparationTime = 0;
+						secondaryUseTimeLeft = 0;
+						secondaryPowerInUse = false;
+						mouseOverPosSecondary = null;
+					}
+	
+				} else {
+					secondaryPower.onPrepareTick( (EntityPlayer) theEntity, theEntity.worldObj, profile, secondaryPreparationTime );
+					usePowerAsSecondary(secondaryPower, mouseOverPosSecondary, secondaryPreparationTime);
+					secondaryPreparationTime--;
 				}
 				
 			}
@@ -380,25 +499,25 @@ public class PowersEntity extends PropertiesBase {
 	 * @param power
 	 * @param lookVec
 	 */
-	public void usePower(final Power power, MovingObjectPosition lookVec) {
-		if (theEntity instanceof EntityPlayer) {
+	public void usePowerAsPrimary(final Power power, MovingObjectPosition lookVec) {
+		if (theEntity instanceof EntityPlayer && secondaryPower != power) {
 			
 			if (power != null && power.canUsePower( theEntity )) {
 				
 				if (!power.hasPreparationTime()) {
-					usePower(power, lookVec, 0);
+					usePowerAsPrimary(power, lookVec, 0);
 				} else {
 					theEntity.isSwingInProgress = true;
 					theEntity.swingProgressInt = 0;
-					preparationTimeLeft = power.getPreparationTime( getPowerProfile(power) );
-					isBeingPrepared = true;
-					powerInUse = power;
+					primaryPreparationTime = power.getPreparationTime( getPowerProfile(power) );
+					isBeingPreparedPrimary = true;
+					primaryPowerInUse = true;
 				}
 			}
 		}
 	}
 	
-	private void usePower(final Power power, MovingObjectPosition lookVec, int preparationTimeLeft) {
+	private void usePowerAsPrimary(final Power power, MovingObjectPosition lookVec, int preparationTimeLeft) {
 				
 		PowerProfile profile = getOrCreatePowerProfile( power );
 		
@@ -407,7 +526,7 @@ public class PowersEntity extends PropertiesBase {
 		if (preparationTimeLeft > 0) {
 			return;
 		} else {
-			isBeingPrepared = false;
+			isBeingPreparedPrimary = false;
 		}
 		
 
@@ -416,16 +535,73 @@ public class PowersEntity extends PropertiesBase {
 
 			if (power.isConcentrationPower()) {
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
-					powerInUse = power;
-					powerInUseTimeLeft = power.getMaxConcentrationTime();
+					primaryPowerInUse = true;
+					primaryUseTimeLeft = power.getMaxConcentrationTime();
 				}
 
 			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 				
 				theEntity.swingItem();
-				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPos, profile.getState() )) profile
+				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosPrimary, profile.getState() )) {
+					profile.triggerCooldown();
+				}
+				prevTargetPosPrimary = null;
+
+			}
+		}
+	}
+
+	/**
+	 * Causes the player to use the designated power. Doesn't check whether or
+	 * not they actually know it.
+	 * c
+	 * @param power
+	 * @param lookVec
+	 */
+	public void usePowerAsSecondary(final Power power, MovingObjectPosition lookVec) {
+		if (theEntity instanceof EntityPlayer && primaryPower != power ) {
+			
+			if (power != null && power.canUsePower( theEntity )) {
+				
+				if (!power.hasPreparationTime()) {
+					usePowerAsSecondary(power, lookVec, 0);
+				} else {
+					secondaryPreparationTime = power.getPreparationTime( getPowerProfile(power) );
+					isBeingPreparedSecondary = true;
+					secondaryPowerInUse = true;
+				}
+			}
+		}
+	}
+	
+	private void usePowerAsSecondary(final Power power, MovingObjectPosition lookVec, int preparationTimeLeft) {
+				
+		PowerProfile profile = getOrCreatePowerProfile( power );
+		
+		if (EffectsEntity.get( theEntity ).isAffectedBy( PowerEffect.negated ) && power.isNegateable()) return;
+
+		if (preparationTimeLeft > 0) {
+			return;
+		} else {
+			isBeingPreparedSecondary = false;
+		}
+		
+
+		
+		if (power.canCastPower( profile )) {
+
+			if (power.isConcentrationPower()) {
+				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+					secondaryPowerInUse = true;
+					secondaryUseTimeLeft = power.getMaxConcentrationTime();
+				}
+
+			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+				
+				//theEntity.swingItem();
+				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosSecondary, profile.getState() )) profile
 						.triggerCooldown();
-				prevTargetPos = null;
+				prevTargetPosSecondary = null;
 
 			}
 		}
@@ -436,7 +612,7 @@ public class PowersEntity extends PropertiesBase {
 	 */
 	public void usePrimaryPower(MovingObjectPosition lookVec) {
 
-		usePower( primaryPower, lookVec );
+		usePowerAsPrimary( primaryPower, lookVec );
 	}
 
 	/**
@@ -444,7 +620,7 @@ public class PowersEntity extends PropertiesBase {
 	 */
 	public void useSecondaryPower(MovingObjectPosition lookVec) {
 
-		usePower( secondaryPower, lookVec );
+		usePowerAsSecondary( secondaryPower, lookVec );
 	}
 
 	/**
@@ -453,9 +629,20 @@ public class PowersEntity extends PropertiesBase {
 	 * 
 	 * @param pos
 	 */
-	public void setMouseOver(MovingObjectPosition pos) {
+	public void setMouseOverPrimary(MovingObjectPosition pos) {
 
-		mouseOverPos = pos;
+		mouseOverPosPrimary = pos;
+	}
+
+	/**
+	 * Used when an instant power is in use to continuously track the position
+	 * of the cursor.
+	 * 
+	 * @param pos
+	 */
+	public void setMouseOverSecondary(MovingObjectPosition pos) {
+
+		mouseOverPosSecondary = pos;
 	}
 	
 	private NBTTagList getPowerProfilesAsNBTTagList() {
@@ -507,8 +694,6 @@ public class PowersEntity extends PropertiesBase {
 		powersData.setIntArray( POWER_SET, getLearnedPowersAsIntArray() );
 		powersData.setInteger( POWER_PRIMARY, primaryPower != null ? primaryPower.getId() : 0 );
 		powersData.setInteger( POWER_SECONDARY, secondaryPower != null ? secondaryPower.getId() : 0);
-		
-		//System.out.println(powersData);
 		
 	}
 

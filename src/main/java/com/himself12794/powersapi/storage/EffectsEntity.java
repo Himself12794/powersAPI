@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
@@ -146,7 +147,6 @@ public class EffectsEntity extends PropertiesBase {
 
 	public boolean isAffectedBy(final PowerEffect effect) {
 		return powerEffects.containsKey( effect );
-
 	}
 
 	/**
@@ -181,6 +181,18 @@ public class EffectsEntity extends PropertiesBase {
 		return effects;
 	}
 	
+	@Override
+	public float onDamaged(EntityLivingBase affectedEntity, DamageSource source, float amount, boolean hasChanged) {
+		
+		float value = amount;
+		
+		for (EffectContainer container : powerEffects.values()) {
+			value = container.onDamaged( source, value, hasChanged || value != amount );
+		}
+		
+		return value;
+	}
+	
 	public void resetForRespawn() {
 
 		final Set toRemove = Sets.newHashSet();
@@ -208,19 +220,6 @@ public class EffectsEntity extends PropertiesBase {
 		
 	}
 	
-	public static EffectsEntity register(EntityLivingBase entity) {
-		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, new EffectsEntity( entity ) );
-		return (EffectsEntity) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
-	}
-	
-	public static void register(EntityLivingBase entity, EffectsEntity other) {
-		entity.registerExtendedProperties( POWER_EFFECTS_GROUP, other );
-	}
-	
-	public static EffectsEntity get(EntityLivingBase entity) {
-		return (EffectsEntity) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
-	}
-	
 	private NBTTagList getEffectsAsList() {
 
 		NBTTagList powerEffects = new NBTTagList();
@@ -234,7 +233,6 @@ public class EffectsEntity extends PropertiesBase {
 		}
 		
 		return powerEffects;
-		
 	}
 
 	@Override
@@ -261,6 +259,7 @@ public class EffectsEntity extends PropertiesBase {
 					
 					if (container != null) {
 						this.powerEffects.put( container.theEffect, container );
+						container.onApplied();
 					}
 										
 				}
@@ -276,9 +275,7 @@ public class EffectsEntity extends PropertiesBase {
 	}
 
 	@Override
-	public void init(Entity entity, World world) {
-		
-	}
+	public void init(Entity entity, World world) {}
 
 	@Override
 	public String getIdentifier() {
@@ -287,6 +284,10 @@ public class EffectsEntity extends PropertiesBase {
 
 	@Override
 	public void onJoinWorld(World world) {}
+	
+	public static EffectsEntity get(EntityLivingBase entity) {
+		return (EffectsEntity) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
+	}
 	
 	
 }

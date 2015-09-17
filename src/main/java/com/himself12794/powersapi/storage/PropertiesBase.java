@@ -1,7 +1,9 @@
 package com.himself12794.powersapi.storage;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
@@ -31,6 +33,19 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	 * @param world the world the entity is joining
 	 */
 	public abstract void onJoinWorld(World world);
+	
+	/**
+	 * Called every time the entity takes damage.
+	 * @param affectedEntity TODO
+	 * @param source
+	 * @param amount
+	 * @param hasChanged whether or not the amount has been modified by other instances of {@link PropertiesBase}
+	 * 
+	 * @return the new damage amount
+	 */
+	public float onDamaged(EntityLivingBase affectedEntity, DamageSource source, float amount, boolean hasChanged) {
+		return amount;
+	}
 
 	/**
 	 * Called when when the entity respawns. (If player)
@@ -38,6 +53,14 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	public abstract void resetForRespawn();
 
 	public abstract String getIdentifier();
+	
+	public boolean isCreativePlayer() {
+		if (theEntity instanceof EntityPlayer) {
+			return ((EntityPlayer)theEntity).capabilities.isCreativeMode;
+		}
+		
+		return false;
+	}
 
 	public final PropertiesBase copyTo(EntityLivingBase entity) {
 

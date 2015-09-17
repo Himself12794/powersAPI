@@ -2,13 +2,14 @@ package com.himself12794.powersapi.storage;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 
 import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
 
-public class EffectContainer {
+public final class EffectContainer {
 
 	public final EntityLivingBase affectedEntity;
 	public final EntityLivingBase casterEntity;
@@ -36,12 +37,15 @@ public class EffectContainer {
 	}
 	
 	public boolean shouldApplyEffect() {
-		System.out.println(theEffect);
 		return theEffect.shouldApplyEffect( affectedEntity, casterEntity, initiatedPower );
 	}
 	
 	public NBTTagCompound getDataTag() {
 		return this.dataTag;
+	}
+	
+	public float onDamaged(DamageSource damageSource, float amount, boolean hasChanged) {
+		return theEffect.onDamaged( affectedEntity, casterEntity, damageSource, amount, hasChanged );
 	}
 	
 	public void onApplied() {
@@ -73,13 +77,17 @@ public class EffectContainer {
 		return nbt;
 	}
 
-	public static EffectContainer getFromNBT(NBTTagCompound nbt,
-			EntityLivingBase affectedEntity) {
+	public static EffectContainer getFromNBT(NBTTagCompound nbt, EntityLivingBase affectedEntity) {
+		
 		EffectContainer result = null;
 		
 		if (nbt != null) {
-
-			EntityLivingBase casterEntity = (EntityLivingBase) UsefulMethods.getEntityFromPersistentId( affectedEntity.worldObj, nbt.getString( "casterEntity" ), EntityLivingBase.class );
+			
+			String entityId = nbt.getString( "casterEntity" );
+			EntityLivingBase casterEntity = entityId.equals( affectedEntity.getPersistentID().toString() ) 
+					? affectedEntity 
+							: (EntityLivingBase) UsefulMethods.getEntityFromPersistentId(affectedEntity.worldObj, entityId, EntityLivingBase.class );
+			
 			int timeRemaining = nbt.getInteger( "timeRemaining" );
 			PowerEffect theEffect = PowerEffect.getEffectById( nbt.getInteger( "theEffect" ) );
 			Power initiatedPower = PowersRegistry.lookupPowerById( nbt.getInteger( "initiatedPower" ) );
