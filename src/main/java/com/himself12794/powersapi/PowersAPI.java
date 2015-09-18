@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import org.apache.logging.log4j.Logger;
 
+import com.himself12794.powersapi.event.VisualEvents;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.proxy.CommonProxy;
 import com.himself12794.powersapi.util.Reference;
@@ -32,14 +33,15 @@ public class PowersAPI {
 	@SidedProxy( clientSide=Reference.CLIENT_PROXY,	serverSide=Reference.COMMON_PROXY )
 	private static CommonProxy PROXY;
 	
-	public final PropertiesRegistry propertyManager;
+	public final PropertiesHandler propertiesHandler = new PropertiesHandler();
+	public final ModConfig modConfig = new ModConfig();
 	public final PowersRegistry powersRegistry;
 	private boolean isInitialized;
 	private Logger logger;
 	
-	private PowersAPI(PropertiesRegistry pr, PowersRegistry pwr) { 
-		propertyManager = pr;
+	private PowersAPI(PowersRegistry pwr) { 
 		powersRegistry = pwr;
+		
 	}
 	
     @Mod.EventHandler
@@ -61,7 +63,7 @@ public class PowersAPI {
     
     @Mod.InstanceFactory
     public static PowersAPI initializeModInstance() {
-    	return new PowersAPI(new PropertiesRegistry(), PowersRegistry.INSTANCE);
+    	return new PowersAPI(PowersRegistry.INSTANCE);
     }
     
     public static Logger logger() {
@@ -72,8 +74,8 @@ public class PowersAPI {
     	return INSTANCE;
     }
     
-    public static PropertiesRegistry propertiesManager() {
-    	return INSTANCE.propertyManager;
+    public static PropertiesHandler propertiesHandler() {
+    	return INSTANCE.propertiesHandler;
     }
     
     public static ModMetadata metadata() {
@@ -90,6 +92,10 @@ public class PowersAPI {
     
     public static boolean isInitializationComplete() {
     	return INSTANCE.isInitialized;
+    }
+    
+    public static ModConfig getConfig() {
+    	return INSTANCE.modConfig;
     }
     
 }

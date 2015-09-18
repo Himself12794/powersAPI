@@ -744,7 +744,7 @@ public class PowersEntity extends PropertiesBase {
 	}
 
 	public static PowersEntity get(final EntityLivingBase entity) {
-		return PowersAPI.propertiesManager().getWrapper( PowersEntity.class, entity );
+		return PowersAPI.propertiesHandler().getWrapper( PowersEntity.class, entity );
 	}
 
 }

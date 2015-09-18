@@ -15,10 +15,11 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PropertiesHandler;
 import com.himself12794.powersapi.command.EffectsCommand;
 import com.himself12794.powersapi.command.PowersCommand;
 import com.himself12794.powersapi.entity.EntityPower;
-import com.himself12794.powersapi.event.EventsHandler;
+import com.himself12794.powersapi.event.VisualEvents;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.storage.PowersEntity;
@@ -51,14 +52,15 @@ public class CommonProxy {
 
 	public void init(FMLInitializationEvent event) {
 
-		PowersAPI.propertiesManager().registerPropertyClass( EffectsEntity.class, EntityLivingBase.class );
-		PowersAPI.propertiesManager().registerPropertyClass( PowersEntity.class, EntityLivingBase.class );
+		PropertiesHandler ph = PowersAPI.instance().propertiesHandler;
 		
-		EventsHandler uph = new EventsHandler();
-		MinecraftForge.EVENT_BUS.register( uph );
-		FMLCommonHandler.instance().bus().register( uph );
+		MinecraftForge.EVENT_BUS.register( ph );
+		FMLCommonHandler.instance().bus().register( ph );
 		
-		FMLCommonHandler.instance().bus().register( new ModConfig() );
+		FMLCommonHandler.instance().bus().register( PowersAPI.instance().modConfig );
+		
+		ph.registerPropertyClass( EffectsEntity.class );
+		ph.registerPropertyClass( PowersEntity.class );
 		
 
 	}

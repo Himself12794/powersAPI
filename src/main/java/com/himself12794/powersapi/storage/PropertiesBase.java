@@ -64,7 +64,7 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 
 	public final PropertiesBase copyTo(EntityLivingBase entity) {
 
-		PropertiesBase wrapper = PowersAPI.propertiesManager().getWrapper( getClass(), entity );
+		PropertiesBase wrapper = PowersAPI.propertiesHandler().getWrapper( getClass(), entity );
 		NBTTagCompound data = new NBTTagCompound();
 
 		saveNBTData( data );

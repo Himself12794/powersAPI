@@ -284,7 +284,7 @@ public class EffectsEntity extends PropertiesBase {
 	public void onJoinWorld(World world) {}
 	
 	public static EffectsEntity get(EntityLivingBase entity) {
-		return PowersAPI.propertiesManager().getWrapper( EffectsEntity.class, entity );
+		return PowersAPI.propertiesHandler().getWrapper( EffectsEntity.class, entity );
 	}
 	
 	
