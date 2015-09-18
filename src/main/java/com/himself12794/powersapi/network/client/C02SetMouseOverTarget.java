@@ -53,8 +53,8 @@ public class C02SetMouseOverTarget implements IMessage {
 						EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 						if (player != null) {
 							MovingObjectPosition pos = UsefulMethods.movingObjectPositionFromNBT( message.nbttags, player.worldObj );
-							if (message.isPrimary) PowersEntity.get( player ).setMouseOverPrimary( pos );
-							else PowersEntity.get( player ).setMouseOverSecondary( pos );
+							if (message.isPrimary) PowersEntity.get( player ).mouseOverPosPrimary = pos;
+							else PowersEntity.get( player ).mouseOverPosSecondary = pos;
 						}
 					}
 				};

@@ -26,24 +26,21 @@ public final class KeyBindingsHandler {
 	private boolean primaryHadBeenPressed = false;
 	private boolean secondaryHadBeenPressed = false;
 	
-	// TODO make sure to check power being prepared as well
 	@SubscribeEvent
-	public void onKeyUsage(KeyInputEvent event) {
+	public void onKeyUsagePrimary(KeyInputEvent event) {
 		
-		if (ModConfig.keyBindingPrimaryPower.isKeyDown() && !primaryHadBeenPressed) {
+		if (ModConfig.keyBindingPrimaryPower.isKeyDown() != primaryHadBeenPressed) {
 			handlePrimaryPowerKeyBinding();
-			primaryHadBeenPressed = true;
-		} else if (!ModConfig.keyBindingPrimaryPower.isKeyDown() && primaryHadBeenPressed) {
-			handlePrimaryPowerKeyBinding();
-			primaryHadBeenPressed = false;
+			primaryHadBeenPressed = !primaryHadBeenPressed;
 		}
+	}
+	
+	@SubscribeEvent
+	public void onKeyUsageSecondary(KeyInputEvent event) {
 		
-		if (ModConfig.keyBindingSecondaryPower.isKeyDown() && !secondaryHadBeenPressed) {
-			handleSecondaryPowerKeyBinding();
-			secondaryHadBeenPressed = true;
-		} else if (!ModConfig.keyBindingSecondaryPower.isKeyDown() && secondaryHadBeenPressed) {
-			handleSecondaryPowerKeyBinding();
-			secondaryHadBeenPressed = false;
+		if (ModConfig.keyBindingSecondaryPower.isKeyDown() != secondaryHadBeenPressed) {
+			this.handleSecondaryPowerKeyBinding();
+			this.secondaryHadBeenPressed = !this.secondaryHadBeenPressed;
 		}
 	}
 	
@@ -105,7 +102,7 @@ public final class KeyBindingsHandler {
 	        	PowersNetwork.server().powerUse( false, null, Action.STOP );
 	        }
 	    } 
-		
+	    
 	    if (ModConfig.keyBindingSecondaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !ModConfig.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingSecondaryPower() &&  buttonDelaySecondary == 0) {
         	if (power != null) {
 

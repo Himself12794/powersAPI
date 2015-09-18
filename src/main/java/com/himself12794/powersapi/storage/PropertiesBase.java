@@ -1,5 +1,7 @@
 package com.himself12794.powersapi.storage;
 
+import com.himself12794.powersapi.PowersAPI;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,7 +38,7 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	
 	/**
 	 * Called every time the entity takes damage.
-	 * @param affectedEntity TODO
+	 * @param affectedEntity entity affected
 	 * @param source
 	 * @param amount
 	 * @param hasChanged whether or not the amount has been modified by other instances of {@link PropertiesBase}
@@ -51,8 +53,6 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	 * Called when when the entity respawns. (If player)
 	 */
 	public abstract void resetForRespawn();
-
-	public abstract String getIdentifier();
 	
 	public boolean isCreativePlayer() {
 		if (theEntity instanceof EntityPlayer) {
@@ -64,20 +64,13 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 
 	public final PropertiesBase copyTo(EntityLivingBase entity) {
 
-		PropertiesBase wrapper;
-		NBTTagCompound data;
+		PropertiesBase wrapper = PowersAPI.propertiesManager().getWrapper( getClass(), entity );
+		NBTTagCompound data = new NBTTagCompound();
 
-		wrapper = (PropertiesBase) entity.getExtendedProperties( getIdentifier() );
+		saveNBTData( data );
+		wrapper.loadNBTData( data );
 
-		if (wrapper == null) {
-			entity.registerExtendedProperties( getIdentifier(), this );
-		} else {
-			data = new NBTTagCompound();
-			saveNBTData( data );
-			entity.getExtendedProperties( getIdentifier() ).loadNBTData( data );
-		}
-
-		return (PropertiesBase) entity.getExtendedProperties( getIdentifier() );
+		return wrapper;
 
 	}
 }

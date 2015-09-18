@@ -44,6 +44,7 @@ public class EntityPower extends Entity implements IProjectile
 	private int ticksInAir;
 	protected PowerRanged power;
 	protected float modifier = 1.0F;
+	public int castState;
 
 	public EntityPower(World worldIn)
 	{
@@ -86,6 +87,10 @@ public class EntityPower extends Entity implements IProjectile
 				this.getVelocity(), 1.0F );
 	}
 
+	public void setCastState(int state) {
+		this.castState = state;
+	}
+	
 	public EntityPower(World worldIn, EntityLivingBase throwerIn,
 			PowerRanged spell, float modifier, MovingObjectPosition target) {
 

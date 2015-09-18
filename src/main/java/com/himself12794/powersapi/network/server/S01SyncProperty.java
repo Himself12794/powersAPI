@@ -22,7 +22,7 @@ public class S01SyncProperty implements IMessage {
 
 	public S01SyncProperty(PropertiesBase properties) {
 
-		identifier = properties.getIdentifier();
+		identifier = PowersAPI.propertiesManager().getModClassIdentifier( properties.getClass() );
 		compound = new NBTTagCompound();
 		properties.saveNBTData( compound );
 	}
@@ -56,7 +56,7 @@ public class S01SyncProperty implements IMessage {
 						
 						if (player != null) {
 							
-							PropertiesBase wrapper = (PropertiesBase) player.getExtendedProperties( message.identifier );
+							PropertiesBase wrapper = PowersAPI.propertiesManager().getWrapperForIdentifier( message.identifier, player );
 							
 							if (wrapper != null) {
 								wrapper.loadNBTData( message.compound );

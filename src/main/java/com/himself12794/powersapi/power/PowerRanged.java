@@ -23,6 +23,7 @@ public class PowerRanged extends Power {
 		
 		boolean flag1 = onCast(world, caster, modifier, state);
 		EntityPower casting = new EntityPower(world, caster, this, modifier );
+		casting.setCastState( state );
 		boolean flag2 = world.spawnEntityInWorld(casting);
 		return flag1 && flag2;
 		
@@ -41,7 +42,8 @@ public class PowerRanged extends Power {
 	public float getSpellVelocity() {
 		return 2.0F;
 	}
-
+	
+	@Deprecated
 	public boolean isPiercingSpell() {
 		return false;
 	}

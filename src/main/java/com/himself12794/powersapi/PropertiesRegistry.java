@@ -15,6 +15,7 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.PropertiesBase;
+import com.himself12794.powersapi.util.Reference;
 
 /**
  * Manages modded ExtendedEntityProperties.
@@ -44,18 +45,46 @@ public class PropertiesRegistry {
 		return quickReference.keySet();
 	}
 	
+	public Class<? extends EntityLivingBase> getAssociatedEntityType(Class<? extends PropertiesBase> clazz) {
+		
+		if (quickReference.containsKey( clazz )) 
+			return quickReference.get( clazz );
+		else return null;
+		
+	}
+	
+	public Class<? extends PropertiesBase> getPropertyClassForIdentifier(String identifier) {
+		if (this.identifierClassAssociations.containsKey( identifier ))
+			return this.identifierClassAssociations.get( identifier );
+		else return null;
+	}
+	
+	public PropertiesBase getWrapperForIdentifier(String identifier, EntityLivingBase entity) {
+		Class clazz = getPropertyClassForIdentifier(identifier);
+		
+		if (clazz != null) {
+			return getWrapper( clazz, entity );
+		} else return null;
+	}
+	
+	public String getModClassIdentifier(Class<? extends PropertiesBase> clazz) {
+		return Reference.MODID + ":" + clazz.getName();
+	}
+	
 	public void registerPropertiesForEntity(EntityLivingBase entity) {
 		
 		for (Entry<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entry : quickReference.entrySet()) {
+
 			
-			try {
+			if (entry.getValue().isAssignableFrom( entity.getClass() )) {
 				
-				if (entry.getValue().isAssignableFrom( entity.getClass() )) {
-				
+				try {
+					
 					Constructor constructor = entry.getKey().getDeclaredConstructor( entry.getValue() );
 					constructor.setAccessible( true );
 					PropertiesBase wrapper = (PropertiesBase) constructor.newInstance( entity );
-					String identifier = wrapper.getIdentifier();
+					
+					String identifier = getModClassIdentifier(wrapper.getClass());
 					
 					if (entity.getExtendedProperties( identifier ) == null) {
 						entity.registerExtendedProperties( identifier, wrapper );
@@ -64,11 +93,11 @@ public class PropertiesRegistry {
 					if (!identifierClassAssociations.containsKey( identifier )) {
 						identifierClassAssociations.put( identifier, entry.getKey() );
 					}
-				}
-				
-			} catch (Exception e) {
-				PowersAPI.logger().error( e );
-			} 
+					
+				} catch (Exception e) {
+					PowersAPI.logger().error( e );
+				} 
+			}
 			
 		}
 		
@@ -84,7 +113,7 @@ public class PropertiesRegistry {
 			
 			if(wrapper != null) {
 				
-				if (wrapper.getClass().isAssignableFrom( association )) {
+				if (wrapper.getClass().equals( association )) {
 					
 					((PropertiesBase)wrapper).onUpdate();
 				}
@@ -192,6 +221,26 @@ public class PropertiesRegistry {
 			}
 			
 		}
+	}
+	
+	/**
+	 * Gets the wrapper for the associated class, or null of it does not exist.
+	 * 
+	 * @param clazz
+	 * @param entity
+	 * @return
+	 */
+	public <T extends PropertiesBase> T getWrapper(Class<T> clazz, EntityLivingBase entity) {
+		
+		for (Entry<String, Class<? extends PropertiesBase>> entry : this.identifierClassAssociations.entrySet()) {
+			
+			if (entry.getValue().equals( clazz )) {
+				return (T) entity.getExtendedProperties( entry.getKey() );
+			}
+			
+		}
+		
+		return null;
 	}
 	
 }

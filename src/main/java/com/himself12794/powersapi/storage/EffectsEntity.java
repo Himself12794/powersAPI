@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.IEffectActivator;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
@@ -34,7 +35,8 @@ public class EffectsEntity extends PropertiesBase {
 	public boolean addPowerEffect(final PowerEffect effect, final int duration,
 			final EntityLivingBase caster, final Power power) {
 
-		EffectContainer container = new EffectContainer( theEntity, caster, duration, effect, power );
+		EffectContainer container = new EffectContainer( caster, duration, effect, power );
+		container.setAffectedEntity( theEntity );
 		if (container.shouldApplyEffect()) { 
 			powerEffects.put( effect, container );
 			container.onApplied();
@@ -46,6 +48,7 @@ public class EffectsEntity extends PropertiesBase {
 	}
 
 	public void addPowerEffect(final EffectContainer container) {
+		container.setAffectedEntity( theEntity );
 		powerEffects.put( container.theEffect, container );
 	}
 
@@ -278,15 +281,10 @@ public class EffectsEntity extends PropertiesBase {
 	public void init(Entity entity, World world) {}
 
 	@Override
-	public String getIdentifier() {
-		return EffectsEntity.POWER_EFFECTS_GROUP;
-	}
-
-	@Override
 	public void onJoinWorld(World world) {}
 	
 	public static EffectsEntity get(EntityLivingBase entity) {
-		return (EffectsEntity) entity.getExtendedProperties( POWER_EFFECTS_GROUP );
+		return PowersAPI.propertiesManager().getWrapper( EffectsEntity.class, entity );
 	}
 	
 	
