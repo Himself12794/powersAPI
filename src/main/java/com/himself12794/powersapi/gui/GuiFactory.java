@@ -2,14 +2,14 @@ package com.himself12794.powersapi.gui;
 
 import java.util.Set;
 
-import com.himself12794.powersapi.ModConfig;
-import com.himself12794.powersapi.util.Reference;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
+
+import com.himself12794.powersapi.ModConfig;
+import com.himself12794.powersapi.util.Reference;
 
 
 public class GuiFactory implements IModGuiFactory {

@@ -27,36 +27,52 @@ public class PropertiesRegistry {
 	
 	PropertiesRegistry() {}
 
-	private final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> quickReference = Maps.newHashMap();
-	private final Map<String, Class<? extends PropertiesBase>> identifierClassAssociations = Maps.newHashMap();
+	private final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entityMapping = Maps.newHashMap();
+	private final Map<Class<? extends PropertiesBase>, String> identifierClassAssociations = Maps.newHashMap();
 
 	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
+		registerPropertyClass( clazz, clazz2, null );
+	}
+	
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2, String identifier) {
 		
-		if (!quickReference.containsKey( clazz )) {
-			quickReference.put( clazz, clazz2 );
-			PowersAPI.logger().info( "Registered property {}", clazz );
+		String id = identifier != null && !"".equals( identifier ) ? identifier : getModClassIdentifier( clazz );
+		
+		if (!identifierClassAssociations.containsKey( clazz )) {
+			this.identifierClassAssociations.put( clazz, id );
+			PowersAPI.logger().info( "Registered class mapping for property class {}", clazz );
 		} else {
-			PowersAPI.logger().error( "Could not register class {}, entry already exists", clazz);
+			PowersAPI.logger().error( "Could not register properties class {}, entry already exists", clazz);
+		}
+		
+		if (!entityMapping.containsKey( clazz )) {
+			entityMapping.put( clazz, clazz2 );
+			PowersAPI.logger().info( "Registered entity mapping for property class {}", clazz );
+		} else {
+			PowersAPI.logger().error( "Could not register entity for class {}, entry already exists", clazz);
 		}
 		
 	}
 	
 	public Collection<Class<? extends PropertiesBase>> getRegisteredClasses() {
-		return quickReference.keySet();
+		return identifierClassAssociations.keySet();
 	}
 	
 	public Class<? extends EntityLivingBase> getAssociatedEntityType(Class<? extends PropertiesBase> clazz) {
-		
-		if (quickReference.containsKey( clazz )) 
-			return quickReference.get( clazz );
-		else return null;
-		
+		return entityMapping.get( clazz );	
+	}
+	
+	public String getIdentifierForClass(Class<? extends PropertiesBase> clazz) {
+		return identifierClassAssociations.get( clazz );
 	}
 	
 	public Class<? extends PropertiesBase> getPropertyClassForIdentifier(String identifier) {
-		if (this.identifierClassAssociations.containsKey( identifier ))
-			return this.identifierClassAssociations.get( identifier );
-		else return null;
+		
+		for (Entry<Class<? extends PropertiesBase>, String> entry : this.identifierClassAssociations.entrySet()) {
+			if (entry.getValue().equals( identifier )) return entry.getKey();
+		}
+		
+		return null;
 	}
 	
 	public PropertiesBase getWrapperForIdentifier(String identifier, EntityLivingBase entity) {
@@ -73,8 +89,7 @@ public class PropertiesRegistry {
 	
 	public void registerPropertiesForEntity(EntityLivingBase entity) {
 		
-		for (Entry<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entry : quickReference.entrySet()) {
-
+		for (Entry<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entry : entityMapping.entrySet()) {
 			
 			if (entry.getValue().isAssignableFrom( entity.getClass() )) {
 				
@@ -84,14 +99,10 @@ public class PropertiesRegistry {
 					constructor.setAccessible( true );
 					PropertiesBase wrapper = (PropertiesBase) constructor.newInstance( entity );
 					
-					String identifier = getModClassIdentifier(wrapper.getClass());
+					String identifier = getIdentifierForClass( entry.getKey() );
 					
 					if (entity.getExtendedProperties( identifier ) == null) {
 						entity.registerExtendedProperties( identifier, wrapper );
-					}
-					
-					if (!identifierClassAssociations.containsKey( identifier )) {
-						identifierClassAssociations.put( identifier, entry.getKey() );
 					}
 					
 				} catch (Exception e) {
@@ -105,10 +116,10 @@ public class PropertiesRegistry {
 	
 	public void runUpdates(EntityLivingBase entity) {
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
-			String identifier = entry.getKey();
-			Class association = entry.getValue();
+			String identifier = entry.getValue();
+			Class association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -126,10 +137,10 @@ public class PropertiesRegistry {
 	
 	public void syncPlayerToClient(EntityPlayerMP entityPlayer) {
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 			
-			String identifier = entry.getKey();
-			Class clazz = entry.getValue();
+			String identifier = entry.getValue();
+			Class clazz = entry.getKey();
 			IExtendedEntityProperties wrapper = entityPlayer.getExtendedProperties( identifier );
 	
 			if (wrapper.getClass().isAssignableFrom( clazz )) {
@@ -141,10 +152,10 @@ public class PropertiesRegistry {
 	
 	public void runOnJoinWorld(EntityLivingBase entity, World world) {
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
-			String identifier = entry.getKey();
-			Class association = entry.getValue();
+			String identifier = entry.getValue();
+			Class association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -163,10 +174,10 @@ public class PropertiesRegistry {
 		
 		float value = amount;
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
-			String identifier = entry.getKey();
-			Class association = entry.getValue();
+			String identifier = entry.getValue();
+			Class association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -185,10 +196,10 @@ public class PropertiesRegistry {
 	
 	public void runOnRespawn(EntityPlayer player) {
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
-			String identifier = entry.getKey();
-			Class association = entry.getValue();
+			String identifier = entry.getValue();
+			Class association = entry.getKey();
 			IExtendedEntityProperties wrapper = player.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -205,10 +216,10 @@ public class PropertiesRegistry {
 	
 	public void copyAllOver(EntityLivingBase entity1, EntityLivingBase entity2) {
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
-			String identifier = entry.getKey();
-			Class association = entry.getValue();
+			String identifier = entry.getValue();
+			Class association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity1.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -232,10 +243,10 @@ public class PropertiesRegistry {
 	 */
 	public <T extends PropertiesBase> T getWrapper(Class<T> clazz, EntityLivingBase entity) {
 		
-		for (Entry<String, Class<? extends PropertiesBase>> entry : this.identifierClassAssociations.entrySet()) {
+		for (Entry<Class<? extends PropertiesBase>, String> entry : this.identifierClassAssociations.entrySet()) {
 			
-			if (entry.getValue().equals( clazz )) {
-				return (T) entity.getExtendedProperties( entry.getKey() );
+			if (entry.getKey().equals( clazz )) {
+				return (T) entity.getExtendedProperties( entry.getValue() );
 			}
 			
 		}

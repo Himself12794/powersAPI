@@ -32,10 +32,10 @@ public class PowersAPI {
 	@SidedProxy( clientSide=Reference.CLIENT_PROXY,	serverSide=Reference.COMMON_PROXY )
 	private static CommonProxy PROXY;
 	
-	private Logger logger;
-	private final PropertiesRegistry propertyManager;
-	private final PowersRegistry powersRegistry;
+	public final PropertiesRegistry propertyManager;
+	public final PowersRegistry powersRegistry;
 	private boolean isInitialized;
+	private Logger logger;
 	
 	private PowersAPI(PropertiesRegistry pr, PowersRegistry pwr) { 
 		propertyManager = pr;
@@ -60,7 +60,7 @@ public class PowersAPI {
 	}
     
     @Mod.InstanceFactory
-    public static PowersAPI initializeMod() {
+    public static PowersAPI initializeModInstance() {
     	return new PowersAPI(new PropertiesRegistry(), PowersRegistry.INSTANCE);
     }
     
@@ -88,7 +88,7 @@ public class PowersAPI {
     	INSTANCE.powersRegistry.registerPower( power );
     }
     
-    public static boolean initializationComplete() {
+    public static boolean isInitializationComplete() {
     	return INSTANCE.isInitialized;
     }
     

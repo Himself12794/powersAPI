@@ -1,13 +1,13 @@
 package com.himself12794.powersapi.storage;
 
-import com.himself12794.powersapi.PowersAPI;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
+
+import com.himself12794.powersapi.PowersAPI;
 
 /**
  * Implementation of IExtendedEntityProperties for this mod. Base class used by

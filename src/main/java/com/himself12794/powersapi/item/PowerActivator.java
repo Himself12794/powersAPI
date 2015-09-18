@@ -11,11 +11,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;

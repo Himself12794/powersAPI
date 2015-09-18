@@ -1,22 +1,16 @@
 package com.himself12794.powersapi;
 
-import org.lwjgl.input.Keyboard;
-
-import com.himself12794.powersapi.util.Reference;
-
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.input.Keyboard;
+
+import com.himself12794.powersapi.util.Reference;
 
 public class ModConfig {
 
@@ -45,7 +39,7 @@ public class ModConfig {
 	// Register key bindings
 	public static void registerKeyBindings() {
 		
-		if (!PowersAPI.initializationComplete()) {
+		if (!PowersAPI.isInitializationComplete()) {
 			ClientRegistry.registerKeyBinding(keyBindingPrimaryPower);
 			ClientRegistry.registerKeyBinding(keyBindingSecondaryPower);
 			ClientRegistry.registerKeyBinding(keyBindingSwitchState);

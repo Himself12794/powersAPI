@@ -21,10 +21,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 import com.google.common.base.Predicate;
-import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.storage.EffectsEntity;
-import com.himself12794.powersapi.storage.PowersEntity;
 
 public class UsefulMethods {
 
