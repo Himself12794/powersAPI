@@ -31,13 +31,13 @@ public class PowersRegistry {
 	 */
 	Power registerPower(Power power) {
 		
-		String name = power.getUnlocalizedName();
+		String name = power.getRegisteredName();
 		
 		if (!powerExists(name)) {
 			
 			powerRegistry.put(name, power);
 			powerIds.put(powers, name);
-			PowersAPI.logger().info( "Registered " + name );
+			PowersAPI.logger().info( "Registered power " + name );
 			++powers;
 			return power;
 			
@@ -57,11 +57,11 @@ public class PowersRegistry {
 	
 	public static int getPowerId(Power power) {
 		
-		if (INSTANCE.powerIds.containsValue(power.getUnlocalizedName())) {
+		if (INSTANCE.powerIds.containsValue(power.getRegisteredName())) {
 			
 			for (Entry<Integer, String> value : INSTANCE.powerIds.entrySet()) {
 				
-				if (value.getValue().equals(power.getUnlocalizedName()))
+				if (value.getValue().equals(power.getRegisteredName()))
 					return value.getKey();
 				
 			}    		
@@ -101,7 +101,7 @@ public class PowersRegistry {
 	public static <P extends Power> P lookupPower(Class<P> power) {
 		Power powered = null;
 		try {
-			powered = lookupPower(power.newInstance().getUnlocalizedName());
+			powered = lookupPower(power.newInstance().getRegisteredName());
 		} catch (Exception e) {
 			PowersAPI.logger().error( "Could not find class " + power, e );
 		} 
@@ -143,6 +143,6 @@ public class PowersRegistry {
 	 * @return
 	 */
 	public static String validatePowerName(Power power) {
-		return power != null ? power.getUnlocalizedName() : "";
+		return power != null ? power.getRegisteredName() : "";
 	}
 }

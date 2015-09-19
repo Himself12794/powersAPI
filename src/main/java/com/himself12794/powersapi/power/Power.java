@@ -239,7 +239,7 @@ public abstract class Power {
 	public final ItemStack setPower(ItemStack stack) {
 		
 		NBTTagCompound nbt = null;
-		String power = getUnlocalizedName();
+		String power = getRegisteredName();
 		
 		if (!stack.hasTagCompound()) {
 			
@@ -278,6 +278,10 @@ public abstract class Power {
 	
 	public String getDisplayName() {
 		return ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
+	}
+	
+	public String getRegisteredName() {
+		return displayName;
 	}
 	
 	@Override

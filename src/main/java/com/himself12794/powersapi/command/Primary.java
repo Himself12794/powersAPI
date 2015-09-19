@@ -67,7 +67,7 @@ public class Primary implements ICommand {
 				PowersEntity entity = PowersEntity
 						.get( (EntityPlayer) sender
 								.getCommandSenderEntity() );
-				Power commandPower = PowersRegistry.lookupPower( "power." + args[0] );
+				Power commandPower = PowersRegistry.lookupPower( args[0] );
 
 				if (commandPower != null) {
 					if (entity.knowsPower( commandPower )) {
@@ -106,7 +106,7 @@ public class Primary implements ICommand {
 				
 				if (player != null) {
 					PowersEntity entity = PowersEntity.get( player );
-					Power commandPower = PowersRegistry.lookupPower( "power." + args[0] );
+					Power commandPower = PowersRegistry.lookupPower( args[0] );
 
 					if (commandPower != null) {
 

@@ -19,11 +19,17 @@ import com.himself12794.powersapi.util.UsefulMethods;
 
 public final class KeyBindingsHandler {
 	
+	private final Minecraft mc;
+	
 	private int buttonDelayPrimary;
 	private int buttonDelaySecondary;
 	// To prevent the handling of a key binding event if the button state had not changed since last event
-	private boolean primaryHadBeenPressed = false;
-	private boolean secondaryHadBeenPressed = false;
+	private boolean primaryHadBeenPressed;
+	private boolean secondaryHadBeenPressed;
+	
+	public KeyBindingsHandler(Minecraft mc) {
+		this.mc = mc;
+	}
 	
 	@SubscribeEvent
 	public void onKeyUsagePrimary(KeyInputEvent event) {
@@ -38,17 +44,14 @@ public final class KeyBindingsHandler {
 	public void onKeyUsageSecondary(KeyInputEvent event) {
 		
 		if (ModConfig.keyBindingSecondaryPower.isKeyDown() != secondaryHadBeenPressed) {
-			this.handleSecondaryPowerKeyBinding();
-			this.secondaryHadBeenPressed = !this.secondaryHadBeenPressed;
+			handleSecondaryPowerKeyBinding();
+			secondaryHadBeenPressed = !secondaryHadBeenPressed;
 		}
 	}
 	
 	private void handlePrimaryPowerKeyBinding() {
 		
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		World world = Minecraft.getMinecraft().theWorld;
-		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
-		
+		EntityPlayer player = mc.thePlayer;
 		PowersEntity wrapper = PowersEntity.get( player );
     	
     	Power primaryPower = wrapper.getPrimaryPower();
@@ -86,10 +89,7 @@ public final class KeyBindingsHandler {
 	
 	private void handleSecondaryPowerKeyBinding() {	
 		
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		World world = Minecraft.getMinecraft().theWorld;
-		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
-		
+		EntityPlayer player = mc.thePlayer;
 		PowersEntity wrapper = PowersEntity.get( player );
     	
     	Power power = wrapper.getSecondaryPower();

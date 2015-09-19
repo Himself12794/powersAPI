@@ -60,9 +60,11 @@ public class PropertiesHandler {
 			PowersAPI.logger().error( "Could not register properties class {}, entry already exists", clazz);
 		}
 		
+		Class registered = clazz2 == null ? EntityLivingBase.class : clazz2;
+		
 		if (!entityMapping.containsKey( clazz )) {
-			entityMapping.put( clazz, clazz2 == null ? EntityLivingBase.class : clazz2 );
-			PowersAPI.logger().info( "Registered entity mapping for property class {}", clazz );
+			entityMapping.put( clazz, registered );
+			PowersAPI.logger().info( "Registered entity class {}, for property class {}", registered, clazz );
 		} else {
 			PowersAPI.logger().error( "Could not register entity for class {}, entry already exists", clazz);
 		}

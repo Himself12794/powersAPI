@@ -38,6 +38,7 @@ public class PowersEntity extends PropertiesBase {
 	private static final String POWER_SECONDARY = "secondaryPower";
 	private static final String POWER_PREVIOUS_TARGET = "previousTarget";
 	private static final String POWER_PROFILES = "powerProfiles";
+	private static final int tickDelay = 4;
 
 	private int primaryPreparationTime;
 	private int secondaryPreparationTime;
@@ -533,7 +534,7 @@ public class PowersEntity extends PropertiesBase {
 	
 					if (this.primaryUseTimeLeft > 0) {
 	
-						if (this.primaryUseTimeLeft % 4 == 0) {
+						if (this.primaryUseTimeLeft % tickDelay == 0) {
 							primaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosPrimary, profile.useModifier, profile.getState() );
 						}
 						this.primaryUseTimeLeft--;
@@ -583,7 +584,7 @@ public class PowersEntity extends PropertiesBase {
 	
 					if (this.secondaryUseTimeLeft > 0) {
 	
-						if (this.secondaryUseTimeLeft % 4 == 0) {
+						if (this.secondaryUseTimeLeft % tickDelay == 0) {
 							secondaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosSecondary, profile.useModifier, profile.getState() );
 						}
 						this.secondaryUseTimeLeft--;

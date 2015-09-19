@@ -65,7 +65,7 @@ public class Secondary implements ICommand {
 			if (sender.getCommandSenderEntity() instanceof EntityPlayer) {
 
 				PowersEntity entity = PowersEntity.get( (EntityPlayer) sender.getCommandSenderEntity() );
-				Power commandPower = PowersRegistry.lookupPower( "power." + args[0] );
+				Power commandPower = PowersRegistry.lookupPower( args[0] );
 
 				if (commandPower != null) {
 

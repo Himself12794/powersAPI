@@ -30,7 +30,7 @@ public class ClientProxy extends CommonProxy {
 						Minecraft.getMinecraft().getRenderManager() ) );
 
 		ModConfig.registerKeyBindings();
-		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler() );
+		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler(Minecraft.getMinecraft()) );
 		
 	}
 
