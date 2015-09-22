@@ -9,6 +9,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 
 import com.himself12794.powersapi.ModConfig;
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public abstract class BaseCommand implements ICommand {
@@ -47,7 +48,7 @@ public abstract class BaseCommand implements ICommand {
 					StatCollector.translateToLocal( "command.invalid" ) );
 		} else if (args.length > 0) {
 			
-			if (ModConfig.modCommandsEnabled) {
+			if (PowersAPI.config().areModCommandsEnabled()) {
 				
 				ICommand theCommand = getSubCommandByArgs(args);
 				

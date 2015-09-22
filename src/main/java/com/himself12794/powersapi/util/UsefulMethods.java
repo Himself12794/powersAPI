@@ -140,61 +140,12 @@ public class UsefulMethods {
 		return returnMOP;
 	}
 
-	public static BlockPos getBlockFromSide(BlockPos pos, EnumFacing side) {
-
-		switch (side) {
-
-			case DOWN:
-				return pos.up();
-			case UP:
-				return pos.down();
-			case NORTH:
-				return pos.south();
-			case SOUTH:
-				return pos.north();
-			case EAST:
-				return pos.west();
-			case WEST:
-				return pos.east();
-		}
-
-		return pos;
-
-	}
-
-	public static BlockPos getBlockFromSideSwap(BlockPos pos, EnumFacing side) {
-
-		switch (side) {
-
-			case DOWN:
-				return pos.down();
-			case UP:
-				return pos.up();
-			case NORTH:
-				return pos.north();
-			case SOUTH:
-				return pos.south();
-			case EAST:
-				return pos.east();
-			case WEST:
-				return pos.west();
-		}
-
-		return pos;
-
-	}
-
 	public static double distanceAboveGround(EntityLivingBase entity) {
 
 		BlockPos currentLocation = entity.getPosition();
-		BlockPos checkedLocation = entity.getPosition();
-
-		for (int y = currentLocation.getY(); y >= 0; y--) {
-			checkedLocation = new BlockPos( currentLocation.getX(), y,
-					currentLocation.getZ() );
-			Block ground = getBlockAtPos( checkedLocation, entity.worldObj );
-			if (ground.getMaterial() != Material.air) break;
-		}
+		BlockPos checkedLocation;
+		
+		for (checkedLocation = currentLocation; entity.worldObj.isAirBlock( checkedLocation ); checkedLocation = checkedLocation.down());
 
 		return currentLocation.getY() - checkedLocation.getY();
 
@@ -202,22 +153,12 @@ public class UsefulMethods {
 
 	public static void accelerateEntityTowards(Entity target, double x,
 			double y, double z, float velocity) {
-
-		float f2 = MathHelper.sqrt_double( x * x + y * y + z * z );
-		x /= (double) f2;
-		y /= (double) f2;
-		z /= (double) f2;
-		x *= (double) velocity;
-		y *= (double) velocity;
-		z *= (double) velocity;
-		target.motionX = x;
-		target.motionY = y;
-		target.motionZ = z;
-		// float f3 = MathHelper.sqrt_double(x * x + z * z);
-		// target.prevRotationYaw = target.rotationYaw = (float)(Math.atan2(x,
-		// z) * 180.0D / Math.PI);
-		// target.prevRotationPitch = target.rotationPitch =
-		// (float)(Math.atan2(y, (double)f3) * 180.0D / Math.PI);
+		
+		Vec3 moveVec = (new Vec3(x - target.posX, y - target.posY, z - target.posZ)).normalize();
+		
+		target.motionX = moveVec.xCoord * velocity;
+		target.motionY = moveVec.yCoord * velocity;
+		target.motionZ = moveVec.zCoord * velocity;
 
 	}
 	

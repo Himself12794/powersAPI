@@ -34,8 +34,8 @@ public class PowersAPI {
 	private static CommonProxy PROXY;
 	
 	public final PropertiesHandler propertiesHandler = new PropertiesHandler();
-	public final ModConfig modConfig = new ModConfig();
 	public final PowersRegistry powersRegistry;
+	private ModConfig modConfig;
 	private boolean isInitialized;
 	private Logger logger;
 	
@@ -46,6 +46,8 @@ public class PowersAPI {
 	
     @Mod.EventHandler
     public void preinit(final FMLPreInitializationEvent event) {
+
+		modConfig = new ModConfig(event);
     	logger = event.getModLog();
     	PROXY.preinit(event);
     }
@@ -86,6 +88,11 @@ public class PowersAPI {
     	return PROXY;
     }
     
+    /**
+     * Called to register a power with this mod.
+     * 
+     * @param power
+     */
     public static void registerPower(Power power) {
     	INSTANCE.powersRegistry.registerPower( power );
     }
@@ -94,7 +101,7 @@ public class PowersAPI {
     	return INSTANCE.isInitialized;
     }
     
-    public static ModConfig getConfig() {
+    public static ModConfig config() {
     	return INSTANCE.modConfig;
     }
     

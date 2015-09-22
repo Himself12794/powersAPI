@@ -1,4 +1,4 @@
-package com.himself12794.powersapi.gui;
+package com.himself12794.powersapi;
 
 import java.util.Set;
 
@@ -8,7 +8,6 @@ import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
 
-import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.util.Reference;
 
 
@@ -38,8 +37,8 @@ public class GuiFactory implements IModGuiFactory {
 	
 	public static class ModConfigGUI extends GuiConfig {
 		  public ModConfigGUI(GuiScreen parent) {
-		    super(parent, new ConfigElement(ModConfig.powers).getChildElements(),
-		        Reference.MODID, false, false, GuiConfig.getAbridgedConfigPath(ModConfig.config.toString()));
+		    super(parent, new ConfigElement(ModConfig.get().powers).getChildElements(),
+		        Reference.MODID, false, false, GuiConfig.getAbridgedConfigPath(ModConfig.get().toString()));
 		  }
 		}
 

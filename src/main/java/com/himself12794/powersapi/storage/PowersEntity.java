@@ -38,7 +38,7 @@ public class PowersEntity extends PropertiesBase {
 	private static final String POWER_SECONDARY = "secondaryPower";
 	private static final String POWER_PREVIOUS_TARGET = "previousTarget";
 	private static final String POWER_PROFILES = "powerProfiles";
-	private static final int tickDelay = 4;
+	private static final int tickDelay = 2;
 
 	private int primaryPreparationTime;
 	private int secondaryPreparationTime;
@@ -532,10 +532,11 @@ public class PowersEntity extends PropertiesBase {
 						theEntity.swingProgressInt = 1;
 					}
 	
-					if (this.primaryUseTimeLeft > 0) {
+					if (primaryUseTimeLeft > 0) {
 	
-						if (this.primaryUseTimeLeft % tickDelay == 0) {
-							primaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosPrimary, profile.useModifier, profile.getState() );
+						if (primaryUseTimeLeft % tickDelay == 0) {
+							if (primaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosPrimary, profile.useModifier, profile.getState() ))
+								prevTargetPosPrimary = mouseOverPosPrimary;
 						}
 						this.primaryUseTimeLeft--;
 	
@@ -585,7 +586,8 @@ public class PowersEntity extends PropertiesBase {
 					if (this.secondaryUseTimeLeft > 0) {
 	
 						if (this.secondaryUseTimeLeft % tickDelay == 0) {
-							secondaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosSecondary, profile.useModifier, profile.getState() );
+							if (secondaryPower.cast( theEntity.worldObj, theEntity, mouseOverPosSecondary, profile.useModifier, profile.getState() ))
+								prevTargetPosSecondary = mouseOverPosSecondary;
 						}
 						this.secondaryUseTimeLeft--;
 	
@@ -656,6 +658,7 @@ public class PowersEntity extends PropertiesBase {
 
 			if (power.isConcentrationPower()) {
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+					prevTargetPosPrimary = lookVec;
 					primaryPowerInUse = true;
 					primaryUseTimeLeft = power.getMaxConcentrationTime();
 				}
@@ -663,7 +666,7 @@ public class PowersEntity extends PropertiesBase {
 			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 				
 				theEntity.swingItem();
-				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosPrimary, profile.getState() )) {
+				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, lookVec, profile.getState() )) {
 					profile.triggerCooldown();
 				}
 				prevTargetPosPrimary = null;
@@ -713,6 +716,7 @@ public class PowersEntity extends PropertiesBase {
 
 			if (power.isConcentrationPower()) {
 				if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
+					prevTargetPosSecondary = lookVec;
 					secondaryPowerInUse = true;
 					secondaryUseTimeLeft = power.getMaxConcentrationTime();
 				}
@@ -720,8 +724,8 @@ public class PowersEntity extends PropertiesBase {
 			} else if (power.cast( theEntity.worldObj, theEntity, lookVec, profile.useModifier, profile.getState() )) {
 				
 				//theEntity.swingItem();
-				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosSecondary, profile.getState() )) profile
-						.triggerCooldown();
+				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, lookVec, profile.getState() )) 
+					profile.triggerCooldown();
 				prevTargetPosSecondary = null;
 
 			}

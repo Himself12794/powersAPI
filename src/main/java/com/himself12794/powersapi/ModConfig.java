@@ -17,27 +17,27 @@ public class ModConfig {
 	public static final KeyBinding keyBindingPrimaryPower = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
 	public static final KeyBinding keyBindingSecondaryPower = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
 	public static final KeyBinding keyBindingSwitchState = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
-	public static boolean modCommandsEnabled = true;
-	public static Configuration config;
-	public static ConfigCategory powers;
+	public final Configuration mainConfig;
+	public final ConfigCategory powers;
+	private boolean modCommandsEnabled = true;
 	
-	public static void loadConfig(FMLPreInitializationEvent event ) {
-		config = new Configuration(event.getSuggestedConfigurationFile(), true);
-		powers = config.getCategory("Powers API");
+	ModConfig(FMLPreInitializationEvent event ) {
+		mainConfig = new Configuration(event.getSuggestedConfigurationFile(), true);
+		powers = mainConfig.getCategory("Powers API");
 		powers.setLanguageKey( "powers.config" );
 		powers.setComment("Configuration for powers");
 		syncConfig();
 	}
 	
-	public static void syncConfig() {
+	public void syncConfig() {
 		
-		modCommandsEnabled = config.getBoolean( "ModCommandsEnabled", powers.getName(), true, "Whether or not mod commands are enabled" );
+		modCommandsEnabled = mainConfig.getBoolean( "ModCommandsEnabled", powers.getName(), true, "Whether or not mod commands are enabled" );
 		
-		if (config.hasChanged()) config.save();
+		if (mainConfig.hasChanged()) mainConfig.save();
 	}
 	
 	// Register key bindings
-	public static void registerKeyBindings() {
+	public void registerKeyBindings() {
 		
 		if (!PowersAPI.isInitializationComplete()) {
 			ClientRegistry.registerKeyBinding(keyBindingPrimaryPower);
@@ -51,10 +51,17 @@ public class ModConfig {
 	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 		
 		if (event.modID.equals( Reference.MODID )) {
-			System.out.println("Config changed, syncing");
 			syncConfig();
 		}
 		
+	}
+	
+	public boolean areModCommandsEnabled() {
+		return modCommandsEnabled;
+	}
+	
+	public static ModConfig get() {
+		return PowersAPI.config();
 	}
 	
 }

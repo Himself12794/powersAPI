@@ -29,7 +29,7 @@ public class CommonProxy {
 
 	public void serverStartEvent(FMLServerStartingEvent event) {
 
-		if (ModConfig.modCommandsEnabled) {
+		if (PowersAPI.config().areModCommandsEnabled()) {
 			event.registerServerCommand( new PowersCommand() );
 			event.registerServerCommand( new EffectsCommand() );
 		}
@@ -37,7 +37,6 @@ public class CommonProxy {
 
 	public void preinit(FMLPreInitializationEvent event) {
 		
-		ModConfig.loadConfig(event);
 		configureMetadata(PowersAPI.metadata());
 		
 		// Registering message types
@@ -57,10 +56,10 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register( ph );
 		FMLCommonHandler.instance().bus().register( ph );
 		
-		FMLCommonHandler.instance().bus().register( PowersAPI.instance().modConfig );
-		
 		ph.registerPropertyClass( EffectsEntity.class );
 		ph.registerPropertyClass( PowersEntity.class );
+		
+		FMLCommonHandler.instance().bus().register( ModConfig.get() );
 		
 
 	}
