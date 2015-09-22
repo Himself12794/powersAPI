@@ -12,6 +12,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
+
+/**
+ * Sets the mouse over for the server. Used to to track instant powers as they are being used. 
+ * 
+ * @author Himself12794
+ *
+ */
 public class C02SetMouseOverTarget implements IMessage {
 
 	private NBTTagCompound nbttags;

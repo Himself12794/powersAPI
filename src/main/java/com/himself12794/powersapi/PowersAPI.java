@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import org.apache.logging.log4j.Logger;
 
-import com.himself12794.powersapi.event.VisualEvents;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.proxy.CommonProxy;
 import com.himself12794.powersapi.util.Reference;
@@ -30,7 +29,7 @@ public class PowersAPI {
 	@Mod.Metadata(Reference.MODID)
 	private static ModMetadata META;
 	
-	@SidedProxy( clientSide=Reference.CLIENT_PROXY,	serverSide=Reference.COMMON_PROXY )
+	@SidedProxy( clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY )
 	private static CommonProxy PROXY;
 	
 	public final PropertiesHandler propertiesHandler = new PropertiesHandler();

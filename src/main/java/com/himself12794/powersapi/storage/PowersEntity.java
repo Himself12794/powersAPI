@@ -23,7 +23,7 @@ import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
- * Utility class used for easier access of information stored in NBT tag data.
+ * Used to manage the powers logic for an entity that can use them.
  * 
  * @author Himself12794
  *
@@ -65,7 +65,7 @@ public class PowersEntity extends PropertiesBase {
 	public MovingObjectPosition mouseOverPosPrimary;
 	public MovingObjectPosition mouseOverPosSecondary;
 
-	protected PowersEntity(EntityLivingBase entity) {
+	protected PowersEntity(EntityPlayer entity) {
 		super( entity );
 	}
 

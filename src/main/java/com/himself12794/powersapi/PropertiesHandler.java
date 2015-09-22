@@ -9,12 +9,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
@@ -25,7 +24,9 @@ import com.himself12794.powersapi.storage.PropertiesBase;
 import com.himself12794.powersapi.util.Reference;
 
 /**
- * Manages modded IExtendedEntityProperties.
+ * Manages modded IExtendedEntityProperties. Automatically registers them whenever an
+ * entity is constructed, if the Wrapper is assignable for the entity class as registered.
+ * Automatically calls associated methods with associated events.
  * 
  * @author Himself12794
  *
@@ -99,7 +100,7 @@ public class PropertiesHandler {
 		return (T) entity.getExtendedProperties( getIdentifierForPropertyClass( clazz ) );
 	}
 	
-	public String getModClassIdentifier(Class<? extends PropertiesBase> clazz) {
+	private String getModClassIdentifier(Class<? extends PropertiesBase> clazz) {
 		return Reference.MODID + ":" + clazz.getName();
 	}
 	

@@ -12,14 +12,18 @@ import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 
+/**
+ * Used to synchronize client side when a power is set on the server. Used by commands.
+ * 
+ * @author Himself12794
+ *
+ */
 public class S02SetPower implements IMessage {
 
 	private Power power;
 	private Selection selection;
 
-	public S02SetPower() {
-
-	}
+	public S02SetPower() { }
 
 	public S02SetPower(Power power, Selection selection) {
 

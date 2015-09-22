@@ -1,5 +1,11 @@
 package com.himself12794.powersapi.util;
 
+/**
+ * String constants for the mod.
+ * 
+ * @author Himself12794
+ *
+ */
 public final class Reference {
 	
 	private Reference() {}

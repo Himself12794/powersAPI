@@ -21,7 +21,15 @@ import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.Reference;
 
+/**
+ * Was used to cast powers, now used to simply teach players the power. No longer registered,
+ * however, and doesn't exist in the game.  
+ * 
+ * @author Himself12794
+ *
+ */
 @SuppressWarnings("deprecation")
+@Deprecated
 public class PowerActivator extends Item {
 	
 	private final String name = "powerActivator";

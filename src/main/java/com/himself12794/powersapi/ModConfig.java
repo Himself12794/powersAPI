@@ -12,13 +12,19 @@ import org.lwjgl.input.Keyboard;
 
 import com.himself12794.powersapi.util.Reference;
 
+/**
+ * Configuration options for this mod.
+ * 
+ * @author Himself12794
+ *
+ */
 public class ModConfig {
 
 	public static final KeyBinding keyBindingPrimaryPower = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
 	public static final KeyBinding keyBindingSecondaryPower = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
 	public static final KeyBinding keyBindingSwitchState = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
-	public final Configuration mainConfig;
-	public final ConfigCategory powers;
+	final Configuration mainConfig;
+	final ConfigCategory powers;
 	private boolean modCommandsEnabled = true;
 	
 	ModConfig(FMLPreInitializationEvent event ) {
@@ -61,7 +67,7 @@ public class ModConfig {
 	}
 	
 	public static boolean areModCommandsEnabled() {
-		return get().areModCommandsEnabled();
+		return get().modCommandsEnabled;
 	}
 	
 }

@@ -9,7 +9,12 @@ import com.google.common.collect.Maps;
 import com.himself12794.powersapi.power.IEffectActivator;
 import com.himself12794.powersapi.power.Power;
 
-
+/**
+ * The registration for powers. All powers registered by this should be accessible.
+ * 
+ * @author Himself12794
+ *
+ */
 public class PowersRegistry {
 	
 	static final PowersRegistry INSTANCE = new PowersRegistry();

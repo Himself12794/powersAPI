@@ -1,6 +1,5 @@
 package com.himself12794.powersapi.proxy;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -19,7 +18,6 @@ import com.himself12794.powersapi.PropertiesHandler;
 import com.himself12794.powersapi.command.EffectsCommand;
 import com.himself12794.powersapi.command.PowersCommand;
 import com.himself12794.powersapi.entity.EntityPower;
-import com.himself12794.powersapi.event.VisualEvents;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.storage.PowersEntity;
@@ -57,7 +55,7 @@ public class CommonProxy {
 		FMLCommonHandler.instance().bus().register( ph );
 		
 		ph.registerPropertyClass( EffectsEntity.class );
-		ph.registerPropertyClass( PowersEntity.class );
+		ph.registerPropertyClass( PowersEntity.class, EntityPlayer.class );
 		
 		FMLCommonHandler.instance().bus().register( ModConfig.get() );
 		

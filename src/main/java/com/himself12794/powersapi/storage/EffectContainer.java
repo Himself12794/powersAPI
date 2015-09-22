@@ -9,6 +9,12 @@ import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
 
+/**
+ * Holds information for an active effect on an entity.
+ * 
+ * @author Himself12794
+ *
+ */
 public final class EffectContainer {
 
 	private EntityLivingBase affectedEntity;
