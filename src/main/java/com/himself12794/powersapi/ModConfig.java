@@ -56,12 +56,12 @@ public class ModConfig {
 		
 	}
 	
-	public boolean areModCommandsEnabled() {
-		return modCommandsEnabled;
-	}
-	
 	public static ModConfig get() {
 		return PowersAPI.config();
+	}
+	
+	public static boolean areModCommandsEnabled() {
+		return get().areModCommandsEnabled();
 	}
 	
 }

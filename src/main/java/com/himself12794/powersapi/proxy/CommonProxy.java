@@ -29,7 +29,7 @@ public class CommonProxy {
 
 	public void serverStartEvent(FMLServerStartingEvent event) {
 
-		if (PowersAPI.config().areModCommandsEnabled()) {
+		if (ModConfig.areModCommandsEnabled()) {
 			event.registerServerCommand( new PowersCommand() );
 			event.registerServerCommand( new EffectsCommand() );
 		}
