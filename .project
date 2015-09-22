@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>powersAPI</name>
+	<name>PowersAPI</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,16 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>.link0</name>
-			<type>2</type>
-			<location>C:/Users/Philip/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.1.1375/start</location>
-		</link>
-		<link>
-			<name>.link1</name>
-			<type>2</type>
-			<location>C:/Users/phwhitin/.gradle/caches/minecraft/net/minecraftforge/forge/1.8-11.14.1.1419/start</location>
-		</link>
-	</linkedResources>
 </projectDescription>

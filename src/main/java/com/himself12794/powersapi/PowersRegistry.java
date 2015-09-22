@@ -34,16 +34,15 @@ public class PowersRegistry {
 	 * @param power
 	 * @return 
 	 */
-	Power registerPower(Power power) {
+	public Power registerPower(Power power) {
 		
 		String name = power.getRegisteredName();
 		
 		if (!powerExists(name)) {
 			
 			powerRegistry.put(name, power);
-			powerIds.put(powers, name);
+			powerIds.put(powers++, name);
 			PowersAPI.logger().info( "Registered power " + name );
-			++powers;
 			return power;
 			
 		} else {
@@ -72,7 +71,7 @@ public class PowersRegistry {
 			}    		
 		}
 		
-		return -1;
+		return 0;
 		
 	}
 	
