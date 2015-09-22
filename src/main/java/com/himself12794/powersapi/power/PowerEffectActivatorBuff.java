@@ -24,12 +24,17 @@ public class PowerEffectActivatorBuff extends PowerBuff implements
 	private final int effectDuration;
 	
 	public PowerEffectActivatorBuff(String name, int cooldown, int maxConcentrationTime, PowerEffect effect, int duration) {
-		this.setUnlocalizedName(name);
-		this.setCoolown(cooldown);
+		super(name);
+		this.setCooldown(cooldown);
 		this.setMaxConcentrationTime(maxConcentrationTime);
 		this.linkedEffect = effect;
 		this.effectDuration = duration;
 		setDuration(effectDuration);
+	}
+	
+	public PowerEffectActivatorBuff(String name, int cooldown, int maxConcentrationTime, PowerEffect effect, int duration, int maxLevel) {
+		this(name, cooldown, maxConcentrationTime, effect, duration);
+		this.setMaxLevel( maxLevel );
 	}
 
 	public final boolean onFinishedCastingEarly(World world, EntityLivingBase entityIn,

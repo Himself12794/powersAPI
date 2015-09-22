@@ -1,7 +1,6 @@
 package com.himself12794.powersapi.network.server;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -23,7 +22,7 @@ public class S01SyncProperty implements IMessage {
 
 	public S01SyncProperty(PropertiesBase properties) {
 
-		identifier = properties.getIdentifier();
+		identifier = PowersAPI.propertiesHandler().getModClassIdentifier( properties.getClass() );
 		compound = new NBTTagCompound();
 		properties.saveNBTData( compound );
 	}
@@ -53,11 +52,11 @@ public class S01SyncProperty implements IMessage {
 					@Override
 					public void run() {
 						
-						EntityPlayer player = PowersAPI.proxy.getPlayerFromContext(ctx);
+						EntityPlayer player = PowersAPI.proxy().getPlayerFromContext(ctx);
 						
 						if (player != null) {
 							
-							PropertiesBase wrapper = (PropertiesBase) player.getExtendedProperties( message.identifier );
+							PropertiesBase wrapper = PowersAPI.propertiesHandler().getWrapperForIdentifier( message.identifier, player );
 							
 							if (wrapper != null) {
 								wrapper.loadNBTData( message.compound );
@@ -66,7 +65,7 @@ public class S01SyncProperty implements IMessage {
 					}
 				};
 				
-				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, task );
 			}
 
 			return null;

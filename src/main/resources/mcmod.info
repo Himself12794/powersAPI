@@ -4,7 +4,6 @@
   "version" : "1.0-rev8",
   "description": "Core Mod Required by Some Power Mods",
   "mcversion" : "1.8-11.14.1.1375",
-  "authorList": [ "Himself12794" ],
   "useDependencyInformation" : true,
   "requiredMods": [ "Forge" ]
 }]

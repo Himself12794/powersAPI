@@ -1,13 +1,14 @@
 package com.himself12794.powersapi.network.server;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 
@@ -36,7 +37,7 @@ public class S02SetPower implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 
-		power = Power.lookupPowerById( ByteBufUtils.readVarInt( buf, 4 ) );
+		power = PowersRegistry.lookupPowerById( ByteBufUtils.readVarInt( buf, 4 ) );
 		selection = ByteBufUtils.readVarShort( buf ) == 0 ? Selection.PRIMARY : Selection.SECONDARY;
 	}
 
@@ -52,8 +53,10 @@ public class S02SetPower implements IMessage {
 					@Override
 					public void run() {
 						
-						if (PowersAPI.proxy.getPlayerFromContext(ctx) != null) {
-							PowersEntity pw = PowersEntity.get( PowersAPI.proxy.getPlayerFromContext(ctx) );
+						EntityPlayer player = PowersAPI.proxy().getPlayerFromContext(ctx);
+						
+						if (player != null) {
+							PowersEntity pw = PowersEntity.get( player );
 							
 							if (message.selection == Selection.PRIMARY) 
 								pw.setPrimaryPower( message.power );
@@ -63,7 +66,7 @@ public class S02SetPower implements IMessage {
 					}
 				};
 				
-				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, task );
 				
 			}
 

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -12,13 +11,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.ModCreativeTabs;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.config.Config;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
@@ -32,14 +29,12 @@ public class PowerActivator extends Item {
 	public PowerActivator() {
 		setMaxStackSize(1);
 		setHasSubtypes(true);
-		GameRegistry.registerItem(this, name);
 		setUnlocalizedName(Reference.MODID + "_" + name);
-		if (Config.enablePowerActivator) setCreativeTab(ModCreativeTabs.powersAPI);
 	}
     
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player){
-    	Power power = Power.getPower(stack);
+    	Power power = PowersRegistry.getPower(stack);
     	
     	if (power != null) {
     		PowersEntity.get( player ).teachPower( power );
@@ -50,7 +45,7 @@ public class PowerActivator extends Item {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4){
 
-		Power power = Power.lookupPower(stack);
+		Power power = PowersRegistry.lookupPower(stack);
 		float modifier = 1.0F;
     	if (power != null) {
     		
@@ -80,7 +75,7 @@ public class PowerActivator extends Item {
     } 
    
     public void getSubItems(Item itemIn, CreativeTabs tab, List subItems) {
-        Map<String, Power> spells = Power.getPowers();
+        Map<String, Power> spells = PowersRegistry.getPowers();
         
         subItems.add(new ItemStack(itemIn));
         
@@ -91,14 +86,14 @@ public class PowerActivator extends Item {
     
     @Override
     public int getItemStackLimit(ItemStack stack) {
-        return Power.hasPower(stack) ? 1 : 64;
+        return PowersRegistry.hasPower(stack) ? 1 : 64;
     }
     
     @Override
     public String getUnlocalizedName(ItemStack stack) {
     	
     	String name = getUnlocalizedName();
-    	Power spell = Power.lookupPower(stack);
+    	Power spell = PowersRegistry.lookupPower(stack);
     	
     	if (spell != null) {
     		name = spell.getUnlocalizedName();
@@ -117,10 +112,10 @@ public class PowerActivator extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean showDurabilityBar(ItemStack stack) {
-    	if (PowersAPI.proxy.getSide().isClient()) {
+    	if (PowersAPI.proxy().getSide().isClient()) {
         	
     	    EntityPlayer player = Minecraft.getMinecraft().thePlayer;	    	
-    	    if (Power.getPower(stack) != null) return Power.hasPower(stack) && PowersEntity.get( player ).getCooldownRemaining(Power.getPower(stack)) > 0;
+    	    if (PowersRegistry.getPower(stack) != null) return PowersRegistry.hasPower(stack) && PowersEntity.get( player ).getCooldownRemaining(PowersRegistry.getPower(stack)) > 0;
     	    return false;
     		
     	} else {
@@ -132,12 +127,12 @@ public class PowerActivator extends Item {
     @SideOnly(Side.CLIENT)
     public double getDurabilityForDisplay(ItemStack stack) {
     	
-    	if (PowersAPI.proxy.getSide().isClient()) {
+    	if (PowersAPI.proxy().getSide().isClient()) {
     		
-        	if (!Power.hasPower(stack)) return 1.0D;
+        	if (!PowersRegistry.hasPower(stack)) return 1.0D;
         	
         	EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        	Power power = Power.getPower(stack);
+        	Power power = PowersRegistry.getPower(stack);
         	PowerProfile profile = PowersEntity.get( player ).getPowerProfile( power );
         	
             return ((double)PowersEntity.get( player ).getCooldownRemaining( power ) ) / (double)power.getCooldown(profile);
@@ -149,12 +144,7 @@ public class PowerActivator extends Item {
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect( ItemStack itemStack ){
-    	return Power.hasPower(itemStack);    	
-    }
-    
-    public ModelResourceLocation getModel(ItemStack stack, EntityPlayer player, int useRemaining) {
-    	if (Power.hasPower(stack) && Power.getPower(stack) != null) return Power.getPower(stack).getModel(stack, player, useRemaining);
-    	return null;
+    	return PowersRegistry.hasPower(itemStack);    	
     }
 	
 	public String getName() {

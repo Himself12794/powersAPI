@@ -8,6 +8,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
 
+import com.himself12794.powersapi.ModConfig;
+import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.util.UsefulMethods;
 
 public abstract class BaseCommand implements ICommand {
@@ -39,18 +41,23 @@ public abstract class BaseCommand implements ICommand {
 	}
 
 	@Override
-	public void execute(ICommandSender sender, String[] args)
-			throws CommandException {
-
+	public void execute(ICommandSender sender, String[] args) throws CommandException {
+		
 		if (args.length == 0) {
 			throw new CommandException(
 					StatCollector.translateToLocal( "command.invalid" ) );
 		} else if (args.length > 0) {
 			
-			ICommand theCommand = getSubCommandByArgs(args);
-			
-			if (theCommand != null) theCommand.execute( sender, dropFirstString(args) );
-			else throw new CommandException("command.invalid");
+			if (PowersAPI.config().areModCommandsEnabled()) {
+				
+				ICommand theCommand = getSubCommandByArgs(args);
+				
+				if (theCommand != null) theCommand.execute( sender, dropFirstString(args) );
+				else throw new CommandException("command.invalid");
+				
+			} else {
+				throw new CommandException( "Commands have been disabled in the config." );
+			}
 			
 		}
 

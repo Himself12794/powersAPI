@@ -15,25 +15,27 @@ import com.himself12794.powersapi.util.UsefulMethods;
 public class C02SetMouseOverTarget implements IMessage {
 
 	private NBTTagCompound nbttags;
+	private boolean isPrimary;
 
-	public C02SetMouseOverTarget() {
+	public C02SetMouseOverTarget() { }
 
-	}
+	public C02SetMouseOverTarget(boolean isPrimary, MovingObjectPosition pos) {
 
-	public C02SetMouseOverTarget(MovingObjectPosition pos) {
-
+		this.isPrimary = isPrimary;
 		this.nbttags = UsefulMethods.movingObjectPosToNBT( pos );
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 
+		ByteBufUtils.writeVarShort( buf, isPrimary ? 1 : 0 );
 		ByteBufUtils.writeTag( buf, nbttags );
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 
+		isPrimary = ByteBufUtils.readVarShort( buf ) == 1;
 		nbttags = ByteBufUtils.readTag( buf );
 	}
 
@@ -48,14 +50,16 @@ public class C02SetMouseOverTarget implements IMessage {
 
 					@Override
 					public void run() {
-						EntityPlayer player =  PowersAPI.proxy.getPlayerFromContext( ctx );
+						EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 						if (player != null) {
-							PowersEntity.get( player ).mouseOverPos = UsefulMethods.movingObjectPositionFromNBT( message.nbttags, player.worldObj );						
+							MovingObjectPosition pos = UsefulMethods.movingObjectPositionFromNBT( message.nbttags, player.worldObj );
+							if (message.isPrimary) PowersEntity.get( player ).mouseOverPosPrimary = pos;
+							else PowersEntity.get( player ).mouseOverPosSecondary = pos;
 						}
 					}
 				};
 				
-				PowersAPI.proxy.scheduleTaskBasedOnContext( ctx, task );
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, task );
 			}
 
 			return null;

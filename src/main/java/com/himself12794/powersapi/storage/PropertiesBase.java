@@ -1,23 +1,13 @@
 package com.himself12794.powersapi.storage;
 
-import java.lang.reflect.Constructor;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.network.PowersNetwork;
 
 /**
  * Implementation of IExtendedEntityProperties for this mod. Base class used by
@@ -45,30 +35,42 @@ public abstract class PropertiesBase implements IExtendedEntityProperties {
 	 * @param world the world the entity is joining
 	 */
 	public abstract void onJoinWorld(World world);
+	
+	/**
+	 * Called every time the entity takes damage.
+	 * @param affectedEntity entity affected
+	 * @param source
+	 * @param amount
+	 * @param hasChanged whether or not the amount has been modified by other instances of {@link PropertiesBase}
+	 * 
+	 * @return the new damage amount
+	 */
+	public float onDamaged(EntityLivingBase affectedEntity, DamageSource source, float amount, boolean hasChanged) {
+		return amount;
+	}
 
 	/**
 	 * Called when when the entity respawns. (If player)
 	 */
 	public abstract void resetForRespawn();
-
-	public abstract String getIdentifier();
+	
+	public boolean isCreativePlayer() {
+		if (theEntity instanceof EntityPlayer) {
+			return ((EntityPlayer)theEntity).capabilities.isCreativeMode;
+		}
+		
+		return false;
+	}
 
 	public final PropertiesBase copyTo(EntityLivingBase entity) {
 
-		PropertiesBase wrapper;
-		NBTTagCompound data;
+		PropertiesBase wrapper = PowersAPI.propertiesHandler().getWrapper( getClass(), entity );
+		NBTTagCompound data = new NBTTagCompound();
 
-		wrapper = (PropertiesBase) entity.getExtendedProperties( getIdentifier() );
+		saveNBTData( data );
+		wrapper.loadNBTData( data );
 
-		if (wrapper == null) {
-			entity.registerExtendedProperties( getIdentifier(), this );
-		} else {
-			data = new NBTTagCompound();
-			saveNBTData( data );
-			entity.getExtendedProperties( getIdentifier() ).loadNBTData( data );
-		}
-
-		return (PropertiesBase) entity.getExtendedProperties( getIdentifier() );
+		return wrapper;
 
 	}
 }

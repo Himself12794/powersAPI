@@ -2,7 +2,6 @@ package com.himself12794.powersapi.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -10,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import com.himself12794.powersapi.config.KeyBindings;
+import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;
@@ -20,63 +19,103 @@ import com.himself12794.powersapi.util.UsefulMethods;
 
 public final class KeyBindingsHandler {
 	
-	private int buttonDelay = 0;
+	private final Minecraft mc;
+	
+	private int buttonDelayPrimary;
+	private int buttonDelaySecondary;
 	// To prevent the handling of a key binding event if the button state had not changed since last event
-	private boolean primaryHadBeenPressed = false;
-	private boolean secondaryHadBeenPressed = false;
+	private boolean primaryHadBeenPressed;
+	private boolean secondaryHadBeenPressed;
+	
+	public KeyBindingsHandler(Minecraft mc) {
+		this.mc = mc;
+	}
 	
 	@SubscribeEvent
-	public void onKeyUsage(KeyInputEvent event) {
+	public void onKeyUsagePrimary(KeyInputEvent event) {
 		
-		if (KeyBindings.PRIMARY_POWER.isKeyDown() && !primaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.PRIMARY_POWER);
-			primaryHadBeenPressed = true;
-		} else if (!KeyBindings.PRIMARY_POWER.isKeyDown() && primaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.PRIMARY_POWER);
-			primaryHadBeenPressed = false;
-		}
-		
-		if (KeyBindings.SECONDARY_POWER.isKeyDown() && !secondaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.SECONDARY_POWER);
-			secondaryHadBeenPressed = true;
-		} else if (!KeyBindings.SECONDARY_POWER.isKeyDown() && secondaryHadBeenPressed) {
-			handleKeyBinding(KeyBindings.SECONDARY_POWER);
-			secondaryHadBeenPressed = false;
+		if (ModConfig.keyBindingPrimaryPower.isKeyDown() != primaryHadBeenPressed) {
+			handlePrimaryPowerKeyBinding();
+			primaryHadBeenPressed = !primaryHadBeenPressed;
 		}
 	}
 	
-	private void handleKeyBinding(KeyBinding binding) {
+	@SubscribeEvent
+	public void onKeyUsageSecondary(KeyInputEvent event) {
 		
-		EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-		World world = Minecraft.getMinecraft().theWorld;
-		GameSettings gameSettings = Minecraft.getMinecraft().gameSettings;
+		if (ModConfig.keyBindingSecondaryPower.isKeyDown() != secondaryHadBeenPressed) {
+			handleSecondaryPowerKeyBinding();
+			secondaryHadBeenPressed = !secondaryHadBeenPressed;
+		}
+	}
+	
+	private void handlePrimaryPowerKeyBinding() {
 		
+		EntityPlayer player = mc.thePlayer;
 		PowersEntity wrapper = PowersEntity.get( player );
     	
-    	Power power = binding == KeyBindings.PRIMARY_POWER ? wrapper.getPrimaryPower() : wrapper.getSecondaryPower();
+    	Power primaryPower = wrapper.getPrimaryPower();
 		
-		if (wrapper.isUsingPower()){
+		if (wrapper.isUsingPrimaryPower()){
 			
-	        if (!KeyBindings.PRIMARY_POWER.isKeyDown() && !KeyBindings.SECONDARY_POWER.isKeyDown()) {
-	        	wrapper.stopUsingPower();
-	        	PowersNetwork.server().powerUse( null, null, Action.STOP );
+	        if (!ModConfig.keyBindingPrimaryPower.isKeyDown()) {
+	        	wrapper.stopUsingPrimaryPower();
+	        	PowersNetwork.server().powerUse( true, null, Action.STOP );
 	        }
 	    } 
 		
-	    if (binding.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !KeyBindings.SWITCH_STATE.isKeyDown() && !wrapper.isUsingPower() && buttonDelay == 0) {
+	    if (ModConfig.keyBindingPrimaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !ModConfig.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingPrimaryPower() && buttonDelayPrimary == 0) {
+        	if (primaryPower != null) {
+
+        		buttonDelayPrimary = 4;
+        		float range =  primaryPower instanceof PowerInstant ? ((PowerInstant)primaryPower).getRange() : 50.0F;
+        		MovingObjectPosition lookVec = UsefulMethods.getMouseOverExtended( range );
+	        	wrapper.usePrimaryPower( lookVec );
+	        	PowersNetwork.server().powerUse( true, lookVec, Action.START );
+        	}
+	    } else if (!wrapper.isUsingPrimaryPower() && ModConfig.keyBindingSwitchState.isKeyDown() && ModConfig.keyBindingPrimaryPower.isKeyDown() && buttonDelayPrimary == 0) {
+	    	
+	    	if (primaryPower != null) {
+	    		
+	    		buttonDelayPrimary = 4;
+	    		wrapper.getPowerProfile( primaryPower ).cycleState(true);
+	    		PowersNetwork.server().cyclePowerState( primaryPower );
+	    		
+	    	}
+	    	
+	    }	
+		
+	}
+	
+	private void handleSecondaryPowerKeyBinding() {	
+		
+		EntityPlayer player = mc.thePlayer;
+		PowersEntity wrapper = PowersEntity.get( player );
+    	
+    	Power power = wrapper.getSecondaryPower();
+	    
+	    if (wrapper.isUsingSecondaryPower()){
+	    	
+	        if (!ModConfig.keyBindingSecondaryPower.isKeyDown()) {
+	        	wrapper.stopUsingSecondaryPower();
+	        	PowersNetwork.server().powerUse( false, null, Action.STOP );
+	        }
+	    } 
+	    
+	    if (ModConfig.keyBindingSecondaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !ModConfig.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingSecondaryPower() &&  buttonDelaySecondary == 0) {
         	if (power != null) {
 
-        		buttonDelay = 4;
+        		buttonDelaySecondary = 4;
         		float range =  power instanceof PowerInstant ? ((PowerInstant)power).getRange() : 50.0F;
         		MovingObjectPosition lookVec = UsefulMethods.getMouseOverExtended( range );
-	        	wrapper.usePower( power, lookVec );
-	        	PowersNetwork.server().powerUse(power, lookVec, Action.START);
+	        	wrapper.useSecondaryPower( lookVec );
+	        	PowersNetwork.server().powerUse( false, lookVec, Action.START );
         	}
-	    } else if (!wrapper.isUsingPower() && KeyBindings.SWITCH_STATE.isKeyDown() && binding.isKeyDown() && buttonDelay == 0) {
+	    } else if (!wrapper.isUsingSecondaryPower() && ModConfig.keyBindingSwitchState.isKeyDown() && ModConfig.keyBindingSecondaryPower.isKeyDown() && buttonDelaySecondary == 0) {
 	    	
 	    	if (power != null) {
 	    		
-	    		buttonDelay = 4;
+	    		buttonDelaySecondary = 4;
 	    		wrapper.getPowerProfile( power ).cycleState(true);
 	    		PowersNetwork.server().cyclePowerState( power );
 	    		
@@ -91,13 +130,19 @@ public final class KeyBindingsHandler {
 		
 		if (Minecraft.getMinecraft().thePlayer != null) {
 			
-			if (buttonDelay > 0) buttonDelay--;
+			if (buttonDelayPrimary > 0) buttonDelayPrimary--;
+			if (buttonDelaySecondary > 0) buttonDelaySecondary--;
 			
 			PowersEntity dw = PowersEntity.get( Minecraft.getMinecraft().thePlayer );
 			
-			if (dw.getPowerInUse() instanceof PowerInstant) {
-				dw.mouseOverPos = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPowerInUse()).getRange() );
-				PowersNetwork.server().setMouseOver( dw.mouseOverPos );
+			if (dw.getPrimaryPower() instanceof PowerInstant && dw.isUsingPrimaryPower()) {
+				dw.mouseOverPosPrimary = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getPrimaryPower()).getRange() );
+				PowersNetwork.server().setMouseOver( true, dw.mouseOverPosPrimary );
+			}
+			
+			if (dw.getSecondaryPower() instanceof PowerInstant && dw.isUsingSecondaryPower()) {
+				dw.mouseOverPosSecondary = UsefulMethods.getMouseOverExtended( ((PowerInstant)dw.getSecondaryPower()).getRange() );
+				PowersNetwork.server().setMouseOver( false, dw.mouseOverPosSecondary );
 			}
 
 		}

@@ -2,13 +2,13 @@ package com.himself12794.powersapi.network.client;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 
@@ -16,6 +16,7 @@ import com.himself12794.powersapi.storage.PowersEntity;
 public class C03CyclePowerState implements IMessage {
 	
 	private Power power;
+	private boolean primary;
 	
 	public C03CyclePowerState() { }
 
@@ -26,14 +27,14 @@ public class C03CyclePowerState implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 
-		ByteBufUtils.writeVarInt( buf, power.getId(), ByteBufUtils.varIntByteCount( Power.getPowerCount() ) );
+		ByteBufUtils.writeVarInt( buf, power.getId(), ByteBufUtils.varIntByteCount( PowersRegistry.getPowerCount() ) );
 
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 
-		power = Power.lookupPowerById( ByteBufUtils.readVarInt( buf, ByteBufUtils.varIntByteCount( Power.getPowerCount() ) ) );
+		power = PowersRegistry.lookupPowerById( ByteBufUtils.readVarInt( buf, ByteBufUtils.varIntByteCount( PowersRegistry.getPowerCount() ) ) );
 
 	}
 	
@@ -44,7 +45,7 @@ public class C03CyclePowerState implements IMessage {
 
 			if (ctx.side.isServer() && message.power != null) {
 
-				final EntityPlayer player =  PowersAPI.proxy.getPlayerFromContext( ctx );
+				final EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 				
 				Runnable task = new Runnable() {
 

@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.PowerRanged;
 import com.himself12794.powersapi.storage.PowersEntity;
 
@@ -36,7 +37,7 @@ public class EntityPower extends Entity implements IProjectile
 	private Block inTile;
 	protected boolean inGround;
 	public int throwableShake;
-	/** The entity that cast this spell. */
+	/** The entity that cast this power. */
 	private EntityLivingBase thrower;
 	public MovingObjectPosition target;
 	private String throwerName;
@@ -44,68 +45,57 @@ public class EntityPower extends Entity implements IProjectile
 	private int ticksInAir;
 	protected PowerRanged power;
 	protected float modifier = 1.0F;
+	public int castState;
 
-	public EntityPower(World worldIn)
-	{
-
+	public EntityPower(World worldIn) {
 		super( worldIn );
-		this.setSize( 0.25F, 0.25F );
 	}
 
-	public EntityPower(World worldIn, EntityLivingBase throwerIn,
-			PowerRanged spell, float modifier)
-	{
-
+	public EntityPower(World worldIn, EntityLivingBase throwerIn, PowerRanged spell, float modifier) {
 		super( worldIn );
 		this.power = spell;
 		this.modifier = modifier;
 		this.thrower = throwerIn;
 		// this.setSize(0.25F, 0.25F);
 		this.setSize( 10.0F, 10.0F );
-		this.setLocationAndAngles( throwerIn.posX, throwerIn.posY
-				+ (double) throwerIn.getEyeHeight(), throwerIn.posZ,
-				throwerIn.rotationYaw, throwerIn.rotationPitch );
-		this.posX -= (double) (MathHelper.cos( this.rotationYaw / 180.0F
-				* (float) Math.PI ) * 0.16F);
-		this.posY -= 0.10000000149011612D;
-		this.posZ -= (double) (MathHelper.sin( this.rotationYaw / 180.0F
-				* (float) Math.PI ) * 0.16F);
+		Vec3 lv = throwerIn.getLookVec();
+		
+		setLocationAndAngles( 
+				throwerIn.posX, 
+				throwerIn.posY + (double) throwerIn.getEyeHeight(), 
+				throwerIn.posZ,
+				throwerIn.rotationYaw,
+				throwerIn.rotationPitch 
+		);
+		int offset = PowersEntity.get( throwerIn ).getSecondaryPower() == spell ? -1 : 1;
+		
+		prevPosX = lastTickPosX = posX -= (double) (MathHelper.cos( this.rotationYaw / 180.0F * (float) Math.PI ) * 0.65F * offset);
+		prevPosY = lastTickPosY = posY -= 0.25;
+		prevPosZ = lastTickPosZ = posZ -= (double) (MathHelper.sin( this.rotationYaw / 180.0F * (float) Math.PI ) * 0.65F * offset);
+		
 		this.setPosition( this.posX, this.posY, this.posZ );
+		
 		float f = 0.4F;
+		
 		this.motionX = (double) (-MathHelper.sin( this.rotationYaw / 180.0F
 				* (float) Math.PI )
-				* MathHelper
-						.cos( this.rotationPitch / 180.0F * (float) Math.PI ) * f);
+				* MathHelper.cos( this.rotationPitch / 180.0F * (float) Math.PI ) * f);
+		
 		this.motionZ = (double) (MathHelper.cos( this.rotationYaw / 180.0F
 				* (float) Math.PI )
-				* MathHelper
-						.cos( this.rotationPitch / 180.0F * (float) Math.PI ) * f);
-		this.motionY = (double) (-MathHelper.sin( (this.rotationPitch + this
-				.getInaccuracy()) / 180.0F * (float) Math.PI ) * f);
-		this.setThrowableHeading( this.motionX, this.motionY, this.motionZ,
-				this.getVelocity(), 1.0F );
+				* MathHelper.cos( this.rotationPitch / 180.0F * (float) Math.PI ) * f);
+		
+		this.motionY = (double) (-MathHelper.sin( this.rotationPitch / 180.0F 
+				* (float) Math.PI ) * f);
+		
+		this.setThrowableHeading( this.motionX, this.motionY, this.motionZ,	getVelocity(), 1.0F );
 	}
 
-	public EntityPower(World worldIn, EntityLivingBase throwerIn,
-			PowerRanged spell, float modifier, MovingObjectPosition target) {
-
-		this( worldIn, throwerIn, spell, modifier );
-		this.target = target;
+	public void setCastState(int state) {
+		this.castState = state;
 	}
 
-	public EntityPower(World worldIn, double x, double y, double p_i1778_6_,
-			PowerRanged spell)
-	{
-
-		super( worldIn );
-		this.ticksInGround = 0;
-		this.setSize( 0.25F, 0.25F );
-		this.setPosition( x, y, p_i1778_6_ );
-		this.power = spell;
-	}
-
-	protected void entityInit() {
-	}
+	protected void entityInit() {}
 
 	/**
 	 * Checks if the entity is in range to render by using the past in distance
@@ -198,26 +188,6 @@ public class EntityPower extends Entity implements IProjectile
 	public void onUpdate() {
 
 		if (power != null) {
-
-			/*if (power instanceof IHomingPower) {
-
-				target = ((IHomingPower) power).isTargetValid( this, target );
-
-				if (target != null) {
-
-					if (target.typeOfHit == MovingObjectType.ENTITY
-							&& target.entityHit != null) {
-
-						double dx = target.entityHit.posX - this.posX;
-						double dy = target.entityHit.getBoundingBox().minY
-								+ (double) (target.entityHit.height)
-								- this.posY;
-						double dz = target.entityHit.posZ - this.posZ;
-						setThrowableHeading( dx, dy, dz, getVelocity(), 0.0F );
-
-					}
-				}
-			}*/
 
 			power.onUpdate( this );
 
@@ -411,7 +381,7 @@ public class EntityPower extends Entity implements IProjectile
 			PowersEntity wrapper = PowersEntity.get( getThrower() );
 			
 			power.onStrike( worldObj, movingObject, getThrower(), modifier, wrapper.getPowerProfile( power ).getState() );
-			wrapper.prevTargetPos = movingObject;
+			wrapper.prevTargetPosPrimary = movingObject;
 			setDead();
 
 		} else setDead();
@@ -426,12 +396,12 @@ public class EntityPower extends Entity implements IProjectile
 		tagCompound.setShort( "xTile", (short) this.xTile );
 		tagCompound.setShort( "yTile", (short) this.yTile );
 		tagCompound.setShort( "zTile", (short) this.zTile );
-		ResourceLocation resourcelocation = (ResourceLocation) Block.blockRegistry
-				.getNameForObject( this.inTile );
-		tagCompound.setString( "inTile", resourcelocation == null ? ""
-				: resourcelocation.toString() );
+		ResourceLocation resourcelocation = (ResourceLocation) Block.blockRegistry.getNameForObject( this.inTile );
+		tagCompound.setString( "inTile", resourcelocation == null ? "" : resourcelocation.toString() );
 		tagCompound.setByte( "shake", (byte) this.throwableShake );
 		tagCompound.setByte( "inGround", (byte) (this.inGround ? 1 : 0) );
+		if (power != null)
+			tagCompound.setInteger( "rangedPower", power.getId() );
 
 		if ((this.throwerName == null || this.throwerName.length() == 0)
 				&& this.thrower instanceof EntityPlayer)
@@ -446,27 +416,28 @@ public class EntityPower extends Entity implements IProjectile
 	/**
 	 * (abstract) Protected helper method to read subclass entity data from NBT.
 	 */
-	public void readEntityFromNBT(NBTTagCompound tagCompund)
+	public void readEntityFromNBT(NBTTagCompound tagCompound)
 	{
 
-		this.xTile = tagCompund.getShort( "xTile" );
-		this.yTile = tagCompund.getShort( "yTile" );
-		this.zTile = tagCompund.getShort( "zTile" );
+		this.xTile = tagCompound.getShort( "xTile" );
+		this.yTile = tagCompound.getShort( "yTile" );
+		this.zTile = tagCompound.getShort( "zTile" );
 
-		if (tagCompund.hasKey( "inTile", 8 ))
+		if (tagCompound.hasKey( "inTile", 8 ))
 		{
-			this.inTile = Block.getBlockFromName( tagCompund
+			this.inTile = Block.getBlockFromName( tagCompound
 					.getString( "inTile" ) );
 		}
 		else
 		{
 			this.inTile = Block
-					.getBlockById( tagCompund.getByte( "inTile" ) & 255 );
+					.getBlockById( tagCompound.getByte( "inTile" ) & 255 );
 		}
 
-		this.throwableShake = tagCompund.getByte( "shake" ) & 255;
-		this.inGround = tagCompund.getByte( "inGround" ) == 1;
-		this.throwerName = tagCompund.getString( "ownerName" );
+		this.throwableShake = tagCompound.getByte( "shake" ) & 255;
+		this.inGround = tagCompound.getByte( "inGround" ) == 1;
+		this.power = (PowerRanged) (PowersRegistry.lookupPowerById( tagCompound.getInteger( "powerRanged" ) ) instanceof PowerRanged ? PowersRegistry.lookupPowerById( tagCompound.getInteger( "powerRanged" ) ) : null);
+		this.throwerName = tagCompound.getString( "ownerName" );
 
 		if (this.throwerName != null && this.throwerName.length() == 0)
 		{

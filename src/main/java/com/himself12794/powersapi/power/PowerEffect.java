@@ -19,13 +19,15 @@ public class PowerEffect {
 	
 	private short id;
 	
-	protected boolean isPersistant = false;
+	protected boolean isPersistant;
 	
 	protected String name;
 	
-	protected boolean negateable = false;
+	protected boolean negateable;
 	
 	protected EffectType type = EffectType.TAG;
+	
+	protected boolean requiresCaster;
 	
 	public PowerEffect() {
 		
@@ -115,19 +117,15 @@ public class PowerEffect {
 	
 	/**
 	 * Called when the entity is damaged.
-	 * Return false to cancel. 
-	 * This allows you to change damage amounts. Will not be called if the attack was
-	 * canceled in {@link PowerEffect#onAttacked(DamageSource, float)}<br>
-	 * <b>Note:</b> Canceling this will still play the hurt animation and sound. 
+	 * If the entity has multiple
 	 * 
+	 * @param casterEntity the entity that applied this effect
 	 * @param damageSource
 	 * @param amount
+	 * @param hasChanged whether or not the amount has already been modified by a different effect
 	 * @return the new damage amount.
-	 * @deprecated Currently unimplemented
 	 */
-	@Deprecated
-	public float onHurt(final DamageSource damageSource, final float amount) {
-		
+	public float onDamaged(EntityLivingBase affectedEntity, EntityLivingBase casterEntity, DamageSource damageSource, float amount, boolean hasChanged) {
 		return amount;
 	}
 	
@@ -202,7 +200,7 @@ public class PowerEffect {
 	private static short getNextIndex() {
 		
 		for (short i = 0; i < powerEffectIds.length; i++) {
-			PowersAPI.logger.debug(powerEffectIds[i]);
+			PowersAPI.logger().debug(powerEffectIds[i]);
 			if (powerEffectIds[i] == null) return i;
 			
 		}
@@ -236,7 +234,7 @@ public class PowerEffect {
 			powerEffectIds[nextId] = effect;
 			idNameMapping.put( effect.name, nextId );
 			++powerEffectCount;
-			PowersAPI.logger.debug("Registered effect " + effect.getClass().getSimpleName());
+			PowersAPI.logger().info("Registered effect " + effect.name);
 			return effect;
 			
 		} else {

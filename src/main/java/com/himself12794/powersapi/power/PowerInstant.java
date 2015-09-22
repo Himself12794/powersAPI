@@ -20,10 +20,6 @@ public class PowerInstant extends Power {
 		boolean successful = onStrike( world, mouseOver, caster, modifier, state );
 		PowersEntity wrapper = PowersEntity.get( caster );
 		
-		if (successful) {
-			wrapper.prevTargetPos = mouseOver;
-		}
-		
 		return successful;
 	}
 	
