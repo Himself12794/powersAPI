@@ -20,7 +20,7 @@ import com.himself12794.powersapi.util.Reference;
  * @author Himself12794
  *
  */
-@Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME, useMetadata = true, guiFactory = Reference.GUI_FACTORY )
+@Mod(modid = Reference.MODID, version = Reference.VERSION, name = Reference.NAME, guiFactory = Reference.GUI_FACTORY, useMetadata = true )
 public class PowersAPI {    
 
 	@Mod.Instance(Reference.MODID)
@@ -44,17 +44,17 @@ public class PowersAPI {
 	}
 	
     @Mod.EventHandler
+    public void init(final FMLInitializationEvent event) {
+    	PROXY.init(event);
+    	INSTANCE.isInitialized = true;
+    }
+	
+	@Mod.EventHandler
     public void preinit(final FMLPreInitializationEvent event) {
 
 		modConfig = new ModConfig(event);
     	logger = event.getModLog();
     	PROXY.preinit(event);
-    }
-	
-	@Mod.EventHandler
-    public void init(final FMLInitializationEvent event) {
-    	PROXY.init(event);
-    	INSTANCE.isInitialized = true;
     }
     
     @Mod.EventHandler
@@ -62,25 +62,33 @@ public class PowersAPI {
 		PROXY.serverStartEvent( event );
 	}
     
+    public static ModConfig config() {
+    	return INSTANCE.modConfig;
+    }
+    
     @Mod.InstanceFactory
     public static PowersAPI initializeModInstance() {
     	return new PowersAPI(PowersRegistry.INSTANCE);
-    }
-    
-    public static Logger logger() {
-    	return INSTANCE.logger;
     }
     
     public static PowersAPI instance() {
     	return INSTANCE;
     }
     
-    public static PropertiesHandler propertiesHandler() {
-    	return INSTANCE.propertiesHandler;
+    public static boolean isInitializationComplete() {
+    	return INSTANCE.isInitialized;
+    }
+    
+    public static Logger logger() {
+    	return INSTANCE.logger;
     }
     
     public static ModMetadata metadata() {
     	return META;
+    }
+    
+    public static PropertiesHandler propertiesHandler() {
+    	return INSTANCE.propertiesHandler;
     }
     
     public static CommonProxy proxy() {
@@ -94,14 +102,6 @@ public class PowersAPI {
      */
     public static void registerPower(Power power) {
     	INSTANCE.powersRegistry.registerPower( power );
-    }
-    
-    public static boolean isInitializationComplete() {
-    	return INSTANCE.isInitialized;
-    }
-    
-    public static ModConfig config() {
-    	return INSTANCE.modConfig;
     }
     
 }

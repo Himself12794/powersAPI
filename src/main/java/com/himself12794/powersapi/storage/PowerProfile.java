@@ -89,6 +89,22 @@ public class PowerProfile {
 		powerData.setBoolean( key, value );
 	}
 	
+	public void setDouble( String key, double value ) {
+		powerData.setDouble(key, value);
+	}
+	
+	public double getDouble( String key ) {
+		return powerData.getDouble(key);
+	}
+	
+	public void setInteger( String key, int value ) {
+		powerData.setInteger(key, value);
+	}
+	
+	public int getInteger( String key ) {
+		return powerData.getInteger(key);
+	}
+	
 	public int getState() {
 		return functionalState;
 	}

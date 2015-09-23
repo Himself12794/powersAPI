@@ -53,10 +53,12 @@ public class PowersRegistry {
 		}
 	}
 	
-	public static Power lookupPowerById(int id) {
-		
-		return lookupPower(INSTANCE.powerIds.get(id));
-		
+	public static Power getPower(ItemStack stack) {
+		return lookupPower(stack);
+	}
+	
+	public static int getPowerCount() {
+		return INSTANCE.powers;
 	}
 	
 	public static int getPowerId(Power power) {
@@ -65,8 +67,9 @@ public class PowersRegistry {
 			
 			for (Entry<Integer, String> value : INSTANCE.powerIds.entrySet()) {
 				
-				if (value.getValue().equals(power.getRegisteredName()))
+				if (value.getValue().equals(power.getRegisteredName())) {
 					return value.getKey();
+				}
 				
 			}    		
 		}
@@ -75,31 +78,12 @@ public class PowersRegistry {
 		
 	}
 	
-	public static Power lookupPower(ItemStack stack) {
-		
-		if (hasPower(stack)) {
-			
-			return lookupPower(stack.getTagCompound().getString( "currentPower"));
-			
-		}
-		
-		return null;
-		
+	public static Map<String, Power> getPowers() {
+		return INSTANCE.powerRegistry;
 	}
 	
-	/**
-	 * Looks up the power by name. If it doesn't exist, returns null.
-	 * 
-	 * @param power
-	 * @return
-	 */
-	public static Power lookupPower(String power) {
-		
-		if (powerExists(power)) return (Power)INSTANCE.powerRegistry.get(power);
-		else if (powerExists("power." + power)) return (Power)INSTANCE.powerRegistry.get("power." + power);
-		
-		return null;
-		
+	public static boolean hasPower(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("currentPower");
 	}
 	
 	public static <P extends Power> P lookupPower(Class<P> power) {
@@ -119,25 +103,41 @@ public class PowersRegistry {
 		return null;
 		
 	}
-	
-	public static Map<String, Power> getPowers() {
-		return INSTANCE.powerRegistry;
-	}
 
-	public static int getPowerCount() {
-		return INSTANCE.powers;
+	public static Power lookupPower(ItemStack stack) {
+		
+		if (hasPower(stack)) {
+			return lookupPower(stack.getTagCompound().getString( "currentPower"));
+		}
+		
+		return null;
+		
+	}
+	
+	/**
+	 * Looks up the power by name. If it doesn't exist, returns null.
+	 * 
+	 * @param power
+	 * @return
+	 */
+	public static Power lookupPower(String power) {
+		
+		if (powerExists(power)) {
+			return INSTANCE.powerRegistry.get(power);
+		} else if (powerExists("power." + power)) {
+			return INSTANCE.powerRegistry.get("power." + power);
+		}
+		
+		return null;
+		
+	}
+	
+	public static Power lookupPowerById(int id) {
+		return lookupPower(INSTANCE.powerIds.get(id));
 	}
 	
 	public static boolean powerExists(String unlocalizedName) {
 		return getPowers().containsKey(unlocalizedName);
-	}
-	
-	public static boolean hasPower(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey("currentPower");
-	}
-	
-	public static Power getPower(ItemStack stack) {
-		return lookupPower(stack);
 	}
 	
 	/**

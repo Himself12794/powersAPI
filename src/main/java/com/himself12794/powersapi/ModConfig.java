@@ -35,11 +35,13 @@ public class ModConfig {
 		syncConfig();
 	}
 	
-	public void syncConfig() {
+	@SubscribeEvent
+	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 		
-		modCommandsEnabled = mainConfig.getBoolean( "ModCommandsEnabled", powers.getName(), true, "Whether or not mod commands are enabled" );
+		if (event.modID.equals( Reference.MODID )) {
+			syncConfig();
+		}
 		
-		if (mainConfig.hasChanged()) mainConfig.save();
 	}
 	
 	// Register key bindings
@@ -53,21 +55,21 @@ public class ModConfig {
 		
 	}
 	
-	@SubscribeEvent
-	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+	public void syncConfig() {
 		
-		if (event.modID.equals( Reference.MODID )) {
-			syncConfig();
+		modCommandsEnabled = mainConfig.getBoolean( "ModCommandsEnabled", powers.getName(), true, "Whether or not mod commands are enabled" );
+		
+		if (mainConfig.hasChanged()) {
+			mainConfig.save();
 		}
-		
-	}
-	
-	public static ModConfig get() {
-		return PowersAPI.config();
 	}
 	
 	public static boolean areModCommandsEnabled() {
 		return get().modCommandsEnabled;
+	}
+	
+	public static ModConfig get() {
+		return PowersAPI.config();
 	}
 	
 }

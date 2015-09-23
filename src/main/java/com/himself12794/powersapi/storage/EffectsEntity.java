@@ -133,7 +133,12 @@ public class EffectsEntity extends PropertiesBase {
 		for (EffectContainer container : powerEffects.values()) {
 			
 			if ((!container.theEffect.isNegateable() || !hasNegatedEffect) && container.timeRemaining != 0) {
-
+				
+				if (container.casterEntity == null && container.theEffect.requiresCaster()) {
+					toRemove.add( container.theEffect );
+					continue;
+				}
+				
 				if (!container.onUpdate()) {
 					toRemove.add( container.theEffect );
 					continue;

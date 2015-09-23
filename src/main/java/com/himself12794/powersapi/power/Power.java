@@ -80,7 +80,7 @@ public abstract class Power {
 	 * Normally, this means that this method is responsible for gathering information
 	 * from the world and passing it to {@link Power#onCast(World, EntityLivingBase, float, int)} 
 	 * and {@link Power#onStrike(World, MovingObjectPosition, EntityLivingBase, float, int)}, then 
-	 * returning their responses.
+	 * returning their responses. Once overridden, it's recommended to make it final to preserve logic.
 	 * <p>
 	 * Returning true will trigger the cool down.
 	 * 
