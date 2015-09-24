@@ -1,5 +1,7 @@
 package com.himself12794.powersapi;
 
+import java.io.File;
+
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -21,14 +23,14 @@ import com.himself12794.powersapi.util.Reference;
 public class ModConfig {
 
 	public static final KeyBinding keyBindingPrimaryPower = new KeyBinding("key.primary.desc", Keyboard.KEY_Q, "key.powersapi.powers");
-	public static final KeyBinding keyBindingSecondaryPower = new KeyBinding("key.secondary.desc", Keyboard.KEY_V, "key.powersapi.powers");
+	public static final KeyBinding keyBindingSecondaryPower = new KeyBinding("key.secondary.desc", Keyboard.KEY_R, "key.powersapi.powers");
 	public static final KeyBinding keyBindingSwitchState = new KeyBinding("key.switchState.desc", Keyboard.KEY_F, "key.powersapi.powers");
 	final Configuration mainConfig;
 	final ConfigCategory powers;
 	private boolean modCommandsEnabled = true;
 	
-	ModConfig(FMLPreInitializationEvent event ) {
-		mainConfig = new Configuration(event.getSuggestedConfigurationFile(), true);
+	public ModConfig(File file ) {
+		mainConfig = new Configuration(file, true);
 		powers = mainConfig.getCategory("Powers API");
 		powers.setLanguageKey( "powers.config" );
 		powers.setComment("Configuration for powers");

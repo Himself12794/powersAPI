@@ -1,5 +1,7 @@
 package com.himself12794.powersapi;
 
+import java.io.File;
+
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -34,12 +36,13 @@ public class PowersAPI {
 	
 	public final PropertiesHandler propertiesHandler = new PropertiesHandler();
 	public final PowersRegistry powersRegistry;
-	private ModConfig modConfig;
+	private final ModConfig modConfig;
 	private boolean isInitialized;
 	private Logger logger;
 	
 	private PowersAPI(PowersRegistry pwr) { 
 		powersRegistry = pwr;
+		modConfig = new ModConfig(new File("config/" + Reference.MODID + ".cfg"));
 		
 	}
 	
@@ -51,8 +54,6 @@ public class PowersAPI {
 	
 	@Mod.EventHandler
     public void preinit(final FMLPreInitializationEvent event) {
-
-		modConfig = new ModConfig(event);
     	logger = event.getModLog();
     	PROXY.preinit(event);
     }

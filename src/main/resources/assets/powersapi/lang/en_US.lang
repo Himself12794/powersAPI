@@ -1,7 +1,7 @@
 key.powersapi.powers=Powers API
 key.primary.desc=Use Primary Power
 key.secondary.desc=Use Secondary Power
-key.stateSwith.desc=Cycle Power State
+key.switchState.desc=Cycle Power State
 
 powers.config=Powers API
 

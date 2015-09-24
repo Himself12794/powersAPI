@@ -25,14 +25,6 @@ import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
 
-	public void serverStartEvent(FMLServerStartingEvent event) {
-
-		if (ModConfig.areModCommandsEnabled()) {
-			event.registerServerCommand( new PowersCommand() );
-			event.registerServerCommand( new EffectsCommand() );
-		}
-	}
-
 	public void preinit(FMLPreInitializationEvent event) {
 		
 		configureMetadata(PowersAPI.metadata());
@@ -60,6 +52,14 @@ public class CommonProxy {
 		FMLCommonHandler.instance().bus().register( ModConfig.get() );
 		
 
+	}
+
+	public void serverStartEvent(FMLServerStartingEvent event) {
+
+		if (ModConfig.areModCommandsEnabled()) {
+			event.registerServerCommand( new PowersCommand() );
+			event.registerServerCommand( new EffectsCommand() );
+		}
 	}
 
 	public Side getSide() {
