@@ -15,25 +15,29 @@ import org.lwjgl.opengl.GL11;
 
 import com.himself12794.powersapi.entity.EntityPower;
 
-
+/**
+ * Render class for the power projectile entity.
+ * 
+ * @author Himself12794
+ *
+ */
 @SideOnly(Side.CLIENT)
 public class RenderPower extends Render {
 	
-    private static final ResourceLocation spellTextures = new ResourceLocation("textures/entity/beacon_beam.png");
-    private static final String __OBFID = "CL_00000978";
+    private static final ResourceLocation powerTextures = new ResourceLocation("textures/entity/beacon_beam.png");
 
-    public RenderPower(RenderManager p_i46193_1_) {
-        super(p_i46193_1_);
+    public RenderPower(RenderManager renderManager) {
+        super(renderManager);
     }
 
-    public void doRender(EntityPower entityToRender, double p_180551_2_, double p_180551_4_, double p_180551_6_, float p_180551_8_, float p_180551_9_) {
+    public void doRender(EntityPower entityToRender, double x, double y, double z, float p_180551_8_, float partialTicks) {
     	
         this.bindEntityTexture(entityToRender);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
-        GlStateManager.translate((float)p_180551_2_, (float)p_180551_4_, (float)p_180551_6_);
-        GlStateManager.rotate(entityToRender.prevRotationYaw + (entityToRender.rotationYaw - entityToRender.prevRotationYaw) * p_180551_9_ - 90.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(entityToRender.prevRotationPitch + (entityToRender.rotationPitch - entityToRender.prevRotationPitch) * p_180551_9_, 0.0F, 0.0F, 1.0F);
+        GlStateManager.translate((float)x, (float)y, (float)z);
+        GlStateManager.rotate(entityToRender.prevRotationYaw + (entityToRender.rotationYaw - entityToRender.prevRotationYaw) * partialTicks - 90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(entityToRender.prevRotationPitch + (entityToRender.rotationPitch - entityToRender.prevRotationPitch) * partialTicks, 0.0F, 0.0F, 1.0F);
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         byte b0 = 0;
@@ -86,28 +90,18 @@ public class RenderPower extends Render {
 
         GlStateManager.disableRescaleNormal();
         GlStateManager.popMatrix();
-        super.doRender(entityToRender, p_180551_2_, p_180551_4_, p_180551_6_, p_180551_8_, p_180551_9_);
+        super.doRender(entityToRender, x, y, z, p_180551_8_, partialTicks);
     }
 
     protected ResourceLocation getEntityTexture(EntityPower p_180550_1_) {
-    	
-        return spellTextures;
+        return powerTextures;
     }
 
-    /**
-     * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
-     */
     protected ResourceLocation getEntityTexture(Entity entity) {
     	
         return this.getEntityTexture((EntityPower)entity);
     }
 
-    /**
-     * Actually renders the given argument. This is a synthetic bridge method, always casting down its argument and then
-     * handing it off to a worker function which does the actual work. In all probabilty, the class Render is generic
-     * (Render<T extends Entity>) and this method has signature public void func_76986_a(T entity, double d, double d1,
-     * double d2, float f, float f1). But JAD is pre 1.5 so doe
-     */
     public void doRender(Entity entity, double x, double y, double z, float p_76986_8_, float partialTicks) {
     	
         this.doRender((EntityPower)entity, x, y, z, p_76986_8_, partialTicks);

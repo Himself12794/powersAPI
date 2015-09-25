@@ -11,18 +11,22 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.PropertiesBase;
 
+/**
+ * Synchronizes a property on the client with the property on the server.
+ * 
+ * @author Himself12794
+ *
+ */
 public class S01SyncProperty implements IMessage {
 
 	private String identifier;
 	private NBTTagCompound compound;
 
-	public S01SyncProperty() {
-
-	}
+	public S01SyncProperty() {}
 
 	public S01SyncProperty(PropertiesBase properties) {
 
-		identifier = PowersAPI.propertiesHandler().getModClassIdentifier( properties.getClass() );
+		identifier = PowersAPI.propertiesHandler().getIdentifierForPropertyClass( properties.getClass() );
 		compound = new NBTTagCompound();
 		properties.saveNBTData( compound );
 	}
@@ -47,7 +51,8 @@ public class S01SyncProperty implements IMessage {
 		public IMessage onMessage(final S01SyncProperty message, final MessageContext ctx) {
 
 			if (ctx.side.isClient()) {
-				Runnable task = new Runnable() {
+				
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, new Runnable() {
 					
 					@Override
 					public void run() {
@@ -63,9 +68,8 @@ public class S01SyncProperty implements IMessage {
 							} 
 						}
 					}
-				};
+				});
 				
-				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, task );
 			}
 
 			return null;

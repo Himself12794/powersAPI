@@ -25,7 +25,7 @@ public class PowerBuff extends Power {
 	
 	public PowerBuff(String name, int cooldown) {
 		this(name);
-		this.setCooldown( cooldown );
+		this.setCost( cooldown );
 	}
 	
 	@Override

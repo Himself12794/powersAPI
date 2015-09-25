@@ -8,6 +8,12 @@ import com.himself12794.powersapi.network.client.C02SetMouseOverTarget;
 import com.himself12794.powersapi.network.client.C03CyclePowerState;
 import com.himself12794.powersapi.power.Power;
 
+/**
+ * Manages sending messages to the server.
+ * 
+ * @author Himself12794
+ *
+ */
 public class Server {
 
 	private final SimpleNetworkWrapper network;

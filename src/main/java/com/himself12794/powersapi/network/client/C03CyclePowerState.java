@@ -12,7 +12,12 @@ import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PowersEntity;
 
-
+/**
+ * Cycles a power profile to the next valid state.
+ * 
+ * @author Himself12794
+ *
+ */
 public class C03CyclePowerState implements IMessage {
 	
 	private Power power;
@@ -44,19 +49,17 @@ public class C03CyclePowerState implements IMessage {
 		public IMessage onMessage(final C03CyclePowerState message, final MessageContext ctx) {
 
 			if (ctx.side.isServer() && message.power != null) {
-
-				final EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 				
-				Runnable task = new Runnable() {
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, new Runnable() {
 
 					@Override
 					public void run() {		
+
+						EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 						PowersEntity.get( player ).getPowerProfile( message.power ).cycleState(true);
 					}
 									
-				};
-				
-				ctx.getServerHandler().playerEntity.getServerForPlayer().addScheduledTask( task );
+				});
 				
 			}
 			

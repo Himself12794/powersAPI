@@ -9,7 +9,12 @@ import com.himself12794.powersapi.network.server.S02SetPower;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PropertiesBase;
 
-
+/**
+ * Handles sending messages to the client.
+ * 
+ * @author Himself12794
+ *
+ */
 public class Client {
 	
 	private final SimpleNetworkWrapper network;

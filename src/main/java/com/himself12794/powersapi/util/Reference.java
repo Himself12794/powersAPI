@@ -1,11 +1,17 @@
 package com.himself12794.powersapi.util;
 
+/**
+ * String constants for the mod.
+ * 
+ * @author Himself12794
+ *
+ */
 public final class Reference {
 	
 	private Reference() {}
 	
     public static final String MODID = "powersAPI";
-    public static final String VERSION = "1.0-rev8";
+    public static final String VERSION = "1.1-rev0";
     public static final String NAME = "Powers API";
     public static final String AUTHOR = "Himself12794";
     public static final String COMMON_PROXY = "com.himself12794.powersapi.proxy.CommonProxy";

@@ -9,7 +9,12 @@ import com.himself12794.powersapi.network.client.C03CyclePowerState;
 import com.himself12794.powersapi.network.server.S01SyncProperty;
 import com.himself12794.powersapi.network.server.S02SetPower;
 
-
+/**
+ * The network used to communicate between server-side and client-side.
+ * 
+ * @author Himself12794
+ *
+ */
 public final class PowersNetwork {
 	
 	private static boolean isInit = false;

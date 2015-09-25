@@ -6,7 +6,6 @@ import java.util.Set;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
@@ -21,6 +20,12 @@ import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.Reference;
 import com.himself12794.powersapi.util.UsefulMethods;
 
+/**
+ * Manages the power effects on an entity.
+ * 
+ * @author Himself12794
+ *
+ */
 public class EffectsEntity extends PropertiesBase {
 
 	public static final String POWER_EFFECTS_GROUP = Reference.MODID + ":powerEffects";
@@ -128,7 +133,12 @@ public class EffectsEntity extends PropertiesBase {
 		for (EffectContainer container : powerEffects.values()) {
 			
 			if ((!container.theEffect.isNegateable() || !hasNegatedEffect) && container.timeRemaining != 0) {
-
+				
+				if (container.casterEntity == null && container.theEffect.requiresCaster()) {
+					toRemove.add( container.theEffect );
+					continue;
+				}
+				
 				if (!container.onUpdate()) {
 					toRemove.add( container.theEffect );
 					continue;
@@ -265,10 +275,6 @@ public class EffectsEntity extends PropertiesBase {
 						container.onApplied();
 					}
 										
-				}
-				
-				if (theEntity instanceof EntityPlayer) {
-					//PowersAPI.logger.info( powerEffects );
 				}
 				
 			}

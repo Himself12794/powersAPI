@@ -9,12 +9,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
-import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
@@ -25,56 +24,68 @@ import com.himself12794.powersapi.storage.PropertiesBase;
 import com.himself12794.powersapi.util.Reference;
 
 /**
- * Manages modded IExtendedEntityProperties.
+ * Manages modded IExtendedEntityProperties. Automatically registers them whenever an
+ * entity is constructed, if the Wrapper is assignable for the entity class as registered.
+ * Automatically calls associated methods with associated events.
  * 
  * @author Himself12794
  *
  */
 public class PropertiesHandler {
 	
-	PropertiesHandler() {}
-
 	private final Map<Class<? extends PropertiesBase>, Class<? extends EntityLivingBase>> entityMapping = Maps.newHashMap();
+
 	private final Map<Class<? extends PropertiesBase>, String> identifierClassAssociations = Maps.newHashMap();
 	
-	public void registerPropertyClass(Class<? extends PropertiesBase> clazz) {
-		registerPropertyClass( clazz, null, null );
+	PropertiesHandler() {}
+	
+	@SubscribeEvent
+	public void copyAllOver(PlayerEvent.Clone event) {
+		
+		EntityLivingBase entity1 = event.original; 
+		EntityLivingBase entity2 = event.entityPlayer;
+		
+		if (!event.wasDeath) {
+			return;
+		}
+		
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
+
+			String identifier = entry.getValue();
+			Class association = entry.getKey();
+			IExtendedEntityProperties wrapper = entity1.getExtendedProperties( identifier );
+			
+			if(wrapper != null) {
+				
+				if (wrapper.getClass().isAssignableFrom( association )) {
+					
+					((PropertiesBase)wrapper).copyTo( entity2 );
+				}
+				
+			}
+			
+		}
 	}
 	
-	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, String identifier) {
-		registerPropertyClass( clazz, null, identifier );
+	public Class<? extends EntityLivingBase> getAssociatedEntityType(Class<? extends PropertiesBase> clazz) {
+		return entityMapping.get( clazz );	
 	}
 
-	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
-		registerPropertyClass( clazz, clazz2, null );
+	public String getIdentifierForPropertyClass(Class<? extends PropertiesBase> clazz) {
+		return identifierClassAssociations.get( clazz );
 	}
 	
-	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2, String identifier) {
-		
-		String id = identifier != null && !"".equals( identifier ) ? identifier : getModClassIdentifier( clazz );
-		
-		if (!identifierClassAssociations.containsKey( clazz )) {
-			this.identifierClassAssociations.put( clazz, id );
-			PowersAPI.logger().info( "Registered class mapping for property class {}", clazz );
-		} else {
-			PowersAPI.logger().error( "Could not register properties class {}, entry already exists", clazz);
-		}
-		
-		Class registered = clazz2 == null ? EntityLivingBase.class : clazz2;
-		
-		if (!entityMapping.containsKey( clazz )) {
-			entityMapping.put( clazz, registered );
-			PowersAPI.logger().info( "Registered entity class {}, for property class {}", registered, clazz );
-		} else {
-			PowersAPI.logger().error( "Could not register entity for class {}, entry already exists", clazz);
-		}
-		
+	private String getModClassIdentifier(Class<? extends PropertiesBase> clazz) {
+		return Reference.MODID + ":" + clazz.getName();
 	}
 	
 	public Class<? extends PropertiesBase> getPropertyClassForIdentifier(String identifier) {
 		
-		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet())
-			if (entry.getValue().equals( identifier )) return entry.getKey();
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
+			if (entry.getValue().equals( identifier )) {
+				return entry.getKey();
+			}
+		}
 		
 		return null;
 	}
@@ -83,36 +94,12 @@ public class PropertiesHandler {
 		return identifierClassAssociations.keySet();
 	}
 	
-	public Class<? extends EntityLivingBase> getAssociatedEntityType(Class<? extends PropertiesBase> clazz) {
-		return entityMapping.get( clazz );	
-	}
-	
-	public String getIdentifierForPropertyClass(Class<? extends PropertiesBase> clazz) {
-		return identifierClassAssociations.get( clazz );
-	}
-	
-	public PropertiesBase getWrapperForIdentifier(String identifier, EntityLivingBase entity) {
-		return getWrapper( getPropertyClassForIdentifier(identifier), entity );
-	}
-	
 	public <T extends PropertiesBase> T getWrapper(Class<T> clazz, EntityLivingBase entity) {
 		return (T) entity.getExtendedProperties( getIdentifierForPropertyClass( clazz ) );
 	}
 	
-	public String getModClassIdentifier(Class<? extends PropertiesBase> clazz) {
-		return Reference.MODID + ":" + clazz.getName();
-	}
-	
-	public void syncPlayerToClient(EntityPlayerMP entityPlayer) {
-		
-		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
-			IExtendedEntityProperties wrapper = entityPlayer.getExtendedProperties( entry.getValue() );
-	
-			if (wrapper.getClass().isAssignableFrom( entry.getKey() )) {
-				PowersNetwork.client().syncProperties( ((PropertiesBase)wrapper), entityPlayer);
-			}
-			
-		}
+	public PropertiesBase getWrapperForIdentifier(String identifier, EntityLivingBase entity) {
+		return getWrapper( getPropertyClassForIdentifier(identifier), entity );
 	}
 	
 	@SubscribeEvent
@@ -147,10 +134,46 @@ public class PropertiesHandler {
 		
 	}
 	
-	@SubscribeEvent
-	public void runUpdates(LivingUpdateEvent event) {
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz) {
+		registerPropertyClass( clazz, null, null );
+	}
+	
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2) {
+		registerPropertyClass( clazz, clazz2, null );
+	}
+	
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, Class<? extends EntityLivingBase> clazz2, String identifier) {
 		
-		EntityLivingBase entity = event.entityLiving;
+		String id = identifier != null && !"".equals( identifier ) ? identifier : getModClassIdentifier( clazz );
+		
+		if (!identifierClassAssociations.containsKey( clazz )) {
+			this.identifierClassAssociations.put( clazz, id );
+			PowersAPI.logger().info( "Registered class mapping for property class {}", clazz );
+		} else {
+			PowersAPI.logger().error( "Could not register properties class {}, entry already exists", clazz);
+		}
+		
+		Class registered = clazz2 == null ? EntityLivingBase.class : clazz2;
+		
+		if (!entityMapping.containsKey( clazz )) {
+			entityMapping.put( clazz, registered );
+			PowersAPI.logger().info( "Registered entity class {}, for property class {}", registered, clazz );
+		} else {
+			PowersAPI.logger().error( "Could not register entity for class {}, entry already exists", clazz);
+		}
+		
+	}
+	
+	public void registerPropertyClass(Class<? extends PropertiesBase> clazz, String identifier) {
+		registerPropertyClass( clazz, null, identifier );
+	}
+	
+	@SubscribeEvent
+	public void runOnDamaged(LivingHurtEvent event) {
+		
+		EntityLivingBase entity = event.entityLiving; 
+		DamageSource source = event.source;
+		float value = event.ammount;
 		
 		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
@@ -160,15 +183,16 @@ public class PropertiesHandler {
 			
 			if(wrapper != null) {
 				
-				if (wrapper.getClass().equals( association )) {
+				if (wrapper.getClass().isAssignableFrom( association )) {
 					
-					((PropertiesBase)wrapper).onUpdate();
+					value = ((PropertiesBase)wrapper).onDamaged( entity, source, value, value != event.ammount );
 				}
 				
 			}
 			
 		}
 		
+		event.ammount = value;
 	}
 	
 	@SubscribeEvent
@@ -200,33 +224,6 @@ public class PropertiesHandler {
 	}
 	
 	@SubscribeEvent
-	public void runOnDamaged(LivingHurtEvent event) {
-		
-		EntityLivingBase entity = event.entityLiving; 
-		DamageSource source = event.source;
-		float value = event.ammount;
-		
-		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
-
-			String identifier = entry.getValue();
-			Class association = entry.getKey();
-			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
-			
-			if(wrapper != null) {
-				
-				if (wrapper.getClass().isAssignableFrom( association )) {
-					
-					value = ((PropertiesBase)wrapper).onDamaged( entity, source, value, value != event.ammount );
-				}
-				
-			}
-			
-		}
-		
-		event.ammount = value;
-	}
-	
-	@SubscribeEvent
 	public void runOnRespawn(PlayerRespawnEvent event) {
 		
 		EntityPlayer player = event.player;
@@ -249,26 +246,36 @@ public class PropertiesHandler {
 	}
 	
 	@SubscribeEvent
-	public void copyAllOver(PlayerEvent.Clone event) {
+	public void runUpdates(LivingUpdateEvent event) {
 		
-		EntityLivingBase entity1 = event.original; 
-		EntityLivingBase entity2 = event.entityPlayer;
-		
-		if (!event.wasDeath) return;
+		EntityLivingBase entity = event.entityLiving;
 		
 		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
 			String identifier = entry.getValue();
 			Class association = entry.getKey();
-			IExtendedEntityProperties wrapper = entity1.getExtendedProperties( identifier );
+			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
 				
-				if (wrapper.getClass().isAssignableFrom( association )) {
+				if (wrapper.getClass().equals( association )) {
 					
-					((PropertiesBase)wrapper).copyTo( entity2 );
+					((PropertiesBase)wrapper).onUpdate();
 				}
 				
+			}
+			
+		}
+		
+	}
+	
+	public void syncPlayerToClient(EntityPlayerMP entityPlayer) {
+		
+		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
+			IExtendedEntityProperties wrapper = entityPlayer.getExtendedProperties( entry.getValue() );
+	
+			if (wrapper.getClass().isAssignableFrom( entry.getKey() )) {
+				PowersNetwork.client().syncProperties( ((PropertiesBase)wrapper), entityPlayer);
 			}
 			
 		}

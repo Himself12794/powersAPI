@@ -29,9 +29,7 @@ public class PowerEffect {
 	
 	protected boolean requiresCaster;
 	
-	public PowerEffect() {
-		
-	}
+	public PowerEffect() { }
 	
 	public PowerEffect(final String name) {
 		this(name, false);
@@ -186,6 +184,14 @@ public class PowerEffect {
 	@Override
 	public String toString() {
 		return name;
+	}
+	
+	protected void setRequiresCaster() {
+		requiresCaster = true;
+	}
+	
+	public boolean requiresCaster() {
+		return requiresCaster;
 	}
 	
 	public static PowerEffect getEffectById(final int id) {

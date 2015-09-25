@@ -10,7 +10,12 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 
 import com.himself12794.powersapi.util.Reference;
 
-
+/**
+ * Manufactures the config GUI to be used. 
+ * 
+ * @author Himself12794
+ *
+ */
 public class GuiFactory implements IModGuiFactory {
 	
 	private Minecraft mc;

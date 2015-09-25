@@ -13,6 +13,12 @@ import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 
+/**
+ * Manages setting a power in use, or stopping a power that is already in use.
+ * 
+ * @author Himself12794
+ *
+ */
 public class C01PowerUse implements IMessage {
 	
 	private Action action;

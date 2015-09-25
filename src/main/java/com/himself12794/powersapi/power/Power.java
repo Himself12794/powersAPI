@@ -42,16 +42,30 @@ public abstract class Power {
 	private float power = 2.0F;
 	/**Duration in ticks*/
 	private int duration;
-	/**Cool down time in ticks*/
-	private int cooldown = 20;
+	/**
+	 * Cost of the power. By default, this is a cooldown, but if the power implements ICostlyPower, then
+	 * no cooldown is triggered and data is transfered to that interface for handling the cost 
+	 */
+	private int cost = 20;
 	/**How long the power can be used until a cooldown is forced*/
 	private int maxConcentrationTime;
 	private int highestFunctionalState;
+	private boolean isCostlyPower;
 	private boolean visibility = true;
 	private int preparationTime;
 	private int maxLevel = 1;
 	private int usesToLevelUp = 100;
 	private boolean isNegateable = true;
+	
+	/**
+	 * Similar to can cast power, but called before preparation time.
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public boolean canUsePower(PowerProfile profile) {
+		return true;
+	}
 	
 	/**
 	 * The action to be performed when the power is being prepared, before it is actually cast.
@@ -80,7 +94,7 @@ public abstract class Power {
 	 * Normally, this means that this method is responsible for gathering information
 	 * from the world and passing it to {@link Power#onCast(World, EntityLivingBase, float, int)} 
 	 * and {@link Power#onStrike(World, MovingObjectPosition, EntityLivingBase, float, int)}, then 
-	 * returning their responses.
+	 * returning their responses. Once overridden, it's recommended to make it final to preserve logic.
 	 * <p>
 	 * Returning true will trigger the cool down.
 	 * 
@@ -188,6 +202,15 @@ public abstract class Power {
 	public boolean shouldLevelUp(PowerProfile profile) {
 		return profile.getUses() % usesToLevelUp == 0;
 	}
+	
+	/**
+	 * If this power does not use cooldowns, then this is called instead of the cooldown being triggered.
+	 * 
+	 * @param profile
+	 * @param caster
+	 * @param cost
+	 */
+	public void handleCost(PowerProfile profile, EntityLivingBase caster, int cost) {}
 	
 	/**
 	 * Provides general, non-Power Profile dependent description of this power.
@@ -326,6 +349,10 @@ public abstract class Power {
 		return null;
 	}
 	
+	protected void setCostlyPower() { isCostlyPower = true; }
+	
+	public boolean isCostlyPower() { return isCostlyPower; }
+	
 	protected void setUsesToLevelUp(int value) { value = usesToLevelUp; }
 	
 	public int getUsesToLevelUp() { return usesToLevelUp; }
@@ -362,11 +389,11 @@ public abstract class Power {
 
 	public float getPower(float modifier) { return power * modifier; }
 	
-	protected Power setCooldown(int amount) { cooldown = amount; return this; }
+	protected Power setCost(int amount) { cost = amount; return this; }
 	
-	public int getCooldown() { return cooldown; }
+	public int getCost() { return cost; }
 	
-	public int getCooldown(PowerProfile profile) { return cooldown; }
+	public int getCost(PowerProfile profile) { return cost; }
 	
 	public Power setUnlocalizedName( String name ) { displayName = name; return this; }
 	
@@ -395,10 +422,6 @@ public abstract class Power {
 	
 	public int getId() {
 		return PowersRegistry.getPowerId(this);
-	}
-	
-	public final boolean canUsePower( EntityLivingBase player ) {
-		return (PowersEntity.get( player ).getCooldownRemaining( this ) <= 0) || UsefulMethods.isCreativeModePlayerOrNull( player );
 	}
 	
 	public String toString() {
