@@ -1,4 +1,3 @@
 language: java
 before_install: chmod +x ./gradlew
-install: ./gradlew build --debug --stacktrace
-script: ./gradlew build
+install: ./gradlew setupDecompWorkspace
