@@ -1,4 +1,4 @@
 language: java
-#before_install: chmod +x gradlew
-install: gradle build
-script: gradle build
+before_install: chmod +x gradlew
+install: gradlew build
+script: gradlew build
