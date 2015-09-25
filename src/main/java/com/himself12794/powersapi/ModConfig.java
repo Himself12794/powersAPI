@@ -8,6 +8,8 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.IEventListener;
+import net.minecraftforge.fml.common.eventhandler.ListenerList;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.lwjgl.input.Keyboard;
@@ -39,6 +41,14 @@ public class ModConfig {
 	
 	@SubscribeEvent
 	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
+		
+		System.out.println("Config changed event");
+		
+		ListenerList list = event.getListenerList();
+		
+		for (IEventListener listerner : list.getListeners(0)) {
+			System.out.println(listerner.toString());
+		}
 		
 		if (event.modID.equals( Reference.MODID )) {
 			syncConfig();

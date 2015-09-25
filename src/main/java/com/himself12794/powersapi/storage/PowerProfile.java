@@ -121,8 +121,8 @@ public class PowerProfile {
 		return thePower.getDisplayName( this );
 	}
 	
-	public int getCooldown() {
-		return thePower.getCooldown( this );
+	public int getCost() {
+		return thePower.getCost( this );
 	}
 	
 	public void setState(int value, boolean doOnStateChanged) {
@@ -150,11 +150,12 @@ public class PowerProfile {
 			thePower.onStateChanged( theEntity.worldObj, theEntity, prevState, functionalState );
 	}
 	
-	public void triggerCooldown() {
+	public void triggerCost() {
 		
 		if (!UsefulMethods.isCreativeModePlayerOrNull( theEntity )) {
 			addUse();
-			cooldownRemaining = thePower.getCooldown(this);
+			if (!thePower.isCostlyPower()) cooldownRemaining = getCost();
+			else thePower.handleCost(this, theEntity, getCost());
 		} 
 	}
 	

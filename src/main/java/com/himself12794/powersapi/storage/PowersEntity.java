@@ -391,11 +391,11 @@ public class PowersEntity extends PropertiesBase {
 							getPreviousPrimaryPowerTarget(), getPowerProfile( primaryPower ).getState() );
 		
 					if (flag) {
-						getPowerProfile( primaryPower ).triggerCooldown();
+						getPowerProfile( primaryPower ).triggerCost();
 					}
 					
 				} else {
-					getPowerProfile( primaryPower ).triggerCooldown();
+					getPowerProfile( primaryPower ).triggerCost();
 				}
 				
 			}
@@ -425,11 +425,11 @@ public class PowersEntity extends PropertiesBase {
 							getPreviousSecondaryPowerTarget(), getPowerProfile( secondaryPower ).getState() );
 		
 					if (flag) {
-						getPowerProfile( secondaryPower ).triggerCooldown();
+						getPowerProfile( secondaryPower ).triggerCost();
 					}
 					
 				} else {
-					getPowerProfile( secondaryPower ).triggerCooldown();
+					getPowerProfile( secondaryPower ).triggerCost();
 				}
 				
 			}
@@ -489,7 +489,7 @@ public class PowersEntity extends PropertiesBase {
 
 		if (power != null) {
 			PowerProfile profile = getPowerProfile( power );
-			profile.triggerCooldown();
+			profile.triggerCost();
 		}
 	}
 
@@ -543,7 +543,7 @@ public class PowersEntity extends PropertiesBase {
 					} else if (this.primaryUseTimeLeft <= 0) {
 	
 						if (primaryPower.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosPrimary, profile.getState() )) 
-							profile.triggerCooldown();
+							profile.triggerCost();
 						
 						theEntity.swingProgress = 0.0F;
 						theEntity.isSwingInProgress = false;
@@ -594,7 +594,7 @@ public class PowersEntity extends PropertiesBase {
 					} else if (this.secondaryUseTimeLeft <= 0) {
 	
 						if (secondaryPower.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, prevTargetPosSecondary, profile.getState() )) 
-							profile.triggerCooldown();
+							profile.triggerCost();
 						
 						prevTargetPosSecondary = null;
 						secondaryPreparationTime = 0;
@@ -625,7 +625,9 @@ public class PowersEntity extends PropertiesBase {
 	private void usePowerAsPrimary(final Power power, MovingObjectPosition lookVec) {
 		if (theEntity instanceof EntityPlayer && secondaryPower != power) {
 			
-			if (power != null && power.canUsePower( theEntity )) {
+			PowerProfile profile = getPowerProfile(power);
+			
+			if (power != null && getPowerProfile(power).cooldownRemaining <= 0 && power.canUsePower(profile)) {
 				
 				if (!power.hasPreparationTime()) {
 					usePowerAsPrimary(power, lookVec, 0);
@@ -667,7 +669,7 @@ public class PowersEntity extends PropertiesBase {
 				
 				theEntity.swingItem();
 				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, lookVec, profile.getState() )) {
-					profile.triggerCooldown();
+					profile.triggerCost();
 				}
 				prevTargetPosPrimary = null;
 
@@ -685,7 +687,9 @@ public class PowersEntity extends PropertiesBase {
 	private void usePowerAsSecondary(final Power power, MovingObjectPosition lookVec) {
 		if (theEntity instanceof EntityPlayer && primaryPower != power ) {
 			
-			if (power != null && power.canUsePower( theEntity )) {
+			PowerProfile profile = getPowerProfile(power);
+			
+			if (power != null && profile.cooldownRemaining <= 0 && power.canUsePower(profile)) {
 				
 				if (!power.hasPreparationTime()) {
 					usePowerAsSecondary(power, lookVec, 0);
@@ -725,7 +729,7 @@ public class PowersEntity extends PropertiesBase {
 				
 				//theEntity.swingItem();
 				if (power.onFinishedCasting( theEntity.worldObj, (EntityPlayer) theEntity, lookVec, profile.getState() )) 
-					profile.triggerCooldown();
+					profile.triggerCost();
 				prevTargetPosSecondary = null;
 
 			}

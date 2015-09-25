@@ -68,7 +68,7 @@ public class PowerActivator extends Item {
 			
 			if (power.getTypeDescriptor(stack, player) != null) list.add(EnumChatFormatting.YELLOW + "Type: " + power.getTypeDescriptor(stack, player));
 			list.add(EnumChatFormatting.RED + "Power: " + power.getPower(modifier));
-			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCooldown(profile) / 20.0F) + "s");
+			list.add(EnumChatFormatting.BLUE + "Cooldown: " + String.format("%.2f",(float)power.getCost(profile) / 20.0F) + "s");
 			
 			if (power.getDuration() > 0 && power.showDuration(stack, player, par4)) 
 				list.add(EnumChatFormatting.GREEN + "Duration: " + String.format("%.2f",(float)power.getDuration() * modifier / 20.0F) + "s");
@@ -143,7 +143,7 @@ public class PowerActivator extends Item {
         	Power power = PowersRegistry.getPower(stack);
         	PowerProfile profile = PowersEntity.get( player ).getPowerProfile( power );
         	
-            return ((double)PowersEntity.get( player ).getCooldownRemaining( power ) ) / (double)power.getCooldown(profile);
+            return ((double)PowersEntity.get( player ).getCooldownRemaining( power ) ) / (double)power.getCost(profile);
     		
     	}
     	return 2.0D;
