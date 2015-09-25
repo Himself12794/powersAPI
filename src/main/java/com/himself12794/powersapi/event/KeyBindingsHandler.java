@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import com.himself12794.powersapi.KeyBindings;
 import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
@@ -38,7 +39,7 @@ public final class KeyBindingsHandler {
 	@SubscribeEvent
 	public void onKeyUsagePrimary(KeyInputEvent event) {
 		
-		if (ModConfig.keyBindingPrimaryPower.isKeyDown() != primaryHadBeenPressed) {
+		if (KeyBindings.keyBindingPrimaryPower.isKeyDown() != primaryHadBeenPressed) {
 			handlePrimaryPowerKeyBinding();
 			primaryHadBeenPressed = !primaryHadBeenPressed;
 		}
@@ -47,7 +48,7 @@ public final class KeyBindingsHandler {
 	@SubscribeEvent
 	public void onKeyUsageSecondary(KeyInputEvent event) {
 		
-		if (ModConfig.keyBindingSecondaryPower.isKeyDown() != secondaryHadBeenPressed) {
+		if (KeyBindings.keyBindingSecondaryPower.isKeyDown() != secondaryHadBeenPressed) {
 			handleSecondaryPowerKeyBinding();
 			secondaryHadBeenPressed = !secondaryHadBeenPressed;
 		}
@@ -62,13 +63,13 @@ public final class KeyBindingsHandler {
 		
 		if (wrapper.isUsingPrimaryPower()){
 			
-	        if (!ModConfig.keyBindingPrimaryPower.isKeyDown()) {
+	        if (!KeyBindings.keyBindingPrimaryPower.isKeyDown()) {
 	        	wrapper.stopUsingPrimaryPower();
 	        	PowersNetwork.server().powerUse( true, null, Action.STOP );
 	        }
 	    } 
 		
-	    if (ModConfig.keyBindingPrimaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !ModConfig.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingPrimaryPower() && buttonDelayPrimary == 0) {
+	    if (KeyBindings.keyBindingPrimaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !KeyBindings.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingPrimaryPower() && buttonDelayPrimary == 0) {
         	if (primaryPower != null) {
 
         		buttonDelayPrimary = 4;
@@ -77,7 +78,7 @@ public final class KeyBindingsHandler {
 	        	wrapper.usePrimaryPower( lookVec );
 	        	PowersNetwork.server().powerUse( true, lookVec, Action.START );
         	}
-	    } else if (!wrapper.isUsingPrimaryPower() && ModConfig.keyBindingSwitchState.isKeyDown() && ModConfig.keyBindingPrimaryPower.isKeyDown() && buttonDelayPrimary == 0) {
+	    } else if (!wrapper.isUsingPrimaryPower() && KeyBindings.keyBindingSwitchState.isKeyDown() && KeyBindings.keyBindingPrimaryPower.isKeyDown() && buttonDelayPrimary == 0) {
 	    	
 	    	if (primaryPower != null) {
 	    		
@@ -100,13 +101,13 @@ public final class KeyBindingsHandler {
 	    
 	    if (wrapper.isUsingSecondaryPower()){
 	    	
-	        if (!ModConfig.keyBindingSecondaryPower.isKeyDown()) {
+	        if (!KeyBindings.keyBindingSecondaryPower.isKeyDown()) {
 	        	wrapper.stopUsingSecondaryPower();
 	        	PowersNetwork.server().powerUse( false, null, Action.STOP );
 	        }
 	    } 
 	    
-	    if (ModConfig.keyBindingSecondaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !ModConfig.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingSecondaryPower() &&  buttonDelaySecondary == 0) {
+	    if (KeyBindings.keyBindingSecondaryPower.isKeyDown() && ((EntityPlayer)wrapper.theEntity).getItemInUse() == null && !KeyBindings.keyBindingSwitchState.isKeyDown() && !wrapper.isUsingSecondaryPower() &&  buttonDelaySecondary == 0) {
         	if (power != null) {
 
         		buttonDelaySecondary = 4;
@@ -115,7 +116,7 @@ public final class KeyBindingsHandler {
 	        	wrapper.useSecondaryPower( lookVec );
 	        	PowersNetwork.server().powerUse( false, lookVec, Action.START );
         	}
-	    } else if (!wrapper.isUsingSecondaryPower() && ModConfig.keyBindingSwitchState.isKeyDown() && ModConfig.keyBindingSecondaryPower.isKeyDown() && buttonDelaySecondary == 0) {
+	    } else if (!wrapper.isUsingSecondaryPower() && KeyBindings.keyBindingSwitchState.isKeyDown() && KeyBindings.keyBindingSecondaryPower.isKeyDown() && buttonDelaySecondary == 0) {
 	    	
 	    	if (power != null) {
 	    		
