@@ -13,8 +13,6 @@ import net.minecraft.world.World;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.storage.PowerProfile;
-import com.himself12794.powersapi.storage.PowersEntity;
-import com.himself12794.powersapi.util.UsefulMethods;
 
 /**
  * This class is used to add powers to Minecraft. This is manifested as a power on

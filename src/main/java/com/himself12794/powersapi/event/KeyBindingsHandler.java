@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.himself12794.powersapi.KeyBindings;
-import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
 import com.himself12794.powersapi.power.Power;

@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.himself12794.powersapi.KeyBindings;
-import com.himself12794.powersapi.ModConfig;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.KeyBindingsHandler;
 import com.himself12794.powersapi.render.RenderPower;
