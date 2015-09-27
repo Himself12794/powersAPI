@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -342,6 +343,25 @@ public class UsefulMethods {
 		
 		return result;
 		
+	}
+	
+	public static NBTTagList getPutKeyList(String key, NBTTagCompound tag, int type) {
+		
+		NBTTagList result = null;
+		
+		if (tag.hasKey( key, 9 )) {
+			result = tag.getTagList(key, type);
+		} else {
+			result = new NBTTagList();
+			tag.setTag( key, result );
+		}
+		
+		return result;
+		
+	}
+	
+	public static BlockPos getPosFromArray(int[] array) {
+		return new BlockPos(array[0], array[1], array[2]);
 	}
 	
 }
