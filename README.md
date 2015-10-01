@@ -7,5 +7,3 @@ All you need to do is extend one of the power classes, and then register via Pow
 All registered powers will be useable by the power actuator item, assuming that its appearence is allowed via config.
 
 Power effects can be registered in a similar manner.
-
-I'm making an update to test Jenkins.
