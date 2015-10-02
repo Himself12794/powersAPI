@@ -33,15 +33,7 @@ public class ModConfig {
 	
 	@SubscribeEvent
 	public void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		
-		System.out.println("Config changed event");
-		
-		ListenerList list = event.getListenerList();
-		
-		for (IEventListener listerner : list.getListeners(0)) {
-			System.out.println(listerner.toString());
-		}
-		
+				
 		if (event.modID.equals( Reference.MODID )) {
 			syncConfig();
 		}

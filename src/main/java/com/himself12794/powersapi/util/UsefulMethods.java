@@ -43,6 +43,120 @@ public class UsefulMethods {
 	public static Block getBlockAtPos(BlockPos pos, World worldIn) {
 		return worldIn.getBlockState( pos ).getBlock();
 	}
+	
+    public static Vec3 getPositionEyes(Entity entity, float p_174824_1_)
+    {
+        if (p_174824_1_ == 1.0F)
+        {
+            return new Vec3(entity.posX, entity.posY + (double)entity.getEyeHeight(), entity.posZ);
+        }
+        else
+        {
+            double d0 = entity.prevPosX + (entity.posX - entity.prevPosX) * (double)p_174824_1_;
+            double d1 = entity.prevPosY + (entity.posY - entity.prevPosY) * (double)p_174824_1_ + (double)entity.getEyeHeight();
+            double d2 = entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double)p_174824_1_;
+            return new Vec3(d0, d1, d2);
+        }
+    }
+	
+	public static MovingObjectPosition getMouseOverExtendedUniversal(Entity theRenderViewEntity, float dist) {
+
+		AxisAlignedBB theViewBoundingBox = new AxisAlignedBB(
+				theRenderViewEntity.posX - 0.5D,
+				theRenderViewEntity.posY - 0.0D,
+				theRenderViewEntity.posZ - 0.5D,
+				theRenderViewEntity.posX + 0.5D,
+				theRenderViewEntity.posY + 1.5D,
+				theRenderViewEntity.posZ + 0.5D
+				);
+
+		MovingObjectPosition returnMOP = null;
+		if (theRenderViewEntity.worldObj != null)
+		{
+			double var2 = dist;
+			returnMOP = theRenderViewEntity.rayTrace( var2, 0 );
+			double calcdist = var2;
+			Vec3 pos = getPositionEyes( theRenderViewEntity, 0 );
+			var2 = calcdist;
+			if (returnMOP != null)
+			{
+				calcdist = returnMOP.hitVec.distanceTo( pos );
+			}
+
+			Vec3 lookvec = theRenderViewEntity.getLook( 0 );
+			Vec3 var8 = pos.addVector( lookvec.xCoord * var2,
+
+					lookvec.yCoord * var2,
+
+					lookvec.zCoord * var2 );
+			Entity pointedEntity = null;
+			float var9 = 1.0F;
+			@SuppressWarnings("unchecked")
+			List<Entity> list = theRenderViewEntity.worldObj
+					.getEntitiesWithinAABBExcludingEntity(
+
+							theRenderViewEntity,
+
+							theViewBoundingBox.addCoord(
+
+									lookvec.xCoord * var2,
+
+									lookvec.yCoord * var2,
+
+									lookvec.zCoord * var2 ).expand( var9, var9,
+									var9 ) );
+			double d = calcdist;
+
+			for (Entity entity : list)
+			{
+				if (entity.canBeCollidedWith())
+				{
+					float bordersize = entity.getCollisionBorderSize();
+					AxisAlignedBB aabb = new AxisAlignedBB(
+
+							entity.posX - entity.width / 2,
+
+							entity.posY,
+
+							entity.posZ - entity.width / 2,
+
+							entity.posX + entity.width / 2,
+
+							entity.posY + entity.height,
+
+							entity.posZ + entity.width / 2 );
+					aabb.expand( bordersize, bordersize, bordersize );
+					MovingObjectPosition mop0 = aabb.calculateIntercept( pos,
+							var8 );
+
+					if (aabb.isVecInside( pos ))
+					{
+						if (0.0D < d || d == 0.0D)
+						{
+							pointedEntity = entity;
+							d = 0.0D;
+						}
+					} else if (mop0 != null)
+					{
+						double d1 = pos.distanceTo( mop0.hitVec );
+
+						if (d1 < d || d == 0.0D)
+						{
+							pointedEntity = entity;
+							d = d1;
+						}
+					}
+				}
+			}
+
+			if (pointedEntity != null && (d < calcdist || returnMOP == null))
+			{
+				returnMOP = new MovingObjectPosition( pointedEntity );
+			}
+
+		}
+		return returnMOP;
+	}
 
 	public static MovingObjectPosition getMouseOverExtended(float dist) {
 
