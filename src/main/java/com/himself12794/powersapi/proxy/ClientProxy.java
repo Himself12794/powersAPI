@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-import com.himself12794.powersapi.ModConfig;
+import com.himself12794.powersapi.KeyBindings;
 import com.himself12794.powersapi.entity.EntityPower;
 import com.himself12794.powersapi.event.KeyBindingsHandler;
 import com.himself12794.powersapi.render.RenderPower;
@@ -29,7 +29,7 @@ public class ClientProxy extends CommonProxy {
 				new RenderPower(
 						Minecraft.getMinecraft().getRenderManager() ) );
 
-		ModConfig.get().registerKeyBindings();
+		KeyBindings.registerKeyBindings();
 		FMLCommonHandler.instance().bus().register( new KeyBindingsHandler(Minecraft.getMinecraft()) );
 		
 	}

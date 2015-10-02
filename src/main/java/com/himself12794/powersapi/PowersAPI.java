@@ -46,16 +46,16 @@ public class PowersAPI {
 		
 	}
 	
-    @Mod.EventHandler
-    public void init(final FMLInitializationEvent event) {
-    	PROXY.init(event);
-    	INSTANCE.isInitialized = true;
-    }
-	
 	@Mod.EventHandler
     public void preinit(final FMLPreInitializationEvent event) {
     	logger = event.getModLog();
     	PROXY.preinit(event);
+    }
+	
+    @Mod.EventHandler
+    public void init(final FMLInitializationEvent event) {    	
+    	PROXY.init(event);
+    	INSTANCE.isInitialized = true;
     }
     
     @Mod.EventHandler

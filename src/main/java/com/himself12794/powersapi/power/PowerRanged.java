@@ -17,6 +17,7 @@ import com.himself12794.powersapi.entity.EntityPower;
 public class PowerRanged extends Power {
 	
 	protected boolean shouldRender = false;
+	protected float range = 100.0F;
 	
 	@Override
 	public boolean cast(World world, EntityLivingBase caster, MovingObjectPosition mouseOver, float modifier, int state) {
@@ -41,6 +42,14 @@ public class PowerRanged extends Power {
 
 	public float getSpellVelocity() {
 		return 2.0F;
+	}
+	
+	protected void setRange(float range) {
+		this.range = range;
+	}
+	
+	public float getRange() {
+		return range;
 	}
 	
 	@Deprecated

@@ -58,6 +58,7 @@ public class EntityPower extends Entity implements IProjectile
 		this.thrower = throwerIn;
 		// this.setSize(0.25F, 0.25F);
 		this.setSize( 10.0F, 10.0F );
+		float range = power.getRange();
 		Vec3 lv = throwerIn.getLookVec();
 		
 		setLocationAndAngles( 
@@ -88,7 +89,12 @@ public class EntityPower extends Entity implements IProjectile
 		this.motionY = (double) (-MathHelper.sin( this.rotationPitch / 180.0F 
 				* (float) Math.PI ) * f);
 		
-		this.setThrowableHeading( this.motionX, this.motionY, this.motionZ,	getVelocity(), 1.0F );
+		Vec3 eyePos = throwerIn.getPositionVector().addVector(0.0D, throwerIn.getEyeHeight(), 0.0D);
+		Vec3 temp = new Vec3(eyePos.xCoord + lv.xCoord * range, eyePos.yCoord + lv.yCoord * range, eyePos.zCoord + lv.zCoord * range);
+		
+		temp = temp.subtract(eyePos);
+		
+		this.setThrowableHeading( temp.xCoord, temp.yCoord, temp.zCoord, getVelocity(), 1.0F );
 	}
 
 	public void setCastState(int state) {
