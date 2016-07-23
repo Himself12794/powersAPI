@@ -50,15 +50,9 @@ public class C03CyclePowerState implements IMessage {
 
 			if (ctx.side.isServer() && message.power != null) {
 				
-				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, new Runnable() {
-
-					@Override
-					public void run() {		
-
+				PowersAPI.proxy().scheduleTaskBasedOnContext( ctx, () -> {
 						EntityPlayer player =  PowersAPI.proxy().getPlayerFromContext( ctx );
 						PowersEntity.get( player ).getPowerProfile( message.power ).cycleState(true);
-					}
-									
 				});
 				
 			}
