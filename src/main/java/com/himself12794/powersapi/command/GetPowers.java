@@ -16,7 +16,7 @@ import com.himself12794.powersapi.power.Power;
 
 public class GetPowers implements ICommand {
 
-	private final List aliases = Lists.newArrayList( "get", "g" );
+	private final List<String> aliases = Lists.newArrayList( "get", "g" );
 	
 	@Override
 	public String getCommandUsage(ICommandSender sender) {

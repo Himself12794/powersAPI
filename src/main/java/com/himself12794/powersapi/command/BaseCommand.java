@@ -2,15 +2,14 @@ package com.himself12794.powersapi.command;
 
 import java.util.List;
 
+import com.himself12794.powersapi.ModConfig;
+import com.himself12794.powersapi.util.UsefulMethods;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.StatCollector;
-
-import com.himself12794.powersapi.ModConfig;
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.util.UsefulMethods;
 
 public abstract class BaseCommand implements ICommand {
 

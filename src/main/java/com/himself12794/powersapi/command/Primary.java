@@ -37,7 +37,7 @@ public class Primary implements ICommand {
 	@Override
 	public List getAliases() {
 		
-		List al = Lists.newArrayList();
+		List<String> al = Lists.newArrayList();
 		al.add( "p" );
 		al.add( "pr" );
 		al.add( "prim" );

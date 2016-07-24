@@ -91,7 +91,6 @@ public class UsefulMethods {
 					lookvec.zCoord * var2 );
 			Entity pointedEntity = null;
 			float var9 = 1.0F;
-			@SuppressWarnings("unchecked")
 			List<Entity> list = theRenderViewEntity.worldObj
 					.getEntitiesWithinAABBExcludingEntity(
 
@@ -192,7 +191,6 @@ public class UsefulMethods {
 					lookvec.zCoord * var2 );
 			Entity pointedEntity = null;
 			float var9 = 1.0F;
-			@SuppressWarnings("unchecked")
 			List<Entity> list = mc.theWorld
 					.getEntitiesWithinAABBExcludingEntity(
 
@@ -363,17 +361,13 @@ public class UsefulMethods {
 	 */
 	public static List<EntityLivingBase> getEntitiesWithEffect(final World  world, final PowerEffect effect) {
 		
-		Predicate filter = new Predicate(){
-			
-			@Override
-			public boolean apply(Object input) {
+		Predicate<?> filter = input -> {
 				
-				if (input instanceof EntityLivingBase) {
-					return EffectsEntity.get( (EntityLivingBase)input).isAffectedBy( effect );
-				}
-				return false;
+			if (input instanceof EntityLivingBase) {
+				return EffectsEntity.get( (EntityLivingBase)input).isAffectedBy( effect );
 			}
 			
+			return false;
 		};
 		
 		List<EntityLivingBase> entities = world.getEntities(EntityLivingBase.class, filter );
@@ -384,7 +378,7 @@ public class UsefulMethods {
 		
 	}
 	
-	public static Entity getEntityFromPersistentId(World world, String id, Class entity) {
+	public static Entity getEntityFromPersistentId(World world, String id, Class<EntityLivingBase> entity) {
 
 		try {
 
@@ -394,17 +388,13 @@ public class UsefulMethods {
 			
 			if (found != null) return found;
 			
-			List entities = world.getEntities( entity, new Predicate() {
+			List<EntityLivingBase> entities = world.getEntities(entity, input -> {
 
-				@Override
-				public boolean apply(Object input) {
-					if (input instanceof Entity) {
-
-						return uuid.equals( ((Entity)input).getPersistentID() );
-					}
-					return false;
+				if (input instanceof Entity) {
+					return uuid.equals( ((Entity)input).getPersistentID() );
 				}
 				
+				return false;
 			});
 			
 			if (!entities.isEmpty()) {

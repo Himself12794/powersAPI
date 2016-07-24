@@ -9,7 +9,7 @@ import com.google.common.collect.Lists;
 
 public class PowersCommand extends BaseCommand {
 
-	private final List aliases = Lists.newArrayList();
+	private final List<String> aliases = Lists.newArrayList();
 	private final List<ICommand> subCommands = Lists.newArrayList();
 
 	public PowersCommand() {

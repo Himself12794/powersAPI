@@ -253,7 +253,7 @@ public class EntityPower extends Entity implements IProjectile
 		if (!this.worldObj.isRemote)
 		{
 			Entity entity = null;
-			List list = this.worldObj
+			List<?> list = this.worldObj
 					.getEntitiesWithinAABBExcludingEntity(
 							this,
 							this.getEntityBoundingBox()

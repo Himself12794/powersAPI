@@ -84,7 +84,7 @@ public class PowersEntity extends PropertiesBase {
 		return theEntity;
 	}
 
-	public Collection getLearnedPowers() {
+	public Collection<Power> getLearnedPowers() {
 
 		return learnedPowers;
 	}
