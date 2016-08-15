@@ -1,4 +1,4 @@
-# Powers API
+# Powers API  [![Build Status](http://75.191.167.38:8080/job/Minecraft-Forge/job/PowersAPI/job/develop/badge/icon)](http://75.191.167.38:8080/job/Minecraft-Forge/job/PowersAPI/job/develop/)
 Facilitating Adding Powers/Spells to Minecraft
 
 This API just adds an interface to make it easier to create any kind of power to Minecraft.
