@@ -1,13 +1,13 @@
 package com.himself12794.powersapi.power;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-
 import com.himself12794.powersapi.storage.EffectContainer;
 import com.himself12794.powersapi.storage.EffectsEntity;
 import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 /**
  * Can be used cast powers that effect the world and the caster only.

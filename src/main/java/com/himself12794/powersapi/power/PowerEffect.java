@@ -2,12 +2,12 @@ package com.himself12794.powersapi.power;
 
 import java.util.Map;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
-
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.PowersAPI;
 import com.himself12794.powersapi.storage.EffectContainer;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
 
 public class PowerEffect {
 	

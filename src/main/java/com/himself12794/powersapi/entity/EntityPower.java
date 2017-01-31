@@ -2,6 +2,10 @@ package com.himself12794.powersapi.entity;
 
 import java.util.List;
 
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.power.PowerRanged;
+import com.himself12794.powersapi.storage.PowersEntity;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,10 +23,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.power.PowerRanged;
-import com.himself12794.powersapi.storage.PowersEntity;
 
 /**
  * This is pretty much the same as an EntityThrowable. Biggest difference is

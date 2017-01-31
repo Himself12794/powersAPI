@@ -1,5 +1,9 @@
 package com.himself12794.powersapi.power;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.storage.PowerProfile;
+
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,10 +13,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.storage.PowerProfile;
 
 /**
  * This class is used to add powers to Minecraft. This is manifested as a power on

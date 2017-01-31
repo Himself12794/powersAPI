@@ -2,16 +2,16 @@ package com.himself12794.powersapi.command;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.power.Power;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
-
-import com.google.common.collect.Lists;
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.power.Power;
 
 
 public class GetPowers implements ICommand {

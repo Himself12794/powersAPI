@@ -1,8 +1,8 @@
 package com.himself12794.powersapi.power;
 
-import net.minecraft.entity.EntityLivingBase;
-
 import com.himself12794.powersapi.storage.PowerProfile;
+
+import net.minecraft.entity.EntityLivingBase;
 
 /**
  * Indicates that a Power is used to activate/deactivate a power effect

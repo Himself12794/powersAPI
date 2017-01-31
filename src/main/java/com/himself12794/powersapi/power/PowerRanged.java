@@ -1,12 +1,12 @@
 package com.himself12794.powersapi.power;
 
+import com.himself12794.powersapi.entity.EntityPower;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-
-import com.himself12794.powersapi.entity.EntityPower;
 
 /**
  * Base class for all ranged Power entities.

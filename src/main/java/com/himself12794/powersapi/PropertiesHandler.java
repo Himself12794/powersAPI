@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Maps;
+import com.himself12794.powersapi.network.PowersNetwork;
+import com.himself12794.powersapi.storage.PropertiesBase;
+import com.himself12794.powersapi.util.Reference;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -17,11 +22,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-
-import com.google.common.collect.Maps;
-import com.himself12794.powersapi.network.PowersNetwork;
-import com.himself12794.powersapi.storage.PropertiesBase;
-import com.himself12794.powersapi.util.Reference;
 
 /**
  * Manages modded IExtendedEntityProperties. Automatically registers them whenever an

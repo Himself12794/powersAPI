@@ -1,8 +1,8 @@
 package com.himself12794.powersapi.power;
 
-import net.minecraft.entity.EntityLivingBase;
-
 import com.himself12794.powersapi.entity.EntityPower;
+
+import net.minecraft.entity.EntityLivingBase;
 
 /**
  * Used when it is desired that a ranged spell remain in the world after striking a target.

@@ -1,5 +1,10 @@
 package com.himself12794.powersapi.proxy;
 
+import com.himself12794.powersapi.KeyBindings;
+import com.himself12794.powersapi.entity.EntityPower;
+import com.himself12794.powersapi.event.KeyBindingsHandler;
+import com.himself12794.powersapi.render.RenderPower;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -8,11 +13,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-
-import com.himself12794.powersapi.KeyBindings;
-import com.himself12794.powersapi.entity.EntityPower;
-import com.himself12794.powersapi.event.KeyBindingsHandler;
-import com.himself12794.powersapi.render.RenderPower;
 
 public class ClientProxy extends CommonProxy {
 	

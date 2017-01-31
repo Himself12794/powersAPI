@@ -1,5 +1,16 @@
 package com.himself12794.powersapi.proxy;
 
+import com.himself12794.powersapi.ModConfig;
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PropertiesHandler;
+import com.himself12794.powersapi.command.EffectsCommand;
+import com.himself12794.powersapi.command.PowersCommand;
+import com.himself12794.powersapi.entity.EntityPower;
+import com.himself12794.powersapi.network.PowersNetwork;
+import com.himself12794.powersapi.storage.EffectsEntity;
+import com.himself12794.powersapi.storage.PowersEntity;
+import com.himself12794.powersapi.util.Reference;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -11,17 +22,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-
-import com.himself12794.powersapi.ModConfig;
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.PropertiesHandler;
-import com.himself12794.powersapi.command.EffectsCommand;
-import com.himself12794.powersapi.command.PowersCommand;
-import com.himself12794.powersapi.entity.EntityPower;
-import com.himself12794.powersapi.network.PowersNetwork;
-import com.himself12794.powersapi.storage.EffectsEntity;
-import com.himself12794.powersapi.storage.PowersEntity;
-import com.himself12794.powersapi.util.Reference;
 
 public class CommonProxy {
 

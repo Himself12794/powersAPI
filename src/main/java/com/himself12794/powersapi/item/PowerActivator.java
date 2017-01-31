@@ -3,6 +3,13 @@ package com.himself12794.powersapi.item;
 import java.util.List;
 import java.util.Map;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.storage.PowerProfile;
+import com.himself12794.powersapi.storage.PowersEntity;
+import com.himself12794.powersapi.util.Reference;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,13 +21,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowerProfile;
-import com.himself12794.powersapi.storage.PowersEntity;
-import com.himself12794.powersapi.util.Reference;
-
 /**
  * Was used to cast powers, now used to simply teach players the power. No longer registered,
  * however, and doesn't exist in the game.  
@@ -28,7 +28,6 @@ import com.himself12794.powersapi.util.Reference;
  * @author Himself12794
  *
  */
-@SuppressWarnings("deprecation")
 @Deprecated
 public class PowerActivator extends Item {
 	

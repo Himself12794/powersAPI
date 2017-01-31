@@ -3,6 +3,10 @@ package com.himself12794.powersapi.util;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.base.Predicate;
+import com.himself12794.powersapi.power.PowerEffect;
+import com.himself12794.powersapi.storage.EffectsEntity;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -18,10 +22,6 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
-
-import com.google.common.base.Predicate;
-import com.himself12794.powersapi.power.PowerEffect;
-import com.himself12794.powersapi.storage.EffectsEntity;
 
 /**
  * Utility methods.

@@ -1,13 +1,13 @@
 package com.himself12794.powersapi.network;
 
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-
 import com.himself12794.powersapi.network.client.C01PowerUse;
 import com.himself12794.powersapi.network.client.C02SetMouseOverTarget;
 import com.himself12794.powersapi.network.client.C03CyclePowerState;
 import com.himself12794.powersapi.network.server.S01SyncProperty;
 import com.himself12794.powersapi.network.server.S02SetPower;
+
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * The network used to communicate between server-side and client-side.

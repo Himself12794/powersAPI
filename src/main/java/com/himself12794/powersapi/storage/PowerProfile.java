@@ -2,14 +2,14 @@ package com.himself12794.powersapi.storage;
 
 import java.util.Set;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
-
 import com.google.common.collect.Sets;
 import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.util.UsefulMethods;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 
 /**
  * Contains statistics and information for a specific power a player has used. 
