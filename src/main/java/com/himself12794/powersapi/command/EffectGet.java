@@ -72,7 +72,7 @@ public class EffectGet implements ICommand {
 	private String getPowerEffectsAsString(EntityPlayer entity) {
 
 		EffectsEntity wrapper = EffectsEntity.get( entity );
-		Collection powers = wrapper.getNonHiddenEffects();
+		Collection<?> powers = wrapper.getNonHiddenEffects();
 
 		StringBuilder value = new StringBuilder( "You have: " );
 		int iterCount = 1;

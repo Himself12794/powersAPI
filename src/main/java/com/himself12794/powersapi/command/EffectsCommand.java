@@ -8,7 +8,7 @@ import net.minecraft.command.ICommand;
 
 public class EffectsCommand extends BaseCommand {
 	
-	private final List aliases = Lists.newArrayList( "effects", "eff", "e" );
+	private final List<String> aliases = Lists.newArrayList( "effects", "eff", "e" );
 	private final List<ICommand> subCommands = Lists.newArrayList();
 	
 	public EffectsCommand() {

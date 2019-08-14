@@ -57,7 +57,7 @@ public class EffectsEntity extends PropertiesBase {
 		powerEffects.put( container.theEffect, container );
 	}
 
-	public Collection getActiveEffectContainers() {
+	public Collection<EffectContainer> getActiveEffectContainers() {
 		return powerEffects.values();
 	}
 
@@ -128,7 +128,7 @@ public class EffectsEntity extends PropertiesBase {
 	public void onUpdate() {
 		
 		boolean hasNegatedEffect = isAffectedBy(PowerEffect.negated);
-		Set toRemove = Sets.newHashSet();
+		Set<PowerEffect> toRemove = Sets.newHashSet();
 		
 		for (EffectContainer container : powerEffects.values()) {
 			
@@ -167,7 +167,7 @@ public class EffectsEntity extends PropertiesBase {
 	 * 
 	 * @return
 	 */
-	public Collection getNonHiddenEffects() {
+	public Collection<PowerEffect> getNonHiddenEffects() {
 
 		final Set<PowerEffect> effects = Sets.newHashSet();
 
@@ -181,7 +181,7 @@ public class EffectsEntity extends PropertiesBase {
 
 	}
 	
-	public Collection getActiveEffects() {
+	public Collection<PowerEffect> getActiveEffects() {
 
 		final Set<PowerEffect> effects = Sets.newHashSet();
 
@@ -208,7 +208,7 @@ public class EffectsEntity extends PropertiesBase {
 	
 	public void resetForRespawn() {
 
-		final Set toRemove = Sets.newHashSet();
+		final Set<PowerEffect> toRemove = Sets.newHashSet();
 		
 		for (PowerEffect effect : powerEffects.keySet()) {
 			

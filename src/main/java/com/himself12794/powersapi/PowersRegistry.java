@@ -86,6 +86,7 @@ public class PowersRegistry {
 		return stack.hasTagCompound() && stack.getTagCompound().hasKey("currentPower");
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <P extends Power> P lookupPower(Class<P> power) {
 		Power powered = null;
 		try {

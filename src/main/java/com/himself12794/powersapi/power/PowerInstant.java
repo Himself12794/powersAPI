@@ -18,7 +18,7 @@ public class PowerInstant extends Power {
 		
 		onCast(world, caster, modifier, state);
 		boolean successful = onStrike( world, mouseOver, caster, modifier, state );
-		PowersEntity wrapper = PowersEntity.get( caster );
+		PowersEntity.get( caster );
 		
 		return successful;
 	}

@@ -57,6 +57,7 @@ public class PowerProfile {
 	/**
 	 * Resets the data for the NBTTagCompound
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void resetPowerData() {
 		
 		Set removeableKeys = Sets.newConcurrentHashSet( powerData.getKeySet() );

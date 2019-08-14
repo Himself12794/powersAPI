@@ -54,7 +54,6 @@ public class ListPowers implements ICommand {
 				int iterCount = 1;
 
 				for (Power power : powers) {
-					PowerProfile profile = wrapper.getPowerProfile( power );
 					if (power != null) {
 						value.append( power.getDisplayName() );
 						if (iterCount != powers.size()) value.append( ", " );

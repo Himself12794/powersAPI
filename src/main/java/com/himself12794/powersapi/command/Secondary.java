@@ -37,7 +37,7 @@ public class Secondary implements ICommand {
 	@Override
 	public List getAliases() {
 		
-		List al = Lists.newArrayList();
+		List<String> al = Lists.newArrayList();
 		al.add( "s" );
 		al.add( "sec" );
 		al.add( "second" );

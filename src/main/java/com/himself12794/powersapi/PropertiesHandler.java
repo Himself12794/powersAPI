@@ -52,7 +52,7 @@ public class PropertiesHandler {
 		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
 			String identifier = entry.getValue();
-			Class association = entry.getKey();
+			Class<?> association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity1.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -94,6 +94,7 @@ public class PropertiesHandler {
 		return identifierClassAssociations.keySet();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T extends PropertiesBase> T getWrapper(Class<T> clazz, EntityLivingBase entity) {
 		return (T) entity.getExtendedProperties( getIdentifierForPropertyClass( clazz ) );
 	}
@@ -113,7 +114,7 @@ public class PropertiesHandler {
 					
 					try {
 						
-						Constructor constructor = entry.getKey().getDeclaredConstructor( entry.getValue() );
+						Constructor<?> constructor = entry.getKey().getDeclaredConstructor( entry.getValue() );
 						constructor.setAccessible( true );
 						PropertiesBase wrapper = (PropertiesBase) constructor.newInstance( entity );
 						
@@ -153,7 +154,7 @@ public class PropertiesHandler {
 			PowersAPI.logger().error( "Could not register properties class {}, entry already exists", clazz);
 		}
 		
-		Class registered = clazz2 == null ? EntityLivingBase.class : clazz2;
+		Class<? extends EntityLivingBase> registered = clazz2 == null ? EntityLivingBase.class : clazz2;
 		
 		if (!entityMapping.containsKey( clazz )) {
 			entityMapping.put( clazz, registered );
@@ -178,7 +179,7 @@ public class PropertiesHandler {
 		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
 			String identifier = entry.getValue();
-			Class association = entry.getKey();
+			Class<?> association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -203,7 +204,7 @@ public class PropertiesHandler {
 			for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 	
 				String identifier = entry.getValue();
-				Class association = entry.getKey();
+				Class<?> association = entry.getKey();
 				IExtendedEntityProperties wrapper = event.entity.getExtendedProperties( identifier );
 				
 				if(wrapper != null) {
@@ -231,7 +232,7 @@ public class PropertiesHandler {
 		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
 			String identifier = entry.getValue();
-			Class association = entry.getKey();
+			Class<?> association = entry.getKey();
 			IExtendedEntityProperties wrapper = player.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
@@ -253,7 +254,7 @@ public class PropertiesHandler {
 		for (Entry<Class<? extends PropertiesBase>, String> entry : identifierClassAssociations.entrySet()) {
 
 			String identifier = entry.getValue();
-			Class association = entry.getKey();
+			Class<?> association = entry.getKey();
 			IExtendedEntityProperties wrapper = entity.getExtendedProperties( identifier );
 			
 			if(wrapper != null) {
