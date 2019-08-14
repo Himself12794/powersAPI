@@ -2,12 +2,12 @@ package com.himself12794.powersapi;
 
 import java.io.File;
 
+import com.himself12794.powersapi.util.Reference;
+
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import com.himself12794.powersapi.util.Reference;
 
 /**
  * Configuration options for this mod.

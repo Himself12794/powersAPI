@@ -1,13 +1,13 @@
 package com.himself12794.powersapi.network;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-
 import com.himself12794.powersapi.network.server.S01SyncProperty;
 import com.himself12794.powersapi.network.server.S02SetPower;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.storage.PropertiesBase;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 /**
  * Handles sending messages to the client.

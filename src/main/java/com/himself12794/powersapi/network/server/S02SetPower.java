@@ -1,16 +1,16 @@
 package com.himself12794.powersapi.network.server;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.storage.PowersEntity;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersEntity;
 
 /**
  * Used to synchronize client side when a power is set on the server. Used by commands.

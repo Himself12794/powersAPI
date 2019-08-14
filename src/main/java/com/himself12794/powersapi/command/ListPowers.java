@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.storage.PowerProfile;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
 

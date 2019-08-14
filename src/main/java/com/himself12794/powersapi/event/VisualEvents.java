@@ -1,10 +1,10 @@
 package com.himself12794.powersapi.event;
 
+import com.himself12794.powersapi.storage.PowersEntity;
+
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import com.himself12794.powersapi.storage.PowersEntity;
 
 /**
  * Prevents players from using items while a power is being used.

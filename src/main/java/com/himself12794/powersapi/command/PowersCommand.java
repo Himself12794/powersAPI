@@ -2,9 +2,9 @@ package com.himself12794.powersapi.command;
 
 import java.util.List;
 
-import net.minecraft.command.ICommand;
-
 import com.google.common.collect.Lists;
+
+import net.minecraft.command.ICommand;
 
 
 public class PowersCommand extends BaseCommand {

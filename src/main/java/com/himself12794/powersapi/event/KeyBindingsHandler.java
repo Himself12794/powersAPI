@@ -1,12 +1,5 @@
 package com.himself12794.powersapi.event;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-
 import com.himself12794.powersapi.KeyBindings;
 import com.himself12794.powersapi.network.PowersNetwork;
 import com.himself12794.powersapi.network.client.C01PowerUse.Action;
@@ -14,6 +7,13 @@ import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerInstant;
 import com.himself12794.powersapi.storage.PowersEntity;
 import com.himself12794.powersapi.util.UsefulMethods;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
  * Handles the key bindings for power cycling and casting.

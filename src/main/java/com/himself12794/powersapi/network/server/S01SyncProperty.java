@@ -1,5 +1,8 @@
 package com.himself12794.powersapi.network.server;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.storage.PropertiesBase;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,9 +10,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.storage.PropertiesBase;
 
 /**
  * Synchronizes a property on the client with the property on the server.

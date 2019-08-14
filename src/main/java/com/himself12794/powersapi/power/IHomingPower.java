@@ -1,8 +1,8 @@
 package com.himself12794.powersapi.power;
 
-import net.minecraft.entity.Entity;
-
 import com.himself12794.powersapi.entity.EntityPower;
+
+import net.minecraft.entity.Entity;
 
 /**
  * This is implemented by instances of PowerRanged to continuously redirect path to a specified target.

@@ -3,6 +3,14 @@ package com.himself12794.powersapi.command;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.collect.Lists;
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.network.PowersNetwork;
+import com.himself12794.powersapi.network.server.S02SetPower.Selection;
+import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.storage.PowersEntity;
+import com.himself12794.powersapi.util.UsefulMethods;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -13,14 +21,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-
-import com.google.common.collect.Lists;
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.network.PowersNetwork;
-import com.himself12794.powersapi.network.server.S02SetPower.Selection;
-import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersEntity;
-import com.himself12794.powersapi.util.UsefulMethods;
 
 
 public class Secondary implements ICommand {

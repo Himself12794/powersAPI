@@ -1,16 +1,16 @@
 package com.himself12794.powersapi.network.client;
 
+import com.himself12794.powersapi.PowersAPI;
+import com.himself12794.powersapi.PowersRegistry;
+import com.himself12794.powersapi.power.Power;
+import com.himself12794.powersapi.storage.PowersEntity;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.himself12794.powersapi.PowersAPI;
-import com.himself12794.powersapi.PowersRegistry;
-import com.himself12794.powersapi.power.Power;
-import com.himself12794.powersapi.storage.PowersEntity;
 
 /**
  * Cycles a power profile to the next valid state.

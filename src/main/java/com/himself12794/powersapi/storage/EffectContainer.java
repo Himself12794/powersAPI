@@ -1,13 +1,13 @@
 package com.himself12794.powersapi.storage;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-
 import com.himself12794.powersapi.PowersRegistry;
 import com.himself12794.powersapi.power.Power;
 import com.himself12794.powersapi.power.PowerEffect;
 import com.himself12794.powersapi.util.UsefulMethods;
+
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 
 /**
  * Holds information for an active effect on an entity.

@@ -3,11 +3,11 @@ package com.himself12794.powersapi;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.item.ItemStack;
-
 import com.google.common.collect.Maps;
 import com.himself12794.powersapi.power.IEffectActivator;
 import com.himself12794.powersapi.power.Power;
+
+import net.minecraft.item.ItemStack;
 
 /**
  * The registration for powers. All powers registered by this should be accessible.
